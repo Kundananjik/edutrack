@@ -1,0 +1,77 @@
+.enrollment-list {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.enrollment-item {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: center;
+}
+
+.enrollment-item:last-child {
+    border-bottom: none;
+}
+
+.enrollment-header {
+    font-weight: bold;
+    color: #555;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.enrollment-actions form {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.grade-input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.enrollment-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.status-active { background-color: #e6f7e6; color: #3c763d; }
+.status-completed { background-color: #d9edf7; color: #31708f; }
+.status-withdrawn { background-color: #fcf8e3; color: #8a6d3b; }
+
+.add-enrollment-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.add-enrollment-form .form-group {
+    margin-bottom: 15px;
+}
+
+.add-enrollment-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.add-enrollment-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

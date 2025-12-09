@@ -1,0 +1,1327 @@
+/*
+ * File: pages/admin/css/dashboard.css
+ * Purpose: Admin Dashboard CSS matching EduTrack theme & Lecturer Dashboard
+ * Author: EduTrack
+ */
+
+/* ===========================
+   1. CSS VARIABLES (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+:root {
+    --primary-color: #2fa360;
+    --primary-hover: #28a745;
+    --danger-color: #dc3545;
+    --danger-hover: #c82333;
+    --background-light: #f9f9f9;
+    --background-dark: #1e1e2f;
+    --text-color: #000000; /* Changed to black */
+    --text-light: #fff;
+    --text-muted: #777;
+    --border-color: #ddd;
+    --border-light: #eee;
+    --container-width: min(1200px, 95vw); /* MODERN: Fluid container */
+    --padding-sm: clamp(0.5rem, 2vw, 10px); /* MODERN: Responsive padding */
+    --padding-md: clamp(1rem, 3vw, 20px);
+    --padding-lg: clamp(2rem, 5vw, 40px);
+    --gap-md: clamp(1rem, 3vw, 20px);
+    --border-radius-sm: 8px;
+    --border-radius-lg: 12px;
+    --box-shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+    --box-shadow-lg: 0 8px 12px rgba(0,0,0,0.15);
+    --mobile-breakpoint: 768px;
+    
+    /* MODERN ADDITIONS: Enhanced transitions and animations */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ===========================
+   2. GLOBAL STYLES (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+*, *::before, *::after {
+    box-sizing: border-box; /* MODERN: Consistent box model */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color); /* Now black */
+    background-color: var(--background-light);
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    scroll-behavior: smooth; /* MODERN: Smooth scrolling */
+}
+
+.page-wrapper { 
+    flex: 1 0 auto; 
+    width: 100%; /* MODERN: Full width */
+}
+
+.container { 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    width: 100%;
+    max-width: var(--container-width); /* MODERN: Use variable */
+    margin-inline: auto; /* MODERN: Logical properties */
+    padding-inline: var(--padding-md);
+}
+
+/* ===========================
+   3. NAVBAR (Consistent with lecturer) - Enhanced Bootstrap compatibility
+=========================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--primary-color) !important; /* Force override */
+    color: var(--text-light);
+    padding: var(--padding-sm) var(--padding-lg); /* MODERN: Responsive padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1030; /* Higher than Bootstrap's default */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px); /* MODERN: Glass effect */
+}
+
+.navbar .logo img { 
+    height: clamp(2.5rem, 6vw, 50px); /* MODERN: Responsive logo */
+    width: auto; 
+    transition: transform var(--transition-base); /* MODERN: Smooth transition */
+}
+
+.navbar .logo:hover img {
+    transform: scale(1.05); /* MODERN: Hover effect */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: clamp(1rem, 3vw, 25px); /* MODERN: Responsive gap */
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-light) !important; /* Force override */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: clamp(0.9rem, 2vw, 1rem); /* MODERN: Responsive font */
+    position: relative;
+    transition: color var(--transition-fast); /* MODERN: Enhanced transition */
+    padding: 0.5rem 0; /* MODERN: Better touch targets */
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--text-light);
+    transition: width var(--transition-base); /* MODERN: Enhanced transition */
+}
+
+.nav-links a:hover::after { 
+    width: 100%; 
+}
+
+.nav-links a.login-btn,
+.nav-links a.logout-btn {
+    background-color: var(--text-light);
+    color: var(--primary-color) !important; /* Force override */
+    padding: 0.5rem 1.25rem; /* MODERN: Relative units */
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all var(--transition-base); /* MODERN: Enhanced transition */
+}
+
+.nav-links a.login-btn:hover,
+.nav-links a.logout-btn:hover {
+    background-color: #e6ffe6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ===========================
+   4. DASHBOARD CONTAINER & HEADINGS (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+.dashboard-container {
+    flex: 1 0 auto;
+    max-width: var(--container-width);
+    margin: clamp(1rem, 4vw, 30px) auto; /* MODERN: Responsive margin */
+    padding: var(--padding-md);
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    animation: fadeInUp 0.6s ease; /* MODERN: Entrance animation */
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-container h1, 
+.dashboard-container h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--padding-md);
+}
+
+.dashboard-container h1 { 
+    font-size: clamp(1.5rem, 4vw, 28px); /* MODERN: Fluid typography */
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 10px;
+}
+
+.dashboard-container h2 { 
+    font-size: clamp(1.25rem, 3vw, 22px); /* MODERN: Fluid typography */
+}
+
+/* ===========================
+   5. DASHBOARD CARDS (Consistent with lecturer) - Enhanced for Bootstrap - MODERN ENHANCEMENTS ADDED
+=========================== */
+.card-row {
+    display: grid; /* MODERN: CSS Grid for better layout */
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: var(--gap-md);
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    flex: 1 1 250px;
+    background-color: #E8F5E9;
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    color: #000000; /* Changed to black */
+    text-decoration: none;
+    box-shadow: var(--box-shadow-sm);
+    padding: var(--padding-md);
+    transition: all var(--transition-base); /* MODERN: Enhanced transition */
+    border: 1px solid var(--border-light);
+    border-left: 5px solid var(--primary-color);
+    position: relative; /* MODERN: For pseudo-element */
+    overflow: hidden; /* MODERN: Contain effects */
+}
+
+.dashboard-card::before {
+    content: ''; /* MODERN: Shine effect */
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left var(--transition-slow);
+}
+
+.dashboard-card:hover::before {
+    left: 100%;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px); /* MODERN: Enhanced lift */
+    box-shadow: var(--box-shadow-lg);
+    background: #ffffff;
+    text-decoration: none; /* Prevent underline on hover */
+}
+
+.dashboard-card h3 { 
+    margin-bottom: 10px; 
+    font-size: clamp(1.1rem, 2vw, 1.2rem); /* MODERN: Responsive font */
+    color: var(--primary-color);
+}
+
+.dashboard-card p { 
+    font-size: clamp(1.25rem, 3vw, 1.5rem); /* MODERN: Responsive font */
+    font-weight: bold; 
+    color: #000000; /* Changed to black */
+}
+
+.dashboard-card i { 
+    display: block; 
+    margin-bottom: 10px; 
+    font-size: clamp(1.5rem, 4vw, 2rem); /* MODERN: Responsive icons */
+    color: var(--primary-color); 
+    transition: transform var(--transition-base); /* MODERN: Icon animation */
+}
+
+.dashboard-card:hover i {
+    transform: scale(1.1); /* MODERN: Icon hover effect */
+}
+
+/* ===========================
+   6. ALERTS & MESSAGES (Consistent with lecturer) - Enhanced Bootstrap compatibility - MODERN ENHANCEMENTS ADDED
+=========================== */
+.alert,
+.error-message, 
+.info-message, 
+.warning-message,
+.no-data {
+    padding: 1rem; /* MODERN: Relative units */
+    margin-bottom: 1.25rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: bold;
+    border: 1px solid transparent; /* MODERN: Consistent borders */
+    animation: slideIn 0.3s ease; /* MODERN: Entrance animation */
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.alert-success, 
+.info-message {
+    background-color: #d1ecf1;
+    color: #000000; /* Changed to black */
+    border-color: #bee5eb; /* MODERN: Border color */
+}
+
+.alert-danger, 
+.error-message {
+    background-color: #f8d7da;
+    color: #000000; /* Changed to black */
+    border-color: #f5c6cb; /* MODERN: Border color */
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #000000; /* Changed to black */
+    border-color: #c3e6cb; /* MODERN: Border color */
+}
+
+.warning-message {
+    background-color: #fff3cd;
+    color: #000000; /* Changed to black */
+    border-left: 5px solid #ffc107;
+}
+
+.no-data {
+    text-align: center;
+    color: #000000; /* Changed to black */
+    font-style: italic;
+    margin-top: 30px;
+    background: none;
+    font-weight: normal;
+    padding: 2rem; /* MODERN: Better spacing */
+}
+
+/* ===========================
+   7. BUTTONS & LINKS (Updated to match lecturer styles) - Enhanced Bootstrap compatibility - MODERN ENHANCEMENTS ADDED
+=========================== */
+.btn-primary, 
+.btn-danger, 
+.download-btn,
+.action-btn,
+.back-link {
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-base); /* MODERN: Enhanced transition */
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative; /* MODERN: For ripple effect */
+    overflow: hidden; /* MODERN: Contain effects */
+}
+
+.btn-primary::before,
+.btn-danger::before,
+.download-btn::before {
+    content: ''; /* MODERN: Ripple effect base */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.6s ease;
+    transform: translate(-50%, -50%);
+}
+
+.btn-primary:active::before,
+.btn-danger:active::before,
+.download-btn:active::before {
+    width: 300px; /* MODERN: Ripple effect */
+    height: 300px;
+}
+
+.btn-primary,
+.view-btn,
+.start-session-btn {
+    background-color: var(--primary-color) !important; /* Force override */
+    color: var(--text-light) !important; /* Force override */
+    border-color: var(--primary-color) !important; /* Force override */
+    padding: 12px 20px;
+}
+
+.btn-primary:hover,
+.view-btn:hover,
+.start-session-btn:hover {
+    background-color: var(--primary-hover) !important; /* Force override */
+    border-color: var(--primary-hover) !important; /* Force override */
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-md); /* MODERN: Enhanced shadow */
+}
+
+.btn-danger {
+    background-color: var(--danger-color) !important; /* Force override */
+    color: var(--text-light) !important; /* Force override */
+    border-color: var(--danger-color) !important; /* Force override */
+    padding: 10px 16px;
+}
+
+.btn-danger:hover { 
+    background-color: var(--danger-hover) !important; /* Force override */
+    border-color: var(--danger-hover) !important; /* Force override */
+    transform: translateY(-2px); /* MODERN: Consistent lift */
+}
+
+.download-btn {
+    background-color: #555;
+    color: #fff;
+    padding: 12px 20px;
+}
+
+.download-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+.action-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.back-link {
+    color: var(--primary-color);
+    margin: 20px 0;
+    background: none;
+    padding: 0;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+    transform: none;
+    color: var(--primary-hover);
+}
+
+/* ===========================
+   8. FORMS (Updated button colors) - Enhanced Bootstrap compatibility - MODERN ENHANCEMENTS ADDED
+=========================== */
+form label { 
+    font-weight: 600; 
+    margin-bottom: 4px; 
+    display: block; 
+    color: #000000; /* Changed to black */
+}
+
+form input, 
+form select, 
+form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 8px 0 16px 0;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--border-color); /* MODERN: Thicker border */
+    font-size: 14px;
+    transition: all var(--transition-fast); /* MODERN: Enhanced transition */
+    color: #000000; /* Changed to black */
+    background: white; /* MODERN: Ensure background */
+}
+
+form input:focus, 
+form select:focus, 
+form textarea:focus {
+    border-color: var(--primary-color) !important; /* Force override */
+    box-shadow: 0 0 0 3px rgba(47,163,96,0.1) !important; /* MODERN: Better focus ring */
+    outline: none;
+}
+
+form input:user-invalid,
+form select:user-invalid,
+form textarea:user-invalid {
+    border-color: var(--danger-color); /* MODERN: Native validation styling */
+}
+
+form button[type="submit"] {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-base);
+}
+
+form button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-sm); /* MODERN: Added shadow */
+}
+
+/* ===========================
+   9. TABLES (Consistent with lecturer) - Enhanced Bootstrap compatibility - MODERN ENHANCEMENTS ADDED
+=========================== */
+.table-container {
+    overflow-x: auto;
+    margin-top: var(--gap-md);
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    padding: var(--padding-md);
+    animation: fadeIn 0.5s ease; /* MODERN: Entrance animation */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.data-table,
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th, 
+.data-table td,
+table th, 
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    color: #000000; /* Changed to black */
+    transition: background-color var(--transition-fast); /* MODERN: Smooth hover */
+}
+
+.data-table thead, 
+table thead {
+    background-color: var(--border-light);
+}
+
+.data-table th, 
+table th {
+    font-weight: bold;
+    color: #000000; /* Changed to black */
+}
+
+.data-table tbody tr:hover, 
+table tbody tr:hover {
+    background-color: #f8f9fa; /* MODERN: Slightly darker hover */
+}
+
+.data-table td:last-child, 
+table td:last-child {
+    text-align: center;
+}
+
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; /* MODERN: Wrap on small screens */
+}
+
+.action-buttons .inline-form { 
+    margin: 0; 
+}
+
+/* Action icons (Updated to match lecturer) - MODERN ENHANCEMENTS ADDED */
+.action-icon {
+    font-size: 1.25rem;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: all var(--transition-fast); /* MODERN: Enhanced transition */
+    padding: 0.5rem; /* MODERN: Better touch targets */
+    border-radius: var(--border-radius-sm); /* MODERN: Rounded background */
+}
+
+.action-icon.view { 
+    color: #007bff; 
+    background: rgba(0, 123, 255, 0.1); /* MODERN: Subtle background */
+}
+
+.action-icon.view:hover { 
+    color: #0056b3; 
+    background: rgba(0, 123, 255, 0.2); /* MODERN: Enhanced background */
+    transform: scale(1.1); /* MODERN: Scale effect */
+}
+
+.action-icon.delete { 
+    color: var(--danger-color); 
+    background: rgba(220, 53, 69, 0.1); /* MODERN: Subtle background */
+}
+
+.action-icon.delete:hover { 
+    color: var(--danger-hover); 
+    background: rgba(220, 53, 69, 0.2); /* MODERN: Enhanced background */
+    transform: scale(1.1); /* MODERN: Scale effect */
+}
+
+/* ===========================
+   10. ANNOUNCEMENTS SECTION (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+.announcement-card {
+    background: #f9f9f9;
+    border: 1px solid var(--border-light);
+    border-left: 5px solid var(--primary-color);
+    border-radius: var(--border-radius-sm);
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow-sm);
+    transition: all var(--transition-base); /* MODERN: Enhanced transition */
+    animation: slideInUp 0.4s ease; /* MODERN: Staggered animation */
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.announcement-card:hover {
+    transform: translateY(-4px); /* MODERN: Enhanced lift */
+    box-shadow: var(--box-shadow-lg);
+    background: #ffffff;
+}
+
+.announcement-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 6px;
+}
+
+.announcement-date {
+    font-size: 0.9rem;
+    color: #000000; /* Changed to black */
+    margin-bottom: 10px;
+    opacity: 0.8; /* MODERN: Subtle date */
+}
+
+.announcement-message {
+    font-size: 1rem;
+    color: #000000; /* Changed to black */
+    line-height: 1.6;
+}
+
+/* ===========================
+   11. STATUS & INDICATORS (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+.present, 
+.status-present { 
+    color: var(--primary-color); 
+    font-weight: bold; 
+}
+
+.absent { 
+    color: var(--danger-color); 
+    font-weight: bold; 
+}
+
+.last-updated {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #000000; /* Changed to black */
+    margin-top: var(--padding-md);
+    opacity: 0.8; /* MODERN: Subtle text */
+}
+
+/* ===========================
+   12. FOOTER (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
+=========================== */
+.site-footer {
+    flex-shrink: 0;
+    width: 100%;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    padding: var(--padding-lg) var(--padding-md) var(--padding-md);
+    font-size: 14px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    gap: var(--gap-md);
+}
+
+.footer-links ul { 
+    list-style: none; 
+    padding: 0; 
+}
+
+.footer-links li { 
+    margin-bottom: 10px; 
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+    font-size: 13px;
+    color: #bbb;
+}
+
+/* ===========================
+   13. MOBILE-FIRST RESPONSIVE DESIGN - MODERN ENHANCEMENTS ADDED
+=========================== */
+
+/* Mobile Navigation - MODERN ENHANCEMENTS ADDED */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform var(--transition-fast); /* MODERN: Smooth transition */
+}
+
+.mobile-menu-toggle:hover {
+    transform: scale(1.1); /* MODERN: Hover effect */
+}
+
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+    animation: fadeIn 0.3s ease; /* MODERN: Fade in overlay */
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: min(280px, 80vw); /* MODERN: Responsive width */
+    height: 100%;
+    background: var(--primary-color);
+    z-index: 1050;
+    transition: right var(--transition-base); /* MODERN: Enhanced transition */
+    padding: 60px 20px 20px;
+    overflow-y: auto;
+    box-shadow: var(--box-shadow-lg); /* MODERN: Enhanced shadow */
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-links li {
+    margin-bottom: 15px;
+}
+
+.mobile-nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    transition: background 0.3s ease;
+}
+
+.mobile-nav-links a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform var(--transition-fast); /* MODERN: Smooth transition */
+}
+
+.mobile-nav-close:hover {
+    transform: scale(1.1); /* MODERN: Hover effect */
+}
+
+/* Tablet Styles (768px and below) - MODERN ENHANCEMENTS ADDED */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .navbar .logo img {
+        height: 40px;
+    }
+    
+    /* Hide desktop nav, show mobile toggle */
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .dashboard-container {
+        padding: 15px;
+        margin: 15px;
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .dashboard-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .card-row { 
+        grid-template-columns: 1fr; /* MODERN: Single column */
+        gap: 15px;
+    }
+    
+    .dashboard-card { 
+        flex: 1 1 100%; 
+        padding: 15px;
+    }
+    
+    .dashboard-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .dashboard-card p {
+        font-size: 1.3rem;
+    }
+    
+    .data-table th, 
+    .data-table td,
+    table th, 
+    table td {
+        font-size: 0.8rem;
+        padding: 8px 10px;
+    }
+    
+    .action-btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+    
+    .action-buttons { 
+        flex-direction: column; 
+        gap: 5px; 
+    }
+    
+    .table-container { 
+        overflow-x: scroll; 
+        padding: 10px;
+    }
+    
+    .btn-primary,
+    .view-btn,
+    .start-session-btn,
+    .download-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .footer-links ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .footer-links li {
+        margin-bottom: 0;
+    }
+    
+    .announcement-card {
+        padding: 12px 15px;
+    }
+    
+    .announcement-title {
+        font-size: 1.1rem;
+    }
+    
+    .announcement-message {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Styles (480px and below) */
+@media (max-width: 480px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .navbar {
+        padding: 8px 12px;
+    }
+    
+    .navbar .logo img {
+        height: 35px;
+    }
+    
+    .dashboard-container {
+        margin: 10px;
+        padding: 12px;
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.3rem;
+    }
+    
+    .dashboard-container h2 {
+        font-size: 1.2rem;
+    }
+    
+    .dashboard-card h3 {
+        font-size: 1rem;
+    }
+    
+    .dashboard-card p {
+        font-size: 1.2rem;
+    }
+    
+    .table-container {
+        padding: 8px;
+    }
+    
+    .data-table th, 
+    .data-table td,
+    table th, 
+    table td {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .alert, 
+    .error-message, 
+    .info-message {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .mobile-nav {
+        width: min(250px, 85vw); /* MODERN: Responsive width */
+    }
+    
+    .mobile-nav-links a {
+        font-size: 16px;
+        padding: 8px;
+    }
+    
+    form input, 
+    form select, 
+    form textarea {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+}
+
+/* Small Mobile Styles (360px and below) */
+@media (max-width: 360px) {
+    .dashboard-container {
+        margin: 5px;
+        padding: 10px;
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.2rem;
+    }
+    
+    .dashboard-container h2 {
+        font-size: 1.1rem;
+    }
+    
+    .btn-primary,
+    .action-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .data-table,
+    table {
+        min-width: 500px;
+    }
+    
+    .mobile-nav {
+        width: min(220px, 90vw); /* MODERN: Responsive width */
+    }
+}
+
+/* Touch Device Optimizations - MODERN ENHANCEMENTS ADDED */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary:hover,
+    .action-btn:hover,
+    .btn-danger:hover,
+    .dashboard-card:hover,
+    .announcement-card:hover {
+        transform: none;
+    }
+    
+    /* Larger touch targets */
+    .btn-primary,
+    .action-btn,
+    .btn-danger,
+    .download-btn {
+        min-height: 44px;
+        min-width: 44px; /* MODERN: Minimum touch target */
+    }
+    
+    .action-icon {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    table th, 
+    table td {
+        padding: 12px 10px;
+    }
+    
+    select, 
+    input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* High-resolution displays - MODERN ENHANCEMENTS ADDED */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .navbar .logo img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges; /* MODERN: Better rendering */
+    }
+}
+
+/* Reduced motion support - MODERN ACCESSIBILITY ADDITION */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ===========================
+   14. EDIT STUDENT PAGE SPECIFIC STYLES - MODERN ENHANCEMENTS ADDED
+=========================== */
+
+/* Center the form card for small screens */
+.user-form-card {
+    max-width: min(700px, 95vw); /* MODERN: Responsive max-width */
+    margin: 0 auto;
+    padding: var(--padding-md);
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    border: 1px solid var(--border-light);
+    animation: slideInUp 0.5s ease; /* MODERN: Entrance animation */
+}
+
+/* Form headings */
+.user-form-card h1 {
+    font-size: clamp(1.5rem, 4vw, 26px); /* MODERN: Fluid typography */
+    color: var(--primary-color);
+    margin-bottom: var(--padding-md);
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 8px;
+}
+
+/* Labels and inputs (override if needed) */
+.user-form-card label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: #000000; /* Changed to black */
+}
+
+.user-form-card input,
+.user-form-card select,
+.user-form-card textarea {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 6px 0 16px 0;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--border-color); /* MODERN: Thicker border */
+    font-size: 14px;
+    transition: all var(--transition-fast); /* MODERN: Enhanced transition */
+    color: #000000; /* Changed to black */
+    background: white; /* MODERN: Ensure background */
+}
+
+.user-form-card input:focus,
+.user-form-card select:focus,
+.user-form-card textarea:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(47,163,96,0.1) !important; /* MODERN: Better focus */
+    outline: none;
+}
+
+.user-form-card input:user-invalid,
+.user-form-card select:user-invalid,
+.user-form-card textarea:user-invalid {
+    border-color: var(--danger-color); /* MODERN: Native validation */
+}
+
+/* Submit button */
+.user-form-card button[type="submit"] {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-base);
+    width: 100%; /* MODERN: Full width on mobile */
+}
+
+.user-form-card button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-sm); /* MODERN: Added shadow */
+}
+
+/* Back link */
+.user-form-card .back-link {
+    display: inline-flex; /* MODERN: Better alignment */
+    margin-top: 15px;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+    align-items: center;
+    gap: 0.5rem; /* MODERN: Consistent gap */
+}
+
+.user-form-card .back-link:hover {
+    text-decoration: underline;
+    color: var(--primary-hover);
+}
+
+/* Alerts inside the form */
+.user-form-card .alerts {
+    margin-bottom: 20px;
+}
+
+.user-form-card .alert {
+    font-size: 0.95rem;
+    padding: 12px 15px;
+    border-radius: var(--border-radius-sm);
+    color: #000000; /* Changed to black */
+}
+
+/* Responsive tweaks for forms */
+@media (max-width: 768px) {
+    .user-form-card {
+        padding: var(--padding-sm);
+        margin: 15px;
+    }
+
+    .user-form-card h1 {
+        font-size: 22px;
+    }
+
+    .user-form-card input,
+    .user-form-card select,
+    .user-form-card textarea {
+        font-size: 13px;
+    }
+
+    .user-form-card button[type="submit"] {
+        width: 100%;
+    }
+}
+
+/* ===========================
+   15. BOOTSTRAP OVERRIDES & COMPATIBILITY (NEW SECTION) - MODERN ENHANCEMENTS ADDED
+=========================== */
+
+/* Ensure our custom styles override Bootstrap */
+.btn-success, .bg-success {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-success:hover {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+/* Table header override */
+.table thead {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Form control focus states */
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 163, 96, 0.25) !important;
+}
+
+/* Card styling compatibility */
+.card {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-base); /* MODERN: Smooth transitions */
+}
+
+.card-header {
+    background-color: var(--border-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-body {
+    color: #000000; /* Changed to black */
+}
+
+/* Modal compatibility */
+.modal-header {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border-bottom: 1px solid var(--primary-hover);
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    color: #000000; /* Changed to black */
+}
+
+/* Navbar toggle for mobile */
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Badge styling */
+.badge.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* Pagination styling */
+.page-link {
+    color: var(--primary-color);
+    border-color: var(--border-color);
+    transition: all var(--transition-fast); /* MODERN: Smooth transitions */
+}
+
+.page-link:hover {
+    color: var(--primary-hover);
+    background-color: var(--border-light);
+    border-color: var(--border-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Ensure proper z-index stacking */
+.navbar {
+    z-index: 1030 !important; /* Higher than Bootstrap modals (1050) but lower than our needs */
+}
+
+/* Fix for any potential Bootstrap container conflicts */
+.container-fluid, .container {
+    max-width: var(--container-width);
+}
+
+/* Utility classes for spacing consistency */
+.mt-custom { margin-top: var(--padding-md); }
+.mb-custom { margin-bottom: var(--padding-md); }
+.p-custom { padding: var(--padding-md); }
+
+/* Print styles - MODERN ADDITION */
+@media print {
+    .navbar,
+    .site-footer,
+    .btn,
+    .action-buttons {
+        display: none !important;
+    }
+    
+    body {
+        padding-top: 0;
+    }
+    
+    .dashboard-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+}

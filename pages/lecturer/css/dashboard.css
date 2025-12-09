@@ -1,0 +1,1312 @@
+/*
+ * File: pages/admin/css/dashboard.css
+ * Purpose: Modern Admin Dashboard CSS matching EduTrack theme & Lecturer Dashboard
+ * Author: EduTrack
+ * Version: 2.0 - Modernized with all original content preserved
+ */
+
+/* ===========================
+   1. MODERN CSS VARIABLES (Enhanced from original)
+=========================== */
+:root {
+  /* Original Colors - Preserved exactly */
+  --primary-color: #2fa360;
+  --primary-hover: #28a745;
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --background-light: #f9f9f9;
+  --background-dark: #1e1e2f;
+  --text-color: #000000;
+  --text-light: #fff;
+  --text-muted: #777;
+  --border-color: #ddd;
+  --border-light: #eee;
+  
+  /* Original Layout - Enhanced with modern units */
+  --container-width: min(1200px, 95vw);
+  --padding-sm: clamp(0.5rem, 2vw, 0.625rem);
+  --padding-md: clamp(1rem, 3vw, 1.25rem);
+  --padding-lg: clamp(2rem, 5vw, 2.5rem);
+  --gap-md: clamp(1rem, 3vw, 1.25rem);
+  
+  /* Enhanced Border Radius */
+  --border-radius-sm: 0.5rem;
+  --border-radius-md: 0.75rem;
+  --border-radius-lg: 1rem;
+  
+  /* Enhanced Shadows */
+  --box-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --box-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --box-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  
+  /* Modern Additions */
+  --mobile-breakpoint: 768px;
+  --tablet-breakpoint: 1024px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ===========================
+   2. GLOBAL STYLES (Enhanced from original)
+=========================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-light);
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  scroll-behavior: smooth;
+}
+
+.page-wrapper { 
+  flex: 1 0 auto; 
+  width: 100%;
+}
+
+.container { 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--padding-md);
+}
+
+/* ===========================
+   3. NAVBAR (Enhanced from original) - Bootstrap compatibility maintained
+=========================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--primary-color) !important;
+  color: var(--text-light);
+  padding: var(--padding-sm) var(--padding-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1030;
+  box-shadow: var(--box-shadow-md);
+  backdrop-filter: blur(10px);
+}
+
+.navbar .logo img { 
+  height: clamp(2.5rem, 6vw, 3.125rem); 
+  width: auto; 
+  transition: transform var(--transition-base);
+}
+
+.navbar .logo:hover img {
+  transform: scale(1.05);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-light) !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  position: relative;
+  transition: color var(--transition-fast);
+  padding: 0.5rem 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--text-light);
+  transition: width var(--transition-base);
+}
+
+.nav-links a:hover::after { 
+  width: 100%; 
+}
+
+.nav-links a.login-btn,
+.nav-links a.logout-btn {
+  background-color: var(--text-light);
+  color: var(--primary-color) !important;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1.5rem;
+  font-weight: bold;
+  transition: all var(--transition-base);
+}
+
+.nav-links a.login-btn:hover,
+.nav-links a.logout-btn:hover {
+  background-color: #e6ffe6;
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* ===========================
+   4. DASHBOARD CONTAINER & HEADINGS (Enhanced from original)
+=========================== */
+.dashboard-container {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: var(--container-width);
+  margin: clamp(1rem, 4vw, 2rem) auto;
+  padding: var(--padding-md);
+  background-color: #fff;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-container h1, 
+.dashboard-container h2 {
+  color: var(--primary-color);
+  margin-bottom: var(--padding-md);
+}
+
+.dashboard-container h1 { 
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 0.75rem;
+}
+
+.dashboard-container h2 { 
+  font-size: clamp(1.25rem, 3vw, 1.375rem);
+}
+
+/* ===========================
+   5. DASHBOARD CARDS (Enhanced from original) - Bootstrap compatibility
+=========================== */
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: var(--gap-md);
+  margin-bottom: 2rem;
+}
+
+.dashboard-card {
+  background-color: #E8F5E9;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  color: #000000;
+  text-decoration: none;
+  box-shadow: var(--box-shadow-sm);
+  padding: var(--padding-md);
+  transition: all var(--transition-base);
+  border: 1px solid var(--border-light);
+  border-left: 5px solid var(--primary-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left var(--transition-slow);
+}
+
+.dashboard-card:hover::before {
+  left: 100%;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--box-shadow-lg);
+  background: #ffffff;
+  text-decoration: none;
+}
+
+.dashboard-card h3 { 
+  margin-bottom: 0.75rem; 
+  font-size: clamp(1.1rem, 2vw, 1.2rem);
+  color: var(--primary-color);
+}
+
+.dashboard-card p { 
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: bold; 
+  color: #000000;
+}
+
+.dashboard-card i { 
+  display: block; 
+  margin-bottom: 0.75rem; 
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--primary-color);
+  transition: transform var(--transition-base);
+}
+
+.dashboard-card:hover i {
+  transform: scale(1.1);
+}
+
+/* ===========================
+   6. ALERTS & MESSAGES (Enhanced from original) - Bootstrap compatibility
+=========================== */
+.alert,
+.error-message, 
+.info-message, 
+.warning-message,
+.no-data {
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  border: 1px solid transparent;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.alert-success, 
+.info-message {
+  background-color: #d1ecf1;
+  color: #000000;
+  border-color: #bee5eb;
+}
+
+.alert-danger, 
+.error-message {
+  background-color: #f8d7da;
+  color: #000000;
+  border-color: #f5c6cb;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #000000;
+  border-color: #c3e6cb;
+}
+
+.warning-message {
+  background-color: #fff3cd;
+  color: #000000;
+  border-left: 5px solid #ffc107;
+}
+
+.no-data {
+  text-align: center;
+  color: #000000;
+  font-style: italic;
+  margin-top: 2rem;
+  background: none;
+  font-weight: normal;
+  padding: 2rem;
+}
+
+/* ===========================
+   7. BUTTONS & LINKS (Enhanced from original) - Bootstrap compatibility
+=========================== */
+.btn-primary, 
+.btn-danger, 
+.download-btn,
+.action-btn,
+.back-link {
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary,
+.view-btn,
+.start-session-btn {
+  background-color: var(--primary-color) !important;
+  color: var(--text-light) !important;
+  border-color: var(--primary-color) !important;
+  padding: 0.75rem 1.25rem;
+}
+
+.btn-primary:hover,
+.view-btn:hover,
+.start-session-btn:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-md);
+}
+
+.btn-danger {
+  background-color: var(--danger-color) !important;
+  color: var(--text-light) !important;
+  border-color: var(--danger-color) !important;
+  padding: 0.625rem 1rem;
+}
+
+.btn-danger:hover { 
+  background-color: var(--danger-hover) !important;
+  border-color: var(--danger-hover) !important;
+  transform: translateY(-2px);
+}
+
+.download-btn {
+  background-color: #555;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+}
+
+.download-btn:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+.action-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.back-link {
+  color: var(--primary-color);
+  margin: 1.25rem 0;
+  background: none;
+  padding: 0;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  transform: none;
+  color: var(--primary-hover);
+}
+
+/* ===========================
+   8. FORMS (Enhanced from original) - Bootstrap compatibility
+=========================== */
+form label { 
+  font-weight: 600; 
+  margin-bottom: 0.375rem; 
+  display: block; 
+  color: #000000;
+}
+
+form input, 
+form select, 
+form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1rem 0;
+  border-radius: var(--border-radius-sm);
+  border: 2px solid var(--border-color);
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+  color: #000000;
+  background: white;
+}
+
+form input:focus, 
+form select:focus, 
+form textarea:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(47,163,96,0.1) !important;
+  outline: none;
+}
+
+form input:user-invalid,
+form select:user-invalid,
+form textarea:user-invalid {
+  border-color: var(--danger-color);
+}
+
+form button[type="submit"] {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* ===========================
+   9. TABLES (Enhanced from original) - Bootstrap compatibility
+=========================== */
+.table-container {
+  overflow-x: auto;
+  margin-top: var(--gap-md);
+  background-color: #fff;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  padding: var(--padding-md);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.data-table,
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.25rem;
+}
+
+.data-table th, 
+.data-table td,
+table th, 
+table td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+  color: #000000;
+}
+
+.data-table thead, 
+table thead {
+  background-color: var(--border-light);
+}
+
+.data-table th, 
+table th {
+  font-weight: 700;
+  color: #000000;
+}
+
+.data-table tbody tr:hover, 
+table tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color var(--transition-fast);
+}
+
+.data-table td:last-child, 
+table td:last-child {
+  text-align: center;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.action-buttons .inline-form { 
+  margin: 0; 
+}
+
+/* Action icons (Enhanced from original) */
+.action-icon {
+  font-size: 1.25rem;
+  margin: 0 0.375rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+}
+
+.action-icon.view { 
+  color: #007bff; 
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.action-icon.view:hover { 
+  color: #0056b3; 
+  background: rgba(0, 123, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.action-icon.delete { 
+  color: var(--danger-color); 
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.action-icon.delete:hover { 
+  color: var(--danger-hover); 
+  background: rgba(220, 53, 69, 0.2);
+  transform: scale(1.1);
+}
+
+/* ===========================
+   10. ANNOUNCEMENTS SECTION (Enhanced from original)
+=========================== */
+.announcement-card {
+  background: #f9f9f9;
+  border: 1px solid var(--border-light);
+  border-left: 5px solid var(--primary-color);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--box-shadow-sm);
+  transition: all var(--transition-base);
+  animation: slideInUp 0.4s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.announcement-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--box-shadow-lg);
+  background: #ffffff;
+}
+
+.announcement-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.announcement-date {
+  font-size: 0.9rem;
+  color: #000000;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+}
+
+.announcement-message {
+  font-size: 1rem;
+  color: #000000;
+  line-height: 1.6;
+}
+
+/* ===========================
+   11. STATUS & INDICATORS (Enhanced from original)
+=========================== */
+.present, 
+.status-present { 
+  color: var(--primary-color); 
+  font-weight: bold; 
+}
+
+.absent { 
+  color: var(--danger-color); 
+  font-weight: bold; 
+}
+
+.last-updated {
+  text-align: right;
+  font-size: 0.85rem;
+  color: #000000;
+  margin-top: var(--padding-md);
+  opacity: 0.8;
+}
+
+/* ===========================
+   12. FOOTER (Enhanced from original)
+=========================== */
+.site-footer {
+  flex-shrink: 0;
+  width: 100%;
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  padding: var(--padding-lg) var(--padding-md) var(--padding-md);
+  font-size: 0.9rem;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  gap: var(--gap-md);
+}
+
+.footer-links ul { 
+  list-style: none; 
+  padding: 0; 
+}
+
+.footer-links li { 
+  margin-bottom: 0.75rem; 
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 2rem;
+  border-top: 1px solid #444;
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  color: #bbb;
+}
+
+/* ===========================
+   13. MOBILE-FIRST RESPONSIVE DESIGN (Enhanced)
+=========================== */
+
+/* Mobile Navigation */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: transform var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+  transform: scale(1.1);
+}
+
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+  animation: fadeIn 0.3s ease;
+}
+
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: min(280px, 80vw);
+  height: 100%;
+  background: var(--primary-color);
+  z-index: 1050;
+  transition: right var(--transition-base);
+  padding: 4rem 1.25rem 1.25rem;
+  overflow-y: auto;
+  box-shadow: var(--box-shadow-lg);
+}
+
+.mobile-nav.active {
+  right: 0;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-nav-links li {
+  margin-bottom: 1rem;
+}
+
+.mobile-nav-links a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: block;
+  padding: 0.75rem;
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.mobile-nav-links a:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.mobile-nav-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: transform var(--transition-fast);
+}
+
+.mobile-nav-close:hover {
+  transform: scale(1.1);
+}
+
+/* Tablet Styles (768px and below) */
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px;
+  }
+  
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .navbar .logo img {
+    height: 2.5rem;
+  }
+  
+  /* Hide desktop nav, show mobile toggle */
+  .nav-links {
+    display: none;
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .dashboard-container {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: var(--border-radius-md);
+  }
+  
+  .dashboard-container h1 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-container h2 {
+    font-size: 1.2rem;
+  }
+  
+  .card-row { 
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dashboard-card { 
+    padding: 1rem;
+  }
+  
+  .dashboard-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .dashboard-card p {
+    font-size: 1.3rem;
+  }
+  
+  .data-table th, 
+  .data-table td,
+  table th, 
+  table td {
+    font-size: 0.85rem;
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .action-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .action-buttons { 
+    flex-direction: column; 
+    gap: 0.5rem; 
+  }
+  
+  .table-container { 
+    overflow-x: auto; 
+    padding: 0.75rem;
+  }
+  
+  .btn-primary,
+  .view-btn,
+  .start-session-btn,
+  .download-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .footer-links ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .footer-links li {
+    margin-bottom: 0;
+  }
+  
+  .announcement-card {
+    padding: 1rem;
+  }
+  
+  .announcement-title {
+    font-size: 1.1rem;
+  }
+  
+  .announcement-message {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile Styles (480px and below) */
+@media (max-width: 480px) {
+  body {
+    padding-top: 60px;
+  }
+  
+  .navbar {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .navbar .logo img {
+    height: 2.25rem;
+  }
+  
+  .dashboard-container {
+    margin: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 1.3rem;
+  }
+  
+  .dashboard-container h2 {
+    font-size: 1.1rem;
+  }
+  
+  .dashboard-card h3 {
+    font-size: 1rem;
+  }
+  
+  .dashboard-card p {
+    font-size: 1.2rem;
+  }
+  
+  .table-container {
+    padding: 0.5rem;
+  }
+  
+  .data-table th, 
+  .data-table td,
+  table th, 
+  table td {
+    padding: 0.5rem 0.375rem;
+    font-size: 0.8rem;
+  }
+  
+  .alert, 
+  .error-message, 
+  .info-message {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .mobile-nav {
+    width: min(250px, 85vw);
+  }
+  
+  .mobile-nav-links a {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+  
+  form input, 
+  form select, 
+  form textarea {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Small Mobile Styles (360px and below) */
+@media (max-width: 360px) {
+  .dashboard-container {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 1.2rem;
+  }
+  
+  .dashboard-container h2 {
+    font-size: 1rem;
+  }
+  
+  .btn-primary,
+  .action-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .data-table,
+  table {
+    min-width: 500px;
+  }
+  
+  .mobile-nav {
+    width: min(220px, 90vw);
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary:hover,
+  .action-btn:hover,
+  .btn-danger:hover,
+  .dashboard-card:hover,
+  .announcement-card:hover {
+    transform: none;
+  }
+  
+  /* Larger touch targets */
+  .btn-primary,
+  .action-btn,
+  .btn-danger,
+  .download-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .action-icon {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  table th, 
+  table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  select, 
+  input {
+    font-size: 16px;
+  }
+}
+
+/* High-resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .navbar .logo img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* ===========================
+   14. EDIT STUDENT PAGE SPECIFIC STYLES (Enhanced)
+=========================== */
+
+/* Center the form card for small screens */
+.user-form-card {
+  max-width: min(700px, 95vw);
+  margin: 0 auto;
+  padding: var(--padding-md);
+  background-color: #fff;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  border: 1px solid var(--border-light);
+  animation: slideInUp 0.5s ease;
+}
+
+/* Form headings */
+.user-form-card h1 {
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  color: var(--primary-color);
+  margin-bottom: var(--padding-md);
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 0.75rem;
+}
+
+/* Labels and inputs */
+.user-form-card label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #000000;
+}
+
+.user-form-card input,
+.user-form-card select,
+.user-form-card textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1rem 0;
+  border-radius: var(--border-radius-sm);
+  border: 2px solid var(--border-color);
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+  color: #000000;
+  background: white;
+}
+
+.user-form-card input:focus,
+.user-form-card select:focus,
+.user-form-card textarea:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(47,163,96,0.1) !important;
+  outline: none;
+}
+
+/* Submit button */
+.user-form-card button[type="submit"] {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  width: 100%;
+}
+
+.user-form-card button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* Back link */
+.user-form-card .back-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-form-card .back-link:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+/* Alerts inside the form */
+.user-form-card .alerts {
+  margin-bottom: 1.25rem;
+}
+
+.user-form-card .alert {
+  font-size: 0.95rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--border-radius-sm);
+  color: #000000;
+}
+
+/* Responsive tweaks for forms */
+@media (max-width: 768px) {
+  .user-form-card {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .user-form-card h1 {
+    font-size: 1.4rem;
+  }
+
+  .user-form-card input,
+  .user-form-card select,
+  .user-form-card textarea {
+    font-size: 0.9rem;
+  }
+
+  .user-form-card button[type="submit"] {
+    width: 100%;
+  }
+}
+
+/* ===========================
+   15. BOOTSTRAP OVERRIDES & COMPATIBILITY (Enhanced)
+=========================== */
+
+/* Ensure our custom styles override Bootstrap */
+.btn-success, .bg-success {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-success:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+/* Table header override */
+.table thead {
+  background-color: var(--primary-color) !important;
+  color: var(--text-light) !important;
+}
+
+/* Form control focus states */
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.2rem rgba(47, 163, 96, 0.25) !important;
+}
+
+/* Card styling compatibility */
+.card {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow-sm);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-base);
+}
+
+.card-header {
+  background-color: var(--border-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-body {
+  color: #000000;
+}
+
+/* Modal compatibility */
+.modal-header {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border-bottom: 1px solid var(--primary-hover);
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+.modal-body {
+  color: #000000;
+}
+
+/* Navbar toggle for mobile */
+.navbar-toggler {
+  border-color: rgba(255,255,255,0.5);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Badge styling */
+.badge.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+/* Pagination styling */
+.page-link {
+  color: var(--primary-color);
+  border-color: var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.page-link:hover {
+  color: var(--primary-hover);
+  background-color: var(--border-light);
+  border-color: var(--border-color);
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Ensure proper z-index stacking */
+.navbar {
+  z-index: 1030 !important;
+}
+
+/* Fix for any potential Bootstrap container conflicts */
+.container-fluid, .container {
+  max-width: var(--container-width);
+}
+
+/* Utility classes for spacing consistency */
+.mt-custom { margin-top: var(--padding-md); }
+.mb-custom { margin-bottom: var(--padding-md); }
+.p-custom { padding: var(--padding-md); }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .site-footer,
+  .btn,
+  .action-buttons {
+    display: none !important;
+  }
+  
+  body {
+    padding-top: 0;
+  }
+  
+  .dashboard-container {
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+}

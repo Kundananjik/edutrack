@@ -1,0 +1,109 @@
+/* ===========================
+   File: pages/lecturer/css/active_sessions.css
+   Purpose: Styles for Active Sessions Page in EduTrack Lecturer Dashboard
+=========================== */
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #777;
+    text-decoration: none;
+}
+.back-link:hover {
+    color: #2fa360;
+    text-decoration: underline;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.data-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.qr-cell canvas {
+    border-radius: 8px;
+}
+
+.countdown {
+    font-weight: bold;
+    color: #2fa360;
+}
+
+.countdown.expired {
+    color: #dc3545;
+}
+
+.action-icon {
+    font-size: 1.2rem;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.action-icon.delete {
+    color: #dc3545;
+}
+
+.action-icon.view {
+    color: #2fa360;
+}
+
+.action-icon:hover {
+    opacity: 0.8;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.info-message {
+    background-color: #e2f0fd;
+    color: #0c5460;
+    border: 1px solid #b8daff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.table-container {
+    overflow-x: auto;
+}

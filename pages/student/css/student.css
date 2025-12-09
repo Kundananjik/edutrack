@@ -1,0 +1,736 @@
+/*
+ * File: pages/student/css/student.css
+ * Purpose: Styles specific to the EduTrack Student Dashboard
+ * Author: EduTrack
+ */
+
+/* ===========================
+   1. CSS VARIABLES
+=========================== */
+:root {
+    --primary-color: #2fa360;
+    --primary-hover: #28a745;
+    --danger-color: #dc3545;
+    --danger-hover: #c82333;
+    --background-light: #f9f9f9;
+    --background-dark: #1e1e2f;
+    --text-color: #333;
+    --text-light: #fff;
+    --text-muted: #777;
+    --border-color: #ddd;
+    --border-light: #eee;
+    --container-width: 1200px;
+    --padding-sm: 10px;
+    --padding-md: 20px;
+    --padding-lg: 40px;
+    --gap-md: 20px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 12px;
+    --box-shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+    --box-shadow-lg: 0 8px 12px rgba(0,0,0,0.15);
+    --mobile-breakpoint: 768px;
+}
+
+/* ===========================
+   2. GLOBAL STYLES
+=========================== */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px; /* Navbar spacing */
+}
+
+.page-wrapper {
+    flex: 1 0 auto;
+}
+
+.dashboard-container {
+    flex: 1 0 auto;
+    max-width: var(--container-width);
+    margin: 30px auto;
+    padding: var(--padding-md);
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    position: relative;
+    z-index: 1;
+}
+
+/* ===========================
+   3. NAVBAR
+=========================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1030;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.navbar .logo img {
+    height: 40px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* ===========================
+   4. HEADINGS & TYPOGRAPHY
+=========================== */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+}
+
+.dashboard-container h1 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 10px;
+}
+
+/* ===========================
+   5. CARDS & SECTIONS
+=========================== */
+.card {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+}
+
+.announcement-card {
+    border: 1px solid var(--border-light);
+    border-left: 5px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+    background-color: #fff;
+}
+
+.card-title {
+    color: var(--primary-color);
+}
+
+.card-footer {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background-color: var(--border-light);
+}
+
+/* ===========================
+   6. ALERTS & MESSAGES
+=========================== */
+.alert, .error-message, .info-message, .warning-message, .no-data {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius-sm);
+    font-weight: bold;
+}
+
+.alert-success, .info-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger, .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.warning-message {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 5px solid #ffc107;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 30px;
+    background: none;
+    font-weight: normal;
+}
+
+/* ===========================
+   7. BUTTONS & LINKS
+=========================== */
+.btn-primary, .btn-danger, .action-btn, .back-link {
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary, .action-btn {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 12px 20px;
+}
+
+.btn-primary:hover, .action-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--text-light);
+    padding: 10px 16px;
+}
+
+.btn-danger:hover { 
+    background-color: var(--danger-hover); 
+}
+
+.back-link {
+    color: var(--primary-color);
+    background: none;
+    padding: 0;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+    transform: none;
+}
+
+/* ===========================
+   8. ATTENDANCE SECTION
+=========================== */
+#my-attendance {
+    max-width: 900px;
+    margin: 0 auto 50px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    font-family: inherit;
+}
+
+#my-attendance h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 8px;
+}
+
+#my-attendance label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+#my-attendance select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+/* ===========================
+   9. TABLES
+=========================== */
+.table-container {
+    overflow-x: auto;
+    margin-top: var(--gap-md);
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    padding: var(--padding-md);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow-sm);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid var(--border-light);
+    text-align: left;
+    font-size: 14px;
+}
+
+table thead {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Hide all attendance tables by default */
+.attendance-table {
+    display: none;
+}
+
+/* Placeholder message */
+#select-course-msg {
+    font-style: italic;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* ===========================
+   10. STATUS INDICATORS
+=========================== */
+.present, .status-present, .text-success { 
+    color: var(--primary-color); 
+    font-weight: bold; 
+}
+
+.absent, .text-danger { 
+    color: var(--danger-color); 
+    font-weight: bold; 
+}
+
+.last-updated {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ===========================
+   11. QR SECTION
+=========================== */
+.qr-section {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#qr-reader {
+    margin: 0 auto;
+    width: 300px;
+}
+
+#qr-result {
+    font-weight: bold;
+    margin-top: 10px;
+    color: var(--primary-color);
+}
+
+/* ===========================
+   12. FOOTER
+=========================== */
+.site-footer {
+    flex-shrink: 0;
+    width: 100%;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    padding: var(--padding-lg) var(--padding-md) var(--padding-md);
+    font-size: 14px;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    gap: var(--gap-md);
+}
+
+.footer-links ul { 
+    list-style: none; 
+    padding: 0; 
+}
+
+.footer-links li { 
+    margin-bottom: 10px; 
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+    font-size: 13px;
+    color: #bbb;
+}
+
+/* ===========================
+   13. MOBILE-FIRST RESPONSIVE DESIGN
+=========================== */
+
+/* Mobile Navigation & Hamburger Menu */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100%;
+    background: var(--primary-color);
+    z-index: 1050;
+    transition: right 0.3s ease;
+    padding: 60px 20px 20px;
+    overflow-y: auto;
+}
+
+.mobile-nav.active {
+    right: 0;
+}
+
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-links li {
+    margin-bottom: 15px;
+}
+
+.mobile-nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    transition: background 0.3s ease;
+}
+
+.mobile-nav-links a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Tablet Styles (768px and below) */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .navbar .logo img {
+        height: 35px;
+    }
+    
+    /* Hide desktop nav, show mobile toggle */
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .dashboard-container {
+        margin: 15px;
+        padding: 15px;
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    .btn-primary, .action-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table-container {
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: var(--border-radius-sm);
+    }
+    
+    table {
+        min-width: 600px; /* Allow horizontal scroll for complex tables */
+    }
+    
+    table th, table td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+    
+    #my-attendance {
+        padding: 15px;
+        margin-bottom: 30px;
+    }
+    
+    #my-attendance h2 {
+        font-size: 1.3rem;
+    }
+    
+    #my-attendance select {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+    
+    #qr-reader {
+        width: 250px;
+    }
+    
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .footer-links ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .footer-links li {
+        margin-bottom: 0;
+    }
+}
+
+/* Mobile Styles (480px and below) */
+@media (max-width: 480px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .navbar {
+        padding: 8px 12px;
+    }
+    
+    .navbar .logo img {
+        height: 30px;
+    }
+    
+    .dashboard-container {
+        margin: 10px;
+        padding: 12px;
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.3rem;
+        padding-bottom: 8px;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .table-container {
+        padding: 8px;
+    }
+    
+    table th, table td {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    #my-attendance {
+        padding: 12px;
+    }
+    
+    #my-attendance h2 {
+        font-size: 1.2rem;
+    }
+    
+    #qr-reader {
+        width: 200px;
+    }
+    
+    .qr-section h3 {
+        font-size: 1.1rem;
+    }
+    
+    .alert, .error-message, .info-message {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .mobile-nav {
+        width: 250px;
+    }
+    
+    .mobile-nav-links a {
+        font-size: 16px;
+        padding: 8px;
+    }
+}
+
+/* Small Mobile Styles (360px and below) */
+@media (max-width: 360px) {
+    .dashboard-container {
+        margin: 5px;
+        padding: 10px;
+    }
+    
+    .dashboard-container h1 {
+        font-size: 1.2rem;
+    }
+    
+    .btn-primary, .action-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    table {
+        min-width: 500px;
+    }
+    
+    #qr-reader {
+        width: 180px;
+    }
+    
+    .mobile-nav {
+        width: 220px;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary:hover, .action-btn:hover, .btn-danger:hover {
+        transform: none;
+    }
+    
+    .announcement-card:hover {
+        transform: none;
+    }
+    
+    /* Larger touch targets */
+    .btn-primary, .action-btn, .btn-danger {
+        min-height: 44px;
+    }
+    
+    table th, table td {
+        padding: 12px 10px;
+    }
+    
+    select, input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* High-resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .navbar .logo img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* ===========================
+   14. BOOTSTRAP COMPATIBILITY
+=========================== */
+.navbar { 
+    z-index: 1030 !important; 
+}
+
+.btn-success { 
+    background-color: var(--primary-color) !important; 
+    border-color: var(--primary-color) !important; 
+}
+
+.btn-success:hover { 
+    background-color: var(--primary-hover) !important; 
+    border-color: var(--primary-hover) !important; 
+}
+
+.btn-outline-success { 
+    color: var(--primary-color) !important; 
+    border-color: var(--primary-color) !important; 
+}
+
+.btn-outline-success:hover { 
+    background-color: var(--primary-color) !important; 
+    color: white !important; 
+}
+
+.form-control:focus, .form-select:focus { 
+    border-color: var(--primary-color) !important; 
+    box-shadow: 0 0 0 0.2rem rgba(47, 163, 96, 0.25) !important; 
+}

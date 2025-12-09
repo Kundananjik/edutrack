@@ -1,0 +1,120 @@
+/* css/generate_reports.css */
+
+/* General styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #2fa360;
+    text-decoration: none;
+}
+
+.back-link i {
+    margin-right: 5px;
+}
+
+.course-header h1 {
+    color: #2fa360;
+    margin-bottom: 5px;
+}
+
+.course-header p {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.info-message {
+    color: #555;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+.table-container {
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+.report-table th {
+    background-color: #2fa360;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.report-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.report-table td .present {
+    color: #2fa360;
+    font-weight: bold;
+}
+
+.report-table td .absent {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Button styling */
+.download-btn {
+    background-color: #2fa360;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.download-btn i {
+    margin-right: 6px;
+}
+
+.download-btn:hover {
+    background-color: #238a4d;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .report-table th,
+    .report-table td {
+        padding: 8px 6px;
+        font-size: 14px;
+    }
+    .download-btn {
+        width: 100%;
+    }
+}

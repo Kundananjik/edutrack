@@ -1,0 +1,12 @@
+# Route all non-file requests to public/index.php
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Don’t rewrite existing files or directories
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Forward everything else to the front controller
+  RewriteRule ^(.*)$ public/index.php?path=$1 [L,QSA]
+</IfModule>
