@@ -1,0 +1,32 @@
+# Sensitive files
+.env
+
+# PHP / Composer
+vendor/
+
+# Node
+node_modules/
+
+# Local tools & IDE
+.vscode/
+.idea/
+
+# Debug / Temporary
+debug/
+cache/
+storage/
+*.log
+
+# Public uploads (if any)
+public/uploads/
+assets/uploads/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Backups & database dumps
+*.sql
+*.zip
+*.tar
+*.gz
