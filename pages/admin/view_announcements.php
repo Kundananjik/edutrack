@@ -104,8 +104,7 @@ try {
                             <td><?= date('d-m-Y H:i', strtotime($a['created_at'])) ?></td>
                             <td>
                                 <a href="view_announcements.php?delete_id=<?= $a['id'] ?>" 
-                                   onclick="return confirm('Are you sure you want to delete this announcement?');" 
-                                   class="btn btn-sm btn-danger">
+                                   class="btn btn-sm btn-danger delete-announcement-link">
                                    <i class="fas fa-trash"></i> Delete
                                 </a>
                             </td>
@@ -128,5 +127,14 @@ try {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script <?= et_csp_attr('script') ?>>
+document.querySelectorAll('.delete-announcement-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        if (!confirm('Are you sure you want to delete this announcement?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 </body>
 </html>

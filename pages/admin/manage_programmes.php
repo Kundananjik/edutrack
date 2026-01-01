@@ -1,13 +1,19 @@
 <?php
+// ============================================
+// ADMIN - MANAGE PROGRAMMES
+// ============================================
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0; $__i < 6; $__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
-// pages/admin/manage_programmes.php
+unset($__et, $__i, $__p);
 
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
@@ -50,37 +56,39 @@ try {
     $programmes = [];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
-</head>
-<body>
-<?php require_once '../../includes/admin_navbar.php'; ?>
-
-<main class="container py-4">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Programmes - EduTrack Admin</title>
+    
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/edutrack/pages/admin/css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body class="bg-light">
-<div class="container py-5">
+
+<?php require_once '../../includes/admin_navbar.php'; ?>
+
+<main class="container py-5">
     <div class="card shadow-sm rounded-4 p-4">
         <h2 class="mb-4">Manage Programmes</h2>
 
-                <div class="d-flex justify-content-between mb-3">
-                    <a href="dashboard.php" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
-                    </a>
-                    <!-- Add Programme -->
-                    <a href="add_programme.php" class="btn btn-success ms-2">
-                        <i class="fas fa-plus"></i> Add Programme
-                    </a>
-                </div>
+        <div class="d-flex justify-content-between mb-3">
+            <a href="dashboard.php" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <!-- Add Programme -->
+            <a href="add_programme.php" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add Programme
+            </a>
+        </div>
 
         <!-- Filter Form -->
         <form method="GET" class="row g-3 mb-3">
@@ -101,7 +109,7 @@ try {
         <?php if (!empty($_SESSION['success_message'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['success_message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php unset($_SESSION['success_message']); ?>
         <?php endif; ?>
@@ -109,7 +117,7 @@ try {
         <?php if (!empty($_SESSION['error_message'])): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['error_message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php unset($_SESSION['error_message']); ?>
         <?php endif; ?>
@@ -119,12 +127,12 @@ try {
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Department</th>
-                        <th>Duration (Years)</th>
-                        <th>Actions</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Duration (Years)</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,15 +144,14 @@ try {
                                 <td><?= htmlspecialchars($programme['code']) ?></td>
                                 <td><?= htmlspecialchars($programme['department']) ?></td>
                                 <td><?= htmlspecialchars($programme['duration']) ?></td>
-                                <td>
-                                    <a href="view_programme.php?id=<?= $programme['id'] ?>" class="btn btn-info btn-sm me-1" title="View">
+                                <td class="text-center">
+                                    <a href="view_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-info btn-sm me-1" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="edit_programme.php?id=<?= $programme['id'] ?>" class="btn btn-secondary btn-sm me-1" title="Edit">
+                                    <a href="edit_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-secondary btn-sm me-1" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="delete_programme.php" method="POST" class="d-inline" 
-                                          onsubmit="return confirm('Are you sure you want to delete this programme?');">
+                                    <form action="delete_programme.php" method="POST" class="d-inline delete-programme-form">
                                         <input type="hidden" name="id" value="<?= htmlspecialchars($programme['id']) ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
                                         <button type="submit" class="btn btn-danger btn-sm" title="Delete">
@@ -156,17 +163,28 @@ try {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="text-center">No programmes found.</td>
+                            <td colspan="6" class="text-center text-muted">No programmes found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
+</main>
+
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<?php require_once '../../includes/footer.php'; ?>
+<script <?= et_csp_attr('script') ?>>
+document.querySelectorAll('.delete-programme-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to delete this programme?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 </body>
 </html>

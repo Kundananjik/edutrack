@@ -118,7 +118,7 @@ h2 { color: #2fa360; }
 
 <!-- Bootstrap JS & dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+<script <?= et_csp_attr('script') ?>>
 document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 

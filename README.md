@@ -4,41 +4,41 @@ EduTrack is a comprehensive web-based system designed to streamline university a
 
 ---
 
-## 🚀 Features
+## Features
 
-### 🔑 Authentication & Security
+### Authentication & Security
 - Secure login system with role-based access (Admin, Lecturer, Student).
 - Password reset and email verification.
 - Role-based access control (RBAC).
 - Account activation/deactivation.
 
-### 👨‍💼 Admin Dashboard
+### Admin Dashboard
 - **User Management:** Add, edit, delete, and manage Students, Lecturers, and Admins.
 - **Academic Structure:** Manage Departments, Programmes, and Courses.
 - **Enrollment Management:** Enroll students manually or in bulk, manage transfers, and withdrawals.
 - **Attendance Control:** Configure attendance policies, approve correction requests, override attendance with audit trails.
 - **Reporting & Analytics:** Generate attendance reports (PDF/Excel/CSV), visualize trends, identify low attendance.
 
-### 👩‍🏫 Lecturer Dashboard
+### Lecturer Dashboard
 - View and manage assigned courses, students, and departments.
 - Mark and track student attendance (QR code-based system).
 - Manage class times and schedules.
 - Access attendance reports for courses.
 
-### 🎓 Student Dashboard
+### Student Dashboard
 - View enrolled courses and programmes.
 - Scan QR codes to mark attendance.
 - Track personal attendance records.
 - Receive notifications for low attendance.
 
-### 📊 QR Code Attendance Tracking
+### QR Code Attendance Tracking
 - Unique QR code generated for each course session.
 - Students scan to mark attendance.
 - Logs attendance in real-time.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Frontend:** HTML, CSS (`style.css` with EduTrack branding), JavaScript (vanilla JS).
 - **Backend:** PHP (MVC structured).
 - **Database:** MySQL.
@@ -46,13 +46,13 @@ EduTrack is a comprehensive web-based system designed to streamline university a
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 Key directories and entry points:
 
 - **Root entry:** `index.php` – public landing page and marketing site.
 - **Front controller:** `public/index.php` – central router; all HTTP requests should be rewritten here by `.htaccess` or the web server.
-- **Routing targets (allow‑listed in `public/index.php`):**
+- **Routing targets (allow-listed in `public/index.php`):**
   - Root pages: `about.php`, `help.php`, `contact.php`, `privacy-policy.php`, `terms-of-service.php`, `send_message.php`, `send_messages.php`, `logout.php`.
   - Auth: `auth/` (login, register, password reset, etc.).
   - Dashboards & pages:
@@ -69,7 +69,7 @@ Key directories and entry points:
 - **Includes & infrastructure:**
   - `includes/preload.php` – shared preload for entry scripts; registers error handlers, security headers, and includes `config/bootstrap.php`.
   - `includes/error_handlers.php` – global error/exception/shutdown handlers and helpers like `et_simple_error_page()`.
-  - `includes/security_headers.php` – common security‑related HTTP headers.
+  - `includes/security_headers.php` – common security-related HTTP headers.
   - `includes/db.php` – PDO MySQL bootstrap using constants from `includes/config.php`.
   - `includes/session.php`, `includes/auth_check.php`, `includes/csrf.php`, `includes/functions.php` – session, auth, CSRF protection, and helper utilities.
   - `includes/header.php`, `includes/admin_header.php`, `includes/footer.php`, `includes/unauthorized.php` – shared layout and access control views.
@@ -80,16 +80,16 @@ Key directories and entry points:
 
 ---
 
-## 🌐 Routing Overview
+## Routing Overview
 
 All web traffic is routed through the front controller:
 
 - Web server document root → `public/`
 - `.htaccess` (or equivalent) rewrites all requests to `public/index.php`.
 
-High‑level flow:
+High-level flow:
 
-```text path=null start=null
+```
 Browser Request           Web Server Rewrite          Front Controller & Router
 -----------------   ---------------------------   -----------------------------
 https://.../          → public/index.php           → includes/preload.php
@@ -106,7 +106,7 @@ https://.../          → public/index.php           → includes/preload.php
 1. **User hits URL** → `public/index.php` receives the request.
 2. `includes/preload.php` is loaded (error handlers, security headers, bootstrap).
 3. The `path` query parameter is read (e.g. `/auth/login`, `/pages/admin/dashboard`).
-4. Router checks against allow‑listed routes:
+4. Router checks against allow-listed routes:
    - Root pages like `/about`, `/help`, `/contact` → corresponding `*.php` at the project root.
    - `/auth/...` → `auth/*.php` (authentication screens).
    - `/pages/admin/...` → `pages/admin/*.php` (admin dashboard and management pages).
@@ -168,16 +168,16 @@ https://.../          → public/index.php           → includes/preload.php
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 1. **Clone the repository** into your web server directory (e.g. `htdocs/edutrack`).
 2. **Install PHP dependencies:**
-   ```bash path=null start=null
+   ```bash
    composer install
    ```
 3. **Create a database** in MySQL (e.g. `edutrack`). Import the provided SQL schema if available.
 4. **Configure environment variables:** create a `.env` file in the project root:
-   ```dotenv path=null start=null
+   ```env
    APP_ENV=development
    APP_DEBUG=1
    DB_HOST=127.0.0.1
@@ -186,7 +186,7 @@ https://.../          → public/index.php           → includes/preload.php
    DB_PASS=
    ```
 5. **Configure PHP constants** in `includes/config.php` (these should match your `.env` values):
-   ```php path=null start=null
+   ```php
    <?php
    define('DB_HOST', '127.0.0.1');
    define('DB_NAME', 'edutrack');
@@ -198,7 +198,7 @@ https://.../          → public/index.php           → includes/preload.php
 
 ---
 
-## 🐞 Error Handling & Debugging
+## Error Handling & Debugging
 
 - Global error/exception/fatal handlers are registered via `includes/error_handlers.php` and are always loaded by `includes/preload.php` or `config/bootstrap.php`.
 - Configure verbosity in `.env`:
@@ -211,16 +211,29 @@ https://.../          → public/index.php           → includes/preload.php
 - Or hit the root directly (if your document root is the project root): `http://localhost/edutrack/`.
 - To verify error handling and DB connectivity, you can temporarily create files under a `debug/` folder, for example:
   - `debug/handler_test.php`
-    ```php path=null start=null
+    ```php
     <?php
     require_once __DIR__ . '/../includes/preload.php';
     throw new Exception('Test exception from handler_test.php');
     ```
   - `debug/db_test.php`
-    ```php path=null start=null
+    ```php
     <?php
     require_once __DIR__ . '/../includes/preload.php';
     $ok = $pdo->query('SELECT 1')->fetchColumn();
     echo $ok ? 'DB OK' : 'DB query failed';
     ```
 - Remove these temporary debug files after testing.
+
+---
+
+## License
+
+This project is proprietary software developed for educational purposes. All rights reserved.
+
+## Contact
+
+For questions or support, contact:
+- **Developer:** Kundananji Simukonda
+- **Email:** kundananjisimukonda@gmail.com
+- **Phone:** +260 967 591 264 / +260 971 863 462

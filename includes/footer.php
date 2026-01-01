@@ -1,10 +1,6 @@
 <?php
 // includes/footer.php
 ?>
-
-</main> <!-- End of main content -->
-
-<!-- Footer -->
 <footer class="site-footer" role="contentinfo">
     <div class="footer-container">
         <div class="footer-info">
@@ -16,7 +12,6 @@
                 <a href="tel:+260971863462">+260 971 863 462</a>
             </p>
         </div>
-
         <div class="footer-links">
             <ul>
                 <li><a href="privacy-policy.php">Privacy Policy</a></li>
@@ -25,16 +20,7 @@
             </ul>
         </div>
     </div>
-
     <div class="footer-bottom">
-        <p>&copy; <span id="year"></span> EduTrack. All rights reserved.</p>
+        <p>&copy; <span id="year"><?php echo date('Y'); ?></span> EduTrack. All rights reserved.</p>
     </div>
 </footer>
-
-<!-- Auto-update Year -->
-<script <?= et_csp_attr('script') ?>>
-    document.getElementById('year').textContent = new Date().getFullYear();
-</script>
-
-</body>
-</html>

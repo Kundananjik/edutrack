@@ -1,12 +1,20 @@
 <?php
+// ============================================
+// ADMIN - MANAGE STUDENTS
+// ============================================
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0; $__i < 6; $__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
+unset($__et, $__i, $__p);
+
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
@@ -34,22 +42,27 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students - EduTrack Admin</title>
 
-</head>
-<body>
-<?php require_once '../../includes/admin_navbar.php'; ?>
-
-<main class="container py-4">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/dashboard.css">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-<div class="container py-5">
+<?php require_once '../../includes/admin_navbar.php'; ?>
+
+<main class="container py-5 flex-grow-1">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Manage Students</h2>
+        <h1 class="fw-bold">Manage Students</h1>
         <div>
             <a href="dashboard.php" class="btn btn-secondary me-2">
                 <i class="fas fa-arrow-left"></i> Dashboard
@@ -64,7 +77,7 @@ try {
     <?php if (!empty($_SESSION['success_message'])): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['success_message']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
@@ -72,7 +85,7 @@ try {
     <?php if (!empty($_SESSION['error_message'])): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= htmlspecialchars($_SESSION['error_message']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php unset($_SESSION['error_message']); ?>
     <?php endif; ?>
@@ -82,12 +95,12 @@ try {
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Name</th>
-                        <th>Student Number</th>
-                        <th>Email</th>
-                        <th>Programme</th>
-                        <th>Status</th>
-                        <th class="text-center">Actions</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Student Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Programme</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,13 +111,17 @@ try {
                                 <td><?= htmlspecialchars($student['student_number']) ?></td>
                                 <td><?= htmlspecialchars($student['email']) ?></td>
                                 <td><?= htmlspecialchars($student['programme_name']) ?></td>
-                                <td><?= htmlspecialchars(ucfirst($student['status'])) ?></td>
+                                <td>
+                                    <span class="badge <?= $student['status'] === 'active' ? 'bg-success' : 'bg-secondary' ?>">
+                                        <?= htmlspecialchars(ucfirst($student['status'])) ?>
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <a href="edit_student.php?id=<?= $student['user_id'] ?>" class="btn btn-sm btn-primary me-1" title="Edit Student">
+                                    <a href="edit_student.php?id=<?= urlencode($student['user_id']) ?>" class="btn btn-sm btn-primary me-1" title="Edit Student">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="delete_student.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?');">
-                                        <input type="hidden" name="id" value="<?= $student['user_id'] ?>">
+                                    <form action="delete_student.php" method="POST" class="d-inline delete-form">
+                                        <input type="hidden" name="id" value="<?= htmlspecialchars($student['user_id']) ?>">
                                         <button type="submit" class="btn btn-sm btn-danger" title="Delete Student">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -114,17 +131,40 @@ try {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="text-center">No students found.</td>
+                            <td colspan="6" class="text-center text-muted">No students found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
+</main>
+
+<!-- Footer -->
+<?php
+$footer = __DIR__ . '/../../includes/footer.php';
+if (file_exists($footer)) {
+    require_once $footer;
+} else {
+    echo '<footer class="mt-auto py-4 bg-white border-top">
+            <div class="container text-center text-muted">
+                <p class="mb-0">&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
+            </div>
+          </footer>';
+}
+?>
 
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<?php require_once '../../includes/footer.php'; ?>
+<script <?= et_csp_attr('script') ?>>
+document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to delete this student?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 </body>
 </html>

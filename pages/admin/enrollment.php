@@ -1,14 +1,20 @@
 <?php
+// ============================================
+// ADMIN - ENROLLMENT MANAGEMENT
+// ============================================
+
 // Preload (auto-locate includes/preload.php)
 $__et = __DIR__;
 for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
     $__et = dirname($__et);
 }
 unset($__et, $__i, $__p);
 
-// pages/admin/enrollment.php
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
@@ -156,23 +162,22 @@ try {
     redirect("dashboard.php");
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enrollment Management - Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Management - EduTrack Admin</title>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Custom CSS -->
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/enrollments.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/enrollments.css">
 </head>
 <body class="bg-light">
 
@@ -199,7 +204,7 @@ try {
             <?php if (!empty($_SESSION['success_message'])): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <?= htmlspecialchars($_SESSION['success_message']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php unset($_SESSION['success_message']); ?>
             <?php endif; ?>
@@ -207,7 +212,7 @@ try {
             <?php if (!empty($_SESSION['error_message'])): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <?= htmlspecialchars($_SESSION['error_message']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
@@ -262,11 +267,11 @@ try {
                     <table class="table table-bordered table-hover align-middle text-center">
                         <thead class="table-success">
                             <tr>
-                                <th>Student</th>
-                                <th>Programme</th>
-                                <th>Total Courses</th>
-                                <th>Change Programme</th>
-                                <th>Actions</th>
+                                <th scope="col">Student</th>
+                                <th scope="col">Programme</th>
+                                <th scope="col">Total Courses</th>
+                                <th scope="col">Change Programme</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -274,14 +279,14 @@ try {
                             <tr>
                                 <td><?= htmlspecialchars($enrollment['student_name']) ?></td>
                                 <td><?= htmlspecialchars($enrollment['programme_name']) ?></td>
-                                <td class="text-center"><?= htmlspecialchars($enrollment['total_courses']) ?></td>
+                                <td><?= htmlspecialchars($enrollment['total_courses']) ?></td>
                                 <td>
                                     <form action="enrollment.php" method="POST" class="d-flex gap-2 justify-content-center align-items-center">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                         <input type="hidden" name="action" value="update">
                                         <input type="hidden" name="student_id" value="<?= htmlspecialchars($enrollment['student_id']) ?>">
 
-                                        <select name="new_programme_id" class="form-select form-select-sm" style="width: 200px;">
+                                        <select name="new_programme_id" class="form-select form-select-sm" style="width: 200px;" aria-label="Select new programme">
                                             <?php foreach ($programmes as $programme): ?>
                                                 <option value="<?= htmlspecialchars($programme['id']) ?>" <?= ($enrollment['programme_id'] == $programme['id']) ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($programme['name']) ?>
@@ -289,18 +294,18 @@ try {
                                             <?php endforeach; ?>
                                         </select>
 
-                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Change Programme">
+                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Change Programme" aria-label="Change programme">
                                             <i class="fas fa-exchange-alt"></i>
                                         </button>
                                     </form>
                                 </td>
-                                <td class="text-center">
-                                    <form action="enrollment.php" method="POST" onsubmit="return confirm('Are you sure you want to delete all enrollments in this programme?');">
+                                <td>
+                                    <form action="enrollment.php" method="POST" class="delete-enrollment-form">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                                         <input type="hidden" name="action" value="delete_programme_enrollment">
                                         <input type="hidden" name="student_id" value="<?= htmlspecialchars($enrollment['student_id']) ?>">
                                         <input type="hidden" name="programme_id" value="<?= htmlspecialchars($enrollment['programme_id']) ?>">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Enrollment">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Enrollment" aria-label="Delete enrollment">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
@@ -315,7 +320,29 @@ try {
     </div>
 </main>
 
-<?php require_once '../../includes/footer.php'; ?>
+<!-- Footer -->
+<?php
+$footer = __DIR__ . '/../../includes/footer.php';
+if (file_exists($footer)) {
+    require_once $footer;
+} else {
+    echo '<footer class="text-center text-muted py-4">
+            <p>&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
+          </footer>';
+}
+?>
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script <?= et_csp_attr('script') ?>>
+document.querySelectorAll('.delete-enrollment-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to delete all enrollments in this programme?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 </body>
 </html>

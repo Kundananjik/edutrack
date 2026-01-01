@@ -14,22 +14,8 @@ require_once APP_ROOT . '/config/bootstrap.php';
 require_once APP_ROOT . '/config/database.php';
 
 // Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
-
-/**
- * Helper function to load Vite assets
- */
-function vite_asset($entryPoint)
-{
-    $manifestPath = __DIR__ . '/assets/.vite/manifest.json';
-    if (!file_exists($manifestPath)) {
-        return '<script type="module" src="/assets/' . $entryPoint . '"></script>';
-    }
-    $manifest = json_decode(file_get_contents($manifestPath), true);
-    $file = $manifest[$entryPoint]['file'] ?? $entryPoint;
-    return '<script type="module" src="/assets/' . $file . '"></script>';
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,10 +95,7 @@ function vite_asset($entryPoint)
 </section>
 
 <!-- FOOTER -->
-<?php require_once 'includes/footer.php'; ?>
-
-<!-- VITE JS -->
-<?= vite_asset('resources/js/app.js') ?>
+<?php require_once '../../includes/footer.php'; ?>
 
 </body>
 </html>

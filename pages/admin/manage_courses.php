@@ -1,5 +1,7 @@
 <?php
-// pages/admin/manage_courses.php
+// ============================================
+// ADMIN - MANAGE COURSES
+// ============================================
 
 // Auto-load preload.php (searches up to 6 directories)
 $__et = __DIR__;
@@ -71,28 +73,27 @@ try {
     $_SESSION['error_message'] = "Could not fetch course data. Please try again later.";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
-</head>
-<body>
-<?php require_once '../../includes/admin_navbar.php'; ?>
-
-<main class="container py-4">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses - EduTrack Admin</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <!-- Custom Admin CSS (EduTrack Branding) -->
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<div class="container-fluid py-4">
+<?php require_once '../../includes/admin_navbar.php'; ?>
+
+<main class="container-fluid py-4">
     <div class="container bg-white rounded shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-success fw-bold">Manage Courses</h1>
@@ -102,7 +103,9 @@ try {
         </div>
 
         <div class="d-flex justify-content-between mb-3">
-            <a href="dashboard.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="dashboard.php" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
         </div>
 
         <!-- Filter Form -->
@@ -134,7 +137,7 @@ try {
         <?php if (!empty($_SESSION['success_message'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['success_message']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php unset($_SESSION['success_message']); ?>
         <?php endif; ?>
@@ -142,7 +145,7 @@ try {
         <?php if (!empty($_SESSION['error_message'])): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['error_message']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php unset($_SESSION['error_message']); ?>
         <?php endif; ?>
@@ -182,7 +185,7 @@ try {
                                     <a href="edit_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="delete_course.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this course?');">
+                                    <form action="delete_course.php" method="POST" class="d-inline delete-course-form">
                                         <input type="hidden" name="id" value="<?= htmlspecialchars($course['id']) ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -194,17 +197,26 @@ try {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted">No courses found.</td>
+                            <td colspan="7" class="text-center text-muted">No courses found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
+</main>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script <?= et_csp_attr('script') ?>>
+document.querySelectorAll('.delete-course-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to delete this course?')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 
 <?php require_once '../../includes/footer.php'; ?>
 </body>

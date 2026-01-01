@@ -6,8 +6,12 @@ export default defineConfig({
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {
-            // Use a relative path from the project root
             input: 'resources/js/app.js',
+            external: ['fsevents'],
         },
+    },
+    resolve: {
+        // Helps with Windows path issues
+        preserveSymlinks: false,
     },
 });

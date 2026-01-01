@@ -1,111 +1,134 @@
 <?php
-// Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+// ============================================
+// CONTACT_US.PHP - EDUTRACK CONTACT PAGE
+// ============================================
+
+// Preload
+$__et = __DIR__;
+for ($__i = 0; $__i < 6; $__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
-// pages/lecturer/contact.php
-require_once '../../includes/auth_check.php';
-require_once '../../includes/config.php';
-require_once '../../includes/db.php';
+unset($__et, $__i, $__p);
 
-require_login();
-require_role(['lecturer']);
+$page_title = "Contact Us - EduTrack";
+$page_description = "Contact EduTrack support for inquiries, feedback, or technical assistance.";
+
+$success = isset($_GET['success']);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us - EduTrack</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title><?= htmlspecialchars($page_title) ?></title>
+    <meta name="description" content="<?= htmlspecialchars($page_description) ?>">
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- EduTrack Custom CSS -->
-<link rel="stylesheet" href="../../assets/css/style.css">
-
-<style>
-/* Lecturer page overrides */
-body { background-color: #f8f9fa; }
-h2 { color: #2fa360; }
-.card { border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-.btn-back, .btn-submit {
-    background-color: #2fa360;
-    border-color: #2fa360;
-    color: #fff;
-    border-radius: 8px;
-}
-.btn-back:hover, .btn-submit:hover {
-    background-color: #27a04c;
-    border-color: #27a04c;
-    color: #fff;
-}
-</style>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.0.2">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="../../index.php">
-            <img src="../../assets/logo.png" alt="EduTrack Logo" height="40">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../logout.php">Logout</a></li>
-            </ul>
+<?php
+$navbar = __DIR__ . '/includes/navbar.php';
+if (file_exists($navbar)) require_once $navbar;
+?>
+
+<main class="container my-5">
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+
+            <h1 class="mb-2">Contact Us</h1>
+            <p class="text-muted">
+                Use the form below to contact EduTrack administration or technical support.
+            </p>
+
+            <?php if ($success): ?>
+                <div class="alert alert-success">
+                    Your message has been submitted successfully. We will respond shortly.
+                </div>
+            <?php endif; ?>
+
+            <div class="row mt-4">
+                <div class="col-md-5 mb-4">
+                    <h5>Contact Information</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2">
+                            <strong>Email</strong><br>
+                            <a href="mailto:kundananjisimukonda@gmail.com">
+                                kundananjisimukonda@gmail.com
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Phone</strong><br>
+                            <a href="tel:+260967591264">+260 967 591 264</a><br>
+                            <a href="tel:+260971863462">+260 971 863 462</a>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Office Hours</strong><br>
+                            Monday to Friday, 08:00 – 17:00
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-7">
+                    <h5>Send a Message</h5>
+
+                    <form method="post" action="process_contact.php" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Subject</label>
+                            <input type="text" name="subject" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Message</label>
+                            <textarea name="message" rows="5" class="form-control" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
-</nav>
+</main>
 
-<div class="container my-5">
-    <a href="dashboard.php" class="btn btn-back mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+<?php
+$footer = __DIR__ . '/includes/footer.php';
+if (file_exists($footer)) {
+    require_once $footer;
+} else {
+    echo '<footer class="text-center text-muted py-4">
+            <p>&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
+          </footer>';
+}
+?>
 
-    <h2 class="mb-3"><i class="fas fa-envelope me-2"></i>Contact Us</h2>
-    <p class="mb-4">If you have any questions or need support, feel free to reach out using the form below.</p>
-
-    <div class="card p-4 bg-white">
-        <form id="contactForm" method="POST" action="send_message.php">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
-            <div class="mb-3">
-                <label for="name" class="form-label">Full Name:</label>
-                <input type="text" id="name" name="name" required placeholder="Your name..." class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email Address:</label>
-                <input type="email" id="email" name="email" required placeholder="your@email.com" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label for="subject" class="form-label">Subject:</label>
-                <input type="text" id="subject" name="subject" required placeholder="Message subject..." class="form-control" />
-            </div>
-
-            <div class="mb-4">
-                <label for="message" class="form-label">Message:</label>
-                <textarea id="message" name="message" rows="5" required placeholder="Your message..." class="form-control"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-submit"><i class="fas fa-paper-plane me-2"></i>Send Message</button>
-        </form>
-    </div>
-</div>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<script <?= et_csp_attr('script') ?>>
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>

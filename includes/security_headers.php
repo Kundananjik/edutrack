@@ -32,8 +32,8 @@ if (!headers_sent()) {
     $csp = [
         "default-src 'self'",
         "img-src 'self' data:",
-        "style-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-        "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+        "style-src 'self' 'unsafe-inline' http://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+        "script-src 'self' 'nonce-{$nonce}' http://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
         "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
         "connect-src 'self'",
         "object-src 'none'",

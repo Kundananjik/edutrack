@@ -261,7 +261,7 @@ if ($hour < 12) {
      JS: PROFILE FORM TOGGLE
 =============================================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+<script <?= et_csp_attr('script') ?>>
 document.addEventListener('DOMContentLoaded', function() {
     const updateBtn = document.getElementById('update-profile-btn');
     const profileForm = document.getElementById('profile-page');
