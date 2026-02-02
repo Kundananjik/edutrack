@@ -1,4 +1,5 @@
 <?php
+
 require_once '../../includes/auth_check.php';
 require_once '../../includes/db.php';
 require_login();
@@ -9,7 +10,7 @@ require_once '../../vendor/autoload.php';
 use Dompdf\Dompdf;
 
 if (!isset($_GET['course_id']) || !is_numeric($_GET['course_id'])) {
-    header("Location: attendance_reports.php");
+    header('Location: attendance_reports.php');
     exit();
 }
 
@@ -23,20 +24,22 @@ $attendance_data = [];
 
 try {
     // Get course
-    $stmt_course = $pdo->prepare("SELECT name, course_code FROM courses WHERE id = ?");
+    $stmt_course = $pdo->prepare('SELECT name, course_code FROM courses WHERE id = ?');
     $stmt_course->execute([$course_id]);
     $course = $stmt_course->fetch(PDO::FETCH_ASSOC);
-    if (!$course) die("Course not found.");
+    if (!$course) {
+        die('Course not found.');
+    }
 
     // Get students
-    $stmt_students = $pdo->prepare("
+    $stmt_students = $pdo->prepare('
         SELECT u.id AS user_id, u.name, s.student_number
         FROM users u
         JOIN students s ON u.id = s.user_id
         JOIN enrollments e ON s.user_id = e.student_id
         WHERE e.course_id = ?
         ORDER BY u.name
-    ");
+    ');
     $stmt_students->execute([$course_id]);
     $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
 
@@ -45,16 +48,16 @@ try {
         $start_date = $month_filter . '-01';
         $end_date = date('Y-m-t', strtotime($start_date));
 
-        $stmt_sessions = $pdo->prepare("
+        $stmt_sessions = $pdo->prepare('
             SELECT id, created_at 
             FROM attendance_sessions 
             WHERE course_id = ? 
             AND created_at BETWEEN ? AND ? 
             ORDER BY created_at ASC
-        ");
+        ');
         $stmt_sessions->execute([$course_id, $start_date, $end_date]);
     } else {
-        $stmt_sessions = $pdo->prepare("SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC");
+        $stmt_sessions = $pdo->prepare('SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC');
         $stmt_sessions->execute([$course_id]);
     }
     $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
@@ -72,7 +75,7 @@ try {
     }
 
 } catch (Exception $e) {
-    die("Error generating report.");
+    die('Error generating report.');
 }
 
 // Build HTML for PDF
@@ -106,5 +109,5 @@ $dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
 
 $filename = 'Attendance_Report_' . $course['course_code'] . '_' . ($month_filter ?: 'All') . '.pdf';
-$dompdf->stream($filename, ["Attachment" => true]);
+$dompdf->stream($filename, ['Attachment' => true]);
 exit;

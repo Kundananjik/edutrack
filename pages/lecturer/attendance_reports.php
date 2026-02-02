@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 
@@ -22,18 +25,18 @@ $error = null;
 
 try {
     // Fetch all courses assigned to this lecturer
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT c.id, c.name
         FROM courses c
         JOIN lecturer_courses lc ON c.id = lc.course_id
         WHERE lc.lecturer_id = ?
         ORDER BY c.name
-    ");
+    ');
     $stmt->execute([$user_id]);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    error_log("Database error in lecturer/attendance_reports.php: " . $e->getMessage());
-    $error = "An error occurred while fetching your courses. Please try again later.";
+    error_log('Database error in lecturer/attendance_reports.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching your courses. Please try again later.';
 }
 ?>
 <!DOCTYPE html>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: includes/error_handlers.php
  * Purpose: Centralized error/exception handling for the application.
@@ -20,7 +21,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', $debug ? '1' : '0');
 ini_set('display_startup_errors', $debug ? '1' : '0');
 
-function et_simple_error_page(string $title, string $message, array $context = []): void {
+function et_simple_error_page(string $title, string $message, array $context = []): void
+{
     if (!headers_sent()) {
         http_response_code(500);
         header('Content-Type: text/html; charset=utf-8');

@@ -1,10 +1,14 @@
 <?php
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/admin/delete_student.php
@@ -32,18 +36,17 @@ if ($id <= 0) {
 
 try {
     // First delete from students table (foreign key)
-    $stmt = $pdo->prepare("DELETE FROM students WHERE user_id = ?");
+    $stmt = $pdo->prepare('DELETE FROM students WHERE user_id = ?');
     $stmt->execute([$id]);
 
     // Then delete the linked user record
     $stmt = $pdo->prepare("DELETE FROM users WHERE id = ? AND role = 'student'");
     $stmt->execute([$id]);
 
-    $_SESSION['success_message'] = "Student deleted successfully.";
+    $_SESSION['success_message'] = 'Student deleted successfully.';
 } catch (PDOException $e) {
     error_log("Error deleting student ID $id: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to delete student. Please try again later.";
+    $_SESSION['error_message'] = 'Failed to delete student. Please try again later.';
 }
 
 redirect('manage_students.php');
-?>

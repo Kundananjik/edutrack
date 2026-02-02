@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/admin/view_programme.php
@@ -21,29 +24,29 @@ require_role(['admin']);
 $id = intval($_GET['id'] ?? 0);
 
 if ($id <= 0) {
-    $_SESSION['error_message'] = "Invalid programme ID.";
+    $_SESSION['error_message'] = 'Invalid programme ID.';
     redirect('manage_programmes.php');
 }
 
 try {
     // Fetch the programme details
-    $stmt = $pdo->prepare("SELECT * FROM programmes WHERE id = ?");
+    $stmt = $pdo->prepare('SELECT * FROM programmes WHERE id = ?');
     $stmt->execute([$id]);
     $programme = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$programme) {
-        $_SESSION['error_message'] = "Programme not found.";
+        $_SESSION['error_message'] = 'Programme not found.';
         redirect('manage_programmes.php');
     }
 
     // Fetch the courses associated with this programme
-    $stmt = $pdo->prepare("SELECT id, name, course_code FROM courses WHERE programme_id = ? ORDER BY course_code");
+    $stmt = $pdo->prepare('SELECT id, name, course_code FROM courses WHERE programme_id = ? ORDER BY course_code');
     $stmt->execute([$id]);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Database error in view_programme.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not retrieve programme data. Please try again later.";
+    error_log('Database error in view_programme.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not retrieve programme data. Please try again later.';
     redirect('manage_programmes.php');
 }
 ?>
@@ -148,27 +151,27 @@ require_role(['admin']);
 
 $id = intval($_GET['id'] ?? 0);
 if ($id <= 0) {
-    $_SESSION['error_message'] = "Invalid programme ID.";
+    $_SESSION['error_message'] = 'Invalid programme ID.';
     redirect('manage_programmes.php');
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM programmes WHERE id = ?");
+    $stmt = $pdo->prepare('SELECT * FROM programmes WHERE id = ?');
     $stmt->execute([$id]);
     $programme = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$programme) {
-        $_SESSION['error_message'] = "Programme not found.";
+        $_SESSION['error_message'] = 'Programme not found.';
         redirect('manage_programmes.php');
     }
 
-    $stmt = $pdo->prepare("SELECT id, name, course_code FROM courses WHERE programme_id = ? ORDER BY course_code");
+    $stmt = $pdo->prepare('SELECT id, name, course_code FROM courses WHERE programme_id = ? ORDER BY course_code');
     $stmt->execute([$id]);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Database error in view_programme.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not retrieve programme data. Please try again later.";
+    error_log('Database error in view_programme.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not retrieve programme data. Please try again later.';
     redirect('manage_programmes.php');
 }
 ?>

@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/lecturer/view_session.php
@@ -18,8 +21,8 @@ require_role(['lecturer']);
 
 // Check if a session ID was provided via GET
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    $_SESSION['error_message'] = "Invalid session ID provided.";
-    header("Location: active_sessions.php");
+    $_SESSION['error_message'] = 'Invalid session ID provided.';
+    header('Location: active_sessions.php');
     exit();
 }
 
@@ -31,7 +34,7 @@ $error = '';
 
 try {
     // Step 1: Fetch session details and verify ownership
-    $stmt_session = $pdo->prepare("
+    $stmt_session = $pdo->prepare('
         SELECT 
             asess.id, 
             asess.session_code, 
@@ -40,21 +43,21 @@ try {
         FROM attendance_sessions asess
         JOIN courses c ON asess.course_id = c.id
         WHERE asess.id = ? AND asess.lecturer_id = ?
-    ");
+    ');
     $stmt_session->execute([$session_id, $user_id]);
     $sessionDetails = $stmt_session->fetch(PDO::FETCH_ASSOC);
 
     // If the session doesn't exist or doesn't belong to this lecturer, show an error
     if (!$sessionDetails) {
-        $_SESSION['error_message'] = "Session not found or you do not have permission to view it.";
-        header("Location: active_sessions.php");
+        $_SESSION['error_message'] = 'Session not found or you do not have permission to view it.';
+        header('Location: active_sessions.php');
         exit();
     }
 
     // Step 2: Fetch all attendance records for this session
     // NOTE: This assumes an 'attendance_records' table exists.
     // We join with the users and students tables to get the student's name and number.
-    $stmt_records = $pdo->prepare("
+    $stmt_records = $pdo->prepare('
         SELECT 
             u.name AS student_name,
             s.student_number,
@@ -64,13 +67,13 @@ try {
         LEFT JOIN students s ON s.user_id = u.id
         WHERE ar.session_id = ?
         ORDER BY ar.signed_in_at ASC
-    ");
+    ');
     $stmt_records->execute([$session_id]);
     $attendanceRecords = $stmt_records->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (Exception $e) {
-    error_log("Database error in view_session.php: " . $e->getMessage());
-    $error = "An error occurred while fetching attendance records. Please try again later.";
+    error_log('Database error in view_session.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching attendance records. Please try again later.';
 }
 ?>
 

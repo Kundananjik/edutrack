@@ -1,4 +1,5 @@
 <?php
+
 // includes/config.php
 
 // Register error handlers when config is used standalone

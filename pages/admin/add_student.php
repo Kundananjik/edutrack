@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -18,19 +21,19 @@ require_role(['admin']);
 
 // Fetch programmes for dropdown
 try {
-    $stmt = $pdo->prepare("SELECT id, name FROM programmes ORDER BY name");
+    $stmt = $pdo->prepare('SELECT id, name FROM programmes ORDER BY name');
     $stmt->execute();
     $programmes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database error fetching programmes: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not load programmes for the form.";
+    error_log('Database error fetching programmes: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not load programmes for the form.';
     $programmes = [];
 }
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
     } else {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -40,29 +43,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = trim($_POST['status'] ?? 'active');
 
         if (empty($name) || empty($email) || empty($password) || empty($student_number) || $programme_id <= 0) {
-            $_SESSION['error_message'] = "All fields are required.";
+            $_SESSION['error_message'] = 'All fields are required.';
         } else {
             try {
-                $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+                $stmt = $pdo->prepare('SELECT COUNT(*) FROM users WHERE email = ?');
                 $stmt->execute([$email]);
                 if ($stmt->fetchColumn() > 0) {
-                    $_SESSION['error_message'] = "Email already exists.";
+                    $_SESSION['error_message'] = 'Email already exists.';
                 } else {
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                     $pdo->beginTransaction();
                     $stmt = $pdo->prepare("INSERT INTO users (name,email,role,status,password) VALUES (?, ?, 'student', ?, ?)");
                     $stmt->execute([$name, $email, $status, $hashedPassword]);
                     $user_id = $pdo->lastInsertId();
-                    $stmt = $pdo->prepare("INSERT INTO students (user_id, student_number, programme_id) VALUES (?, ?, ?)");
+                    $stmt = $pdo->prepare('INSERT INTO students (user_id, student_number, programme_id) VALUES (?, ?, ?)');
                     $stmt->execute([$user_id, $student_number, $programme_id]);
                     $pdo->commit();
-                    $_SESSION['success_message'] = "Student added successfully!";
-                    redirect("manage_students.php");
+                    $_SESSION['success_message'] = 'Student added successfully!';
+                    redirect('manage_students.php');
                 }
             } catch (PDOException $e) {
                 $pdo->rollBack();
-                error_log("Database error adding student: " . $e->getMessage());
-                $_SESSION['error_message'] = "Failed to add student.";
+                error_log('Database error adding student: ' . $e->getMessage());
+                $_SESSION['error_message'] = 'Failed to add student.';
             }
         }
     }

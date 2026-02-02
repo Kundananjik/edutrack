@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // auth/register.php
@@ -30,25 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validation
     if (empty($name) || empty($student_number) || empty($email) || empty($programme_id) || empty($password)) {
-        $errors[] = "All fields are required.";
+        $errors[] = 'All fields are required.';
     }
 
     if ($password !== $confirm_password) {
-        $errors[] = "Passwords do not match.";
+        $errors[] = 'Passwords do not match.';
     }
 
     // Check duplicate email
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :em");
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = :em');
     $stmt->execute(['em' => $email]);
     if ($stmt->rowCount() > 0) {
-        $errors[] = "Email already registered.";
+        $errors[] = 'Email already registered.';
     }
 
     // Check duplicate student_number
-    $stmt = $pdo->prepare("SELECT user_id FROM students WHERE student_number = :sn");
+    $stmt = $pdo->prepare('SELECT user_id FROM students WHERE student_number = :sn');
     $stmt->execute(['sn' => $student_number]);
     if ($stmt->rowCount() > 0) {
-        $errors[] = "Student Number already registered.";
+        $errors[] = 'Student Number already registered.';
     }
 
     if (empty($errors)) {
@@ -70,10 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = $pdo->lastInsertId();
 
             // Insert into students table
-            $stmt = $pdo->prepare("
+            $stmt = $pdo->prepare('
                 INSERT INTO students (user_id, student_number, programme_id)
                 VALUES (:user_id, :student_number, :programme_id)
-            ");
+            ');
             $stmt->execute([
                 'user_id' => $user_id,
                 'student_number' => $student_number,
@@ -84,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = "Registration successful! You can now <a href='login.php'>login here</a>.";
         } catch (PDOException $e) {
             $pdo->rollBack();
-            error_log("Registration error: " . $e->getMessage());
-            $errors[] = "Database error: Could not register.";
+            error_log('Registration error: ' . $e->getMessage());
+            $errors[] = 'Database error: Could not register.';
         }
     }
 }
@@ -93,10 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fetch programmes for dropdown
 $programmes = [];
 try {
-    $stmt = $pdo->query("SELECT id, name FROM programmes ORDER BY name ASC");
+    $stmt = $pdo->query('SELECT id, name FROM programmes ORDER BY name ASC');
     $programmes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Failed to fetch programmes: " . $e->getMessage());
+    error_log('Failed to fetch programmes: ' . $e->getMessage());
 }
 ?>
 
@@ -128,7 +131,9 @@ try {
 
     <?php if (!empty($errors)): ?>
         <div class="error">
-            <ul><?php foreach ($errors as $e) echo "<li>$e</li>"; ?></ul>
+            <ul><?php foreach ($errors as $e) {
+                echo "<li>$e</li>";
+            } ?></ul>
         </div>
     <?php elseif ($success): ?>
         <div class="success"><?php echo $success; ?></div>

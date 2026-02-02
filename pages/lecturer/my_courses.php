@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/lecturer/my_courses.php
@@ -24,13 +27,13 @@ $active_sessions_by_course = [];
 
 try {
     // Fetch all active sessions for the lecturer
-    $stmt_active_sessions = $pdo->prepare("SELECT course_id FROM attendance_sessions WHERE lecturer_id = ? AND is_active = 1");
+    $stmt_active_sessions = $pdo->prepare('SELECT course_id FROM attendance_sessions WHERE lecturer_id = ? AND is_active = 1');
     $stmt_active_sessions->execute([$user_id]);
     $active_course_ids = $stmt_active_sessions->fetchAll(PDO::FETCH_COLUMN);
     $active_sessions_by_course = array_flip($active_course_ids); // quick lookup
 
     // Fetch all course IDs assigned to the lecturer
-    $stmt = $pdo->prepare("SELECT course_id FROM lecturer_courses WHERE lecturer_id = ?");
+    $stmt = $pdo->prepare('SELECT course_id FROM lecturer_courses WHERE lecturer_id = ?');
     $stmt->execute([$user_id]);
     $course_links = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -53,8 +56,8 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Database error in my_courses.php: " . $e->getMessage());
-    $error = "An error occurred while fetching your courses. Please try again later.";
+    error_log('Database error in my_courses.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching your courses. Please try again later.';
 }
 ?>
 
@@ -107,9 +110,9 @@ try {
         <div class="alert alert-info">You are not currently assigned to any courses.</div>
     <?php else: ?>
         <div class="accordion" id="coursesAccordion">
-            <?php foreach ($courses as $index => $course): 
+            <?php foreach ($courses as $index => $course):
                 $has_active_session = isset($active_sessions_by_course[$course['id']]);
-            ?>
+                ?>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading<?= $index; ?>">
                         <button class="accordion-button collapsed d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index; ?>" aria-expanded="false" aria-controls="collapse<?= $index; ?>">

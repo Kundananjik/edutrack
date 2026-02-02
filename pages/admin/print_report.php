@@ -5,7 +5,7 @@ require_login();
 require_role(['admin']);
 
 if (!isset($_GET['course_id']) || !is_numeric($_GET['course_id'])) {
-    header("Location: attendance_reports.php");
+    header('Location: attendance_reports.php');
     exit();
 }
 
@@ -20,22 +20,22 @@ $error = '';
 
 try {
     // Fetch course details
-    $stmt_course = $pdo->prepare("SELECT name, course_code FROM courses WHERE id = ?");
+    $stmt_course = $pdo->prepare('SELECT name, course_code FROM courses WHERE id = ?');
     $stmt_course->execute([$course_id]);
     $course = $stmt_course->fetch(PDO::FETCH_ASSOC);
 
     if (!$course) {
-        $error = "Course not found.";
+        $error = 'Course not found.';
     } else {
         // Fetch enrolled students
-        $stmt_students = $pdo->prepare("
+        $stmt_students = $pdo->prepare('
             SELECT u.id AS user_id, u.name, s.student_number
             FROM users u
             JOIN students s ON u.id = s.user_id
             JOIN enrollments e ON s.user_id = e.student_id
             WHERE e.course_id = ?
             ORDER BY u.name
-        ");
+        ');
         $stmt_students->execute([$course_id]);
         $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
 
@@ -44,16 +44,16 @@ try {
             $start_date = $month_filter . '-01';
             $end_date = date('Y-m-t', strtotime($start_date));
 
-            $stmt_sessions = $pdo->prepare("
+            $stmt_sessions = $pdo->prepare('
                 SELECT id, created_at 
                 FROM attendance_sessions 
                 WHERE course_id = ? 
                 AND created_at BETWEEN ? AND ? 
                 ORDER BY created_at ASC
-            ");
+            ');
             $stmt_sessions->execute([$course_id, $start_date, $end_date]);
         } else {
-            $stmt_sessions = $pdo->prepare("SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC");
+            $stmt_sessions = $pdo->prepare('SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC');
             $stmt_sessions->execute([$course_id]);
         }
         $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
@@ -71,8 +71,8 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Error generating print report: " . $e->getMessage());
-    $error = "An error occurred while generating the report. Please try again later.";
+    error_log('Error generating print report: ' . $e->getMessage());
+    $error = 'An error occurred while generating the report. Please try again later.';
 }
 ?>
 <!DOCTYPE html>

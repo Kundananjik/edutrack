@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: public/index.php
  * Purpose: Front controller and basic router. All requests are rewritten here by .htaccess.
@@ -15,7 +16,8 @@ $requested = $_GET['path'] ?? '';
 $requested = trim($requested, "/\t\n\r\0\x0B");
 
 // Helper: safe join within project base
-function et_path(string $rel): string {
+function et_path(string $rel): string
+{
     return realpath(BASE_PATH . '/' . $rel) ?: BASE_PATH . '/' . $rel;
 }
 
@@ -32,7 +34,10 @@ $rootPages = [
 ];
 if (in_array($requested, $rootPages, true)) {
     $candidate = et_path($requested . '.php');
-    if (is_file($candidate)) { require $candidate; exit; }
+    if (is_file($candidate)) {
+        require $candidate;
+        exit;
+    }
 }
 
 // 3) Allow-listed directories
@@ -48,11 +53,17 @@ foreach ($allowedPrefixes as $prefix) {
     if ($requested === $prefix) {
         // default to index.php under the directory if present
         $candidate = et_path($prefix . '/index.php');
-        if (is_file($candidate)) { require $candidate; exit; }
+        if (is_file($candidate)) {
+            require $candidate;
+            exit;
+        }
     }
     if (str_starts_with($requested, $prefix . '/')) {
         $candidate = et_path($requested . '.php');
-        if (is_file($candidate)) { require $candidate; exit; }
+        if (is_file($candidate)) {
+            require $candidate;
+            exit;
+        }
     }
 }
 

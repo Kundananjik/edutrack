@@ -4,11 +4,14 @@
 // This block searches upward for /includes/preload.php
 // so your script works no matter where it's placed.
 // ============================================
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 
@@ -27,7 +30,7 @@ require_role(['lecturer']);       // Restrict access to lecturers only
 // ============================================
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id) {
-    header("Location: ../../auth/login.php");
+    header('Location: ../../auth/login.php');
     exit();
 }
 
@@ -43,41 +46,43 @@ try {
     // --------------------------------------------
     // FETCH LECTURER PROFILE DETAILS
     // --------------------------------------------
-    $stmt = $pdo->prepare("SELECT id, name, email, phone FROM users WHERE id = :id LIMIT 1");
+    $stmt = $pdo->prepare('SELECT id, name, email, phone FROM users WHERE id = :id LIMIT 1');
     $stmt->execute(['id' => $user_id]);
     $lecturer = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($lecturer) $name = $lecturer['name'];
+    if ($lecturer) {
+        $name = $lecturer['name'];
+    }
 
     // --------------------------------------------
     // COUNT COURSES ASSIGNED TO THIS LECTURER
     // --------------------------------------------
-    $stmt = $pdo->prepare("SELECT COUNT(DISTINCT course_id) FROM lecturer_courses WHERE lecturer_id = :id");
+    $stmt = $pdo->prepare('SELECT COUNT(DISTINCT course_id) FROM lecturer_courses WHERE lecturer_id = :id');
     $stmt->execute(['id' => $user_id]);
     $my_courses_count = (int) $stmt->fetchColumn();
 
     // --------------------------------------------
     // COUNT UNIQUE STUDENTS ENROLLED UNDER THIS LECTURER
     // --------------------------------------------
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT COUNT(DISTINCT e.student_id)
         FROM enrollments e
         JOIN lecturer_courses lc ON e.course_id = lc.course_id
         WHERE lc.lecturer_id = :id
-    ");
+    ');
     $stmt->execute(['id' => $user_id]);
     $my_students_count = (int) $stmt->fetchColumn();
 
     // --------------------------------------------
     // COUNT CURRENTLY ACTIVE ATTENDANCE SESSIONS
     // --------------------------------------------
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM attendance_sessions WHERE is_active = 1 AND lecturer_id = :id");
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM attendance_sessions WHERE is_active = 1 AND lecturer_id = :id');
     $stmt->execute(['id' => $user_id]);
     $active_sessions_count = (int) $stmt->fetchColumn();
 
 } catch (PDOException $e) {
     // Log internal error and display user-friendly message
-    error_log("Dashboard error: " . $e->getMessage());
-    $error_message = "Failed to load dashboard data. Please try again later.";
+    error_log('Dashboard error: ' . $e->getMessage());
+    $error_message = 'Failed to load dashboard data. Please try again later.';
 }
 
 // ============================================
@@ -85,14 +90,14 @@ try {
 // ============================================
 $hour = date('H');
 if ($hour < 12) {
-    $greeting = "Good Morning";
-    $emoji = "☀️";
+    $greeting = 'Good Morning';
+    $emoji = '☀️';
 } elseif ($hour < 18) {
-    $greeting = "Good Afternoon";
-    $emoji = "🌤️";
+    $greeting = 'Good Afternoon';
+    $emoji = '🌤️';
 } else {
-    $greeting = "Good Evening";
-    $emoji = "🌙";
+    $greeting = 'Good Evening';
+    $emoji = '🌙';
 }
 ?>
 <!DOCTYPE html>
@@ -137,7 +142,7 @@ if ($hour < 12) {
 
     <!-- Lecturer Greeting -->
     <h1 class="mb-4" style="color:#2fa360;">
-        <?= $greeting . ", " . htmlspecialchars($name) . "! " . $emoji ?>
+        <?= $greeting . ', ' . htmlspecialchars($name) . '! ' . $emoji ?>
     </h1>
 
     <?php if ($error_message): ?>
@@ -153,12 +158,12 @@ if ($hour < 12) {
             <?php
             // Cards dynamically rendered from array
             $cards = [
-                ['title'=>'My Courses', 'count'=>$my_courses_count, 'icon'=>'fa-book-open', 'link'=>'my_courses.php'],
-                ['title'=>'My Students', 'count'=>$my_students_count, 'icon'=>'fa-user-graduate', 'link'=>'my_students.php'],
-                ['title'=>'Active Sessions', 'count'=>$active_sessions_count, 'icon'=>'fa-chalkboard-teacher', 'link'=>'active_sessions.php']
+                ['title' => 'My Courses', 'count' => $my_courses_count, 'icon' => 'fa-book-open', 'link' => 'my_courses.php'],
+                ['title' => 'My Students', 'count' => $my_students_count, 'icon' => 'fa-user-graduate', 'link' => 'my_students.php'],
+                ['title' => 'Active Sessions', 'count' => $active_sessions_count, 'icon' => 'fa-chalkboard-teacher', 'link' => 'active_sessions.php']
             ];
 
-            foreach($cards as $c):
+        foreach ($cards as $c):
             ?>
             <div class="col">
                 <a href="<?= $c['link'] ?>" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">

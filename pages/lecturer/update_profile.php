@@ -1,10 +1,14 @@
 <?php
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 session_start();
@@ -34,9 +38,9 @@ try {
     // If password is provided, hash it; else keep current password
     if (!empty($password)) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE users SET name = :name, email = :email, phone = :phone, password = :password WHERE id = :id";
+        $sql = 'UPDATE users SET name = :name, email = :email, phone = :phone, password = :password WHERE id = :id';
     } else {
-        $sql = "UPDATE users SET name = :name, email = :email, phone = :phone WHERE id = :id";
+        $sql = 'UPDATE users SET name = :name, email = :email, phone = :phone WHERE id = :id';
     }
 
     $stmt = $pdo->prepare($sql);

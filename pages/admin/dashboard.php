@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/admin/dashboard.php
@@ -21,7 +24,8 @@ require_role(['admin']);
 /**
  * Get a count of rows from a table
  */
-function getCount($pdo, $table, $column = null, $value = null) {
+function getCount($pdo, $table, $column = null, $value = null)
+{
     $sql = "SELECT COUNT(*) FROM {$table}";
     $params = [];
     if ($column && $value) {
@@ -33,7 +37,7 @@ function getCount($pdo, $table, $column = null, $value = null) {
         $stmt->execute($params);
         return (int)$stmt->fetchColumn();
     } catch (PDOException $e) {
-        error_log("Database error in getCount: " . $e->getMessage());
+        error_log('Database error in getCount: ' . $e->getMessage());
         return 0;
     }
 }
@@ -49,7 +53,7 @@ $enrollments = getCount($pdo, 'enrollments');
 $adminName = htmlspecialchars($_SESSION['name'] ?? 'Admin');
 
 // Timestamp
-$lastUpdated = date("F j, Y, g:i a");
+$lastUpdated = date('F j, Y, g:i a');
 ?>
 <!DOCTYPE html>
 <html lang="en">

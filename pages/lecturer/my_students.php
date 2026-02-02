@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -18,23 +21,23 @@ $courses = [];
 
 try {
     // Fetch courses taught by the lecturer
-    $stmt = $pdo->prepare("SELECT c.id, c.name, c.course_code
+    $stmt = $pdo->prepare('SELECT c.id, c.name, c.course_code
                            FROM courses c
                            JOIN lecturer_courses lc ON c.id = lc.course_id
                            WHERE lc.lecturer_id = ?
-                           ORDER BY c.name");
+                           ORDER BY c.name');
     $stmt->execute([$user_id]);
     $courses_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // For each course, fetch enrolled students
     foreach ($courses_list as $course) {
-        $stmt = $pdo->prepare("SELECT u.name, s.student_number, u.email, p.name AS programme
+        $stmt = $pdo->prepare('SELECT u.name, s.student_number, u.email, p.name AS programme
                                FROM enrollments e
                                JOIN students s ON e.student_id = s.user_id
                                JOIN users u ON s.user_id = u.id
                                JOIN programmes p ON s.programme_id = p.id
                                WHERE e.course_id = ?
-                               ORDER BY u.name");
+                               ORDER BY u.name');
         $stmt->execute([$course['id']]);
         $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -45,8 +48,8 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("Database error in my_students.php: " . $e->getMessage());
-    $error = "An error occurred while fetching your students. Please try again later.";
+    error_log('Database error in my_students.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching your students. Please try again later.';
 }
 ?>
 <!DOCTYPE html>
@@ -93,7 +96,7 @@ try {
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-<?= $course_id ?>">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $course_id ?>" aria-expanded="false" aria-controls="collapse-<?= $course_id ?>">
-                            <?= htmlspecialchars($course['info']['name'] . " (" . $course['info']['course_code'] . ")"); ?>
+                            <?= htmlspecialchars($course['info']['name'] . ' (' . $course['info']['course_code'] . ')'); ?>
                         </button>
                     </h2>
                     <div id="collapse-<?= $course_id ?>" class="accordion-collapse collapse" aria-labelledby="heading-<?= $course_id ?>" data-bs-parent="#coursesAccordion">

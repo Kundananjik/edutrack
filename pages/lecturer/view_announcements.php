@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/lecturer/view_announcements.php
@@ -36,8 +39,8 @@ try {
     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Failed to fetch announcements: " . $e->getMessage());
-    $_SESSION['error_message'] = "Unable to load announcements.";
+    error_log('Failed to fetch announcements: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Unable to load announcements.';
     $announcements = [];
 }
 ?>

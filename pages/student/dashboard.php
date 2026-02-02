@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/student/dashboard.php
@@ -133,7 +136,7 @@ try {
                 <select name="course_id" id="course_id" class="form-select" required>
                     <option value="">-- Choose a course --</option>
                     <?php foreach ($courses as $course): ?>
-                        <option value="<?= $course['id']; ?>"><?= htmlspecialchars($course['name'] . " (" . $course['course_code'] . ")"); ?></option>
+                        <option value="<?= $course['id']; ?>"><?= htmlspecialchars($course['name'] . ' (' . $course['course_code'] . ')'); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -154,7 +157,7 @@ try {
         <select id="attendance-course-select" class="form-select mb-3">
             <option value="">-- Choose a course --</option>
             <?php foreach ($courses as $course): ?>
-                <option value="<?= $course['id']; ?>"><?= htmlspecialchars($course['name'] . " (" . $course['course_code'] . ")"); ?></option>
+                <option value="<?= $course['id']; ?>"><?= htmlspecialchars($course['name'] . ' (' . $course['course_code'] . ')'); ?></option>
             <?php endforeach; ?>
         </select>
 
@@ -221,10 +224,10 @@ try {
             $attended = (int)$stmt->fetchColumn();
 
             $percentage = ($total > 0) ? round(($attended / $total) * 100) : 0;
-        ?>
+            ?>
             <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($course['name'] . " (" . $course['course_code'] . ")"); ?></h5>
+                    <h5 class="card-title"><?= htmlspecialchars($course['name'] . ' (' . $course['course_code'] . ')'); ?></h5>
                     <p class="card-text">Attended <?= $attended ?> of <?= $total ?> classes (<?= $percentage ?>%)</p>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: <?= $percentage; ?>%;" aria-valuenow="<?= $percentage; ?>" aria-valuemin="0" aria-valuemax="100"><?= $percentage; ?>%</div>

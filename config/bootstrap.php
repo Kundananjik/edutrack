@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: config/bootstrap.php
  * Purpose: Bootstraps the runtime — registers error handlers, loads Composer autoload,
@@ -12,8 +13,10 @@ require_once __DIR__ . '/../includes/error_handlers.php';
 // Load Composer's autoloader with a friendly fallback
 $autoload = __DIR__ . '/../vendor/autoload.php';
 if (!file_exists($autoload)) {
-    et_simple_error_page('Missing dependencies',
-        'Composer autoload not found. Please run <code>composer install</code> in the project root.');
+    et_simple_error_page(
+        'Missing dependencies',
+        'Composer autoload not found. Please run <code>composer install</code> in the project root.'
+    );
     exit(1);
 }
 require_once $autoload;
@@ -33,8 +36,10 @@ $dbFile = __DIR__ . '/database.php';
 if (file_exists($dbFile)) {
     require_once $dbFile;
 } else {
-    et_simple_error_page('Database bootstrap missing',
-        'Expected config/database.php but it was not found.');
+    et_simple_error_page(
+        'Database bootstrap missing',
+        'Expected config/database.php but it was not found.'
+    );
 }
 
 // Optional: Define a global base path for consistent file referencing

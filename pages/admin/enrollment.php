@@ -30,8 +30,8 @@ $csrf_token = get_csrf_token();
 // Handle POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
-        redirect("enrollment.php");
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
+        redirect('enrollment.php');
     }
 
     $action = $_POST['action'] ?? '';
@@ -42,23 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $programme_id = intval($_POST['programme_id'] ?? 0);
 
             if ($student_id <= 0 || $programme_id <= 0) {
-                $_SESSION['error_message'] = "Please select both student and programme.";
+                $_SESSION['error_message'] = 'Please select both student and programme.';
             } else {
-                $stmt = $pdo->prepare("SELECT user_id FROM students WHERE user_id = ?");
+                $stmt = $pdo->prepare('SELECT user_id FROM students WHERE user_id = ?');
                 $stmt->execute([$student_id]);
                 if ($stmt->rowCount() === 0) {
-                    $_SESSION['error_message'] = "Selected student is not registered.";
+                    $_SESSION['error_message'] = 'Selected student is not registered.';
                 } else {
-                    $stmt = $pdo->prepare("SELECT id FROM courses WHERE programme_id = ?");
+                    $stmt = $pdo->prepare('SELECT id FROM courses WHERE programme_id = ?');
                     $stmt->execute([$programme_id]);
                     $courses = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
                     if (empty($courses)) {
-                        $_SESSION['error_message'] = "No courses found in the selected programme.";
+                        $_SESSION['error_message'] = 'No courses found in the selected programme.';
                     } else {
                         $added = 0;
                         foreach ($courses as $course_id) {
-                            $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM enrollments WHERE student_id = ? AND course_id = ?");
+                            $stmtCheck = $pdo->prepare('SELECT COUNT(*) FROM enrollments WHERE student_id = ? AND course_id = ?');
                             $stmtCheck->execute([$student_id, $course_id]);
                             if ($stmtCheck->fetchColumn() == 0) {
                                 $stmtInsert = $pdo->prepare("INSERT INTO enrollments (student_id, course_id, enrollment_status) VALUES (?, ?, 'active')");
@@ -76,16 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $new_programme_id = intval($_POST['new_programme_id'] ?? 0);
 
             if ($student_id <= 0 || $new_programme_id <= 0) {
-                $_SESSION['error_message'] = "Student and new programme are required.";
+                $_SESSION['error_message'] = 'Student and new programme are required.';
             } else {
-                $stmt = $pdo->prepare("SELECT id FROM courses WHERE programme_id = ?");
+                $stmt = $pdo->prepare('SELECT id FROM courses WHERE programme_id = ?');
                 $stmt->execute([$new_programme_id]);
                 $new_courses = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
                 if (empty($new_courses)) {
-                    $_SESSION['error_message'] = "No courses found in the selected programme.";
+                    $_SESSION['error_message'] = 'No courses found in the selected programme.';
                 } else {
-                    $stmt = $pdo->prepare("DELETE FROM enrollments WHERE student_id = ?");
+                    $stmt = $pdo->prepare('DELETE FROM enrollments WHERE student_id = ?');
                     $stmt->execute([$student_id]);
 
                     foreach ($new_courses as $course_id) {
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtInsert->execute([$student_id, $course_id]);
                     }
 
-                    $_SESSION['success_message'] = "Student successfully moved to the new programme!";
+                    $_SESSION['success_message'] = 'Student successfully moved to the new programme!';
                 }
             }
 
@@ -102,31 +102,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $programme_id = intval($_POST['programme_id'] ?? 0);
 
             if ($student_id <= 0 || $programme_id <= 0) {
-                $_SESSION['error_message'] = "Invalid student or programme ID.";
+                $_SESSION['error_message'] = 'Invalid student or programme ID.';
             } else {
-                $stmt = $pdo->prepare("
+                $stmt = $pdo->prepare('
                     DELETE e FROM enrollments e
                     JOIN courses c ON c.id = e.course_id
                     WHERE e.student_id = ? AND c.programme_id = ?
-                ");
+                ');
                 $stmt->execute([$student_id, $programme_id]);
-                $_SESSION['success_message'] = "All enrollments in this programme deleted successfully!";
+                $_SESSION['success_message'] = 'All enrollments in this programme deleted successfully!';
             }
         } else {
-            $_SESSION['error_message'] = "Invalid action.";
+            $_SESSION['error_message'] = 'Invalid action.';
         }
 
     } catch (PDOException $e) {
-        error_log("Database error in enrollment.php: " . $e->getMessage());
-        $_SESSION['error_message'] = "An error occurred. Please try again.";
+        error_log('Database error in enrollment.php: ' . $e->getMessage());
+        $_SESSION['error_message'] = 'An error occurred. Please try again.';
     }
 
-    redirect("enrollment.php");
+    redirect('enrollment.php');
 }
 
 // Fetch data for display
 try {
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT 
             u.id AS student_id,
             u.name AS student_name,
@@ -140,26 +140,26 @@ try {
         JOIN programmes p ON p.id = c.programme_id
         GROUP BY u.id, p.id
         ORDER BY u.name, p.name
-    ");
+    ');
     $stmt->execute();
     $enrollments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $pdo->prepare("SELECT COUNT(DISTINCT student_id) AS total_students_enrolled FROM enrollments");
+    $stmt = $pdo->prepare('SELECT COUNT(DISTINCT student_id) AS total_students_enrolled FROM enrollments');
     $stmt->execute();
     $total_students_enrolled = $stmt->fetchColumn();
 
-    $stmt = $pdo->prepare("SELECT u.id, u.name FROM users u JOIN students s ON s.user_id = u.id ORDER BY u.name");
+    $stmt = $pdo->prepare('SELECT u.id, u.name FROM users u JOIN students s ON s.user_id = u.id ORDER BY u.name');
     $stmt->execute();
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $pdo->prepare("SELECT id, name FROM programmes ORDER BY name");
+    $stmt = $pdo->prepare('SELECT id, name FROM programmes ORDER BY name');
     $stmt->execute();
     $programmes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Database error fetching data for enrollment.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not load data. Please try again.";
-    redirect("dashboard.php");
+    error_log('Database error fetching data for enrollment.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not load data. Please try again.';
+    redirect('dashboard.php');
 }
 ?>
 <!DOCTYPE html>

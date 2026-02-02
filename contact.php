@@ -15,8 +15,8 @@ for ($__i = 0; $__i < 6; $__i++) {
 }
 unset($__et, $__i, $__p);
 
-$page_title = "Contact Us - EduTrack";
-$page_description = "Contact EduTrack support for inquiries, feedback, or technical assistance.";
+$page_title = 'Contact Us - EduTrack';
+$page_description = 'Contact EduTrack support for inquiries, feedback, or technical assistance.';
 
 $success = isset($_GET['success']);
 ?>
@@ -37,7 +37,9 @@ $success = isset($_GET['success']);
 
 <?php
 $navbar = __DIR__ . '/includes/navbar.php';
-if (file_exists($navbar)) require_once $navbar;
+if (file_exists($navbar)) {
+    require_once $navbar;
+}
 ?>
 
 <main class="container my-5">

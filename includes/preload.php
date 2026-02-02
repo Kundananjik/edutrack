@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: includes/preload.php
  * Purpose: Register global error/exception handlers, apply security headers, and bootstrap the app

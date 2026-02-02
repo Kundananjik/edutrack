@@ -16,8 +16,8 @@ for ($__i = 0; $__i < 6; $__i++) {
 unset($__et, $__i, $__p);
 
 // Page-specific variables
-$page_title = "Privacy Policy - EduTrack";
-$page_description = "Learn how EduTrack collects, uses, and protects your personal information. Our commitment to data security and privacy.";
+$page_title = 'Privacy Policy - EduTrack';
+$page_description = 'Learn how EduTrack collects, uses, and protects your personal information. Our commitment to data security and privacy.';
 ?>
 <!DOCTYPE html>
 <html lang="en">

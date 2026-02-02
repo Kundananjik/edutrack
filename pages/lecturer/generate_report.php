@@ -3,7 +3,10 @@
 $__et = __DIR__;
 for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
     $__et = dirname($__et);
 }
 unset($__et, $__i, $__p);
@@ -14,7 +17,7 @@ require_login();
 require_role(['lecturer']);
 
 if (!isset($_GET['course_id']) || !is_numeric($_GET['course_id'])) {
-    header("Location: attendance_reports.php");
+    header('Location: attendance_reports.php');
     exit();
 }
 
@@ -33,28 +36,28 @@ $error = '';
 try {
 
     // Validate that the course belongs to the lecturer
-    $stmt_verify = $pdo->prepare("
+    $stmt_verify = $pdo->prepare('
         SELECT c.name, c.course_code 
         FROM courses c
         JOIN lecturer_courses lc ON c.id = lc.course_id
         WHERE c.id = ? AND lc.lecturer_id = ?
-    ");
+    ');
     $stmt_verify->execute([$course_id, $lecturer_id]);
     $course = $stmt_verify->fetch(PDO::FETCH_ASSOC);
 
     if (!$course) {
-        $error = "You are not assigned to this course.";
+        $error = 'You are not assigned to this course.';
     } else {
 
         // Get enrolled students
-        $stmt_students = $pdo->prepare("
+        $stmt_students = $pdo->prepare('
             SELECT u.id AS user_id, u.name, s.student_number
             FROM users u
             JOIN students s ON u.id = s.user_id
             JOIN enrollments e ON s.user_id = e.student_id
             WHERE e.course_id = ?
             ORDER BY u.name
-        ");
+        ');
         $stmt_students->execute([$course_id]);
         $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
 
@@ -63,21 +66,21 @@ try {
             $start_date = $month_filter . '-01';
             $end_date = date('Y-m-t', strtotime($start_date));
 
-            $stmt_sessions = $pdo->prepare("
+            $stmt_sessions = $pdo->prepare('
                 SELECT id, created_at 
                 FROM attendance_sessions 
                 WHERE course_id = ? 
                 AND created_at BETWEEN ? AND ? 
                 ORDER BY created_at
-            ");
+            ');
             $stmt_sessions->execute([$course_id, $start_date, $end_date]);
         } else {
-            $stmt_sessions = $pdo->prepare("
+            $stmt_sessions = $pdo->prepare('
                 SELECT id, created_at 
                 FROM attendance_sessions 
                 WHERE course_id = ?
                 ORDER BY created_at
-            ");
+            ');
             $stmt_sessions->execute([$course_id]);
         }
 
@@ -102,7 +105,7 @@ try {
     }
 
 } catch (Exception $e) {
-    $error = "An error occurred while generating the report.";
+    $error = 'An error occurred while generating the report.';
 }
 ?>
 <!DOCTYPE html>

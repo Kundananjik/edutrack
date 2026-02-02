@@ -1,4 +1,5 @@
 <?php
+
 // tests/AuthTest.php
 use PHPUnit\Framework\TestCase;
 

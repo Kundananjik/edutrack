@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -16,7 +19,7 @@ require_login();
 require_role(['lecturer']);
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header("Location: my_courses.php");
+    header('Location: my_courses.php');
     exit();
 }
 
@@ -30,30 +33,30 @@ $error = '';
 
 try {
     // Verify lecturer assignment
-    $stmt_verify = $pdo->prepare("SELECT COUNT(*) FROM lecturer_courses WHERE lecturer_id = ? AND course_id = ?");
+    $stmt_verify = $pdo->prepare('SELECT COUNT(*) FROM lecturer_courses WHERE lecturer_id = ? AND course_id = ?');
     $stmt_verify->execute([$user_id, $course_id]);
     if ($stmt_verify->fetchColumn() === 0) {
-        $error = "You do not have permission to view this course.";
+        $error = 'You do not have permission to view this course.';
     } else {
         // Fetch course details
-        $stmt_course = $pdo->prepare("SELECT name, course_code FROM courses WHERE id = ?");
+        $stmt_course = $pdo->prepare('SELECT name, course_code FROM courses WHERE id = ?');
         $stmt_course->execute([$course_id]);
         $course = $stmt_course->fetch(PDO::FETCH_ASSOC);
 
         // Fetch enrolled students
-        $stmt_students = $pdo->prepare("
+        $stmt_students = $pdo->prepare('
             SELECT u.id AS user_id, u.name, s.student_number, u.email
             FROM users u
             JOIN students s ON u.id = s.user_id
             JOIN enrollments e ON s.user_id = e.student_id
             WHERE e.course_id = ?
             ORDER BY u.name
-        ");
+        ');
         $stmt_students->execute([$course_id]);
         $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
 
         // Fetch all attendance sessions
-        $stmt_sessions = $pdo->prepare("SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC");
+        $stmt_sessions = $pdo->prepare('SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC');
         $stmt_sessions->execute([$course_id]);
         $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 
@@ -70,13 +73,13 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Database error in view_course.php: " . $e->getMessage());
-    $error = "An error occurred while fetching course data. Please try again later.";
+    error_log('Database error in view_course.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching course data. Please try again later.';
 }
 
 // CSV Download
 if (isset($_GET['download']) && $_GET['download'] === 'csv' && $course && !empty($students)) {
-    $filename = "students_" . strtolower(str_replace(' ', '_', $course['course_code'])) . ".csv";
+    $filename = 'students_' . strtolower(str_replace(' ', '_', $course['course_code'])) . '.csv';
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     $output = fopen('php://output', 'w');

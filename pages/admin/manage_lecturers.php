@@ -40,8 +40,8 @@ try {
     $stmt->execute();
     $lecturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database error fetching lecturers: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to load lecturers.";
+    error_log('Database error fetching lecturers: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load lecturers.';
     $lecturers = [];
 }
 ?>

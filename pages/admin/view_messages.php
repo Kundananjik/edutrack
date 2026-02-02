@@ -27,18 +27,18 @@ require_role(['admin']);
 $csrf_token = get_csrf_token();
 
 try {
-    $sql = "SELECT cm.id, cm.name, cm.email, cm.message, cm.created_at AS message_date,
+    $sql = 'SELECT cm.id, cm.name, cm.email, cm.message, cm.created_at AS message_date,
                    cr.reply_message AS reply_text, cr.created_at AS reply_date, u.name AS responder_name
             FROM contact_messages cm
             LEFT JOIN contact_replies cr ON cm.id = cr.message_id
             LEFT JOIN users u ON cr.responder_id = u.id
-            ORDER BY cm.created_at DESC";
+            ORDER BY cm.created_at DESC';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database query error in manage_messages.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to load messages.";
+    error_log('Database query error in manage_messages.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load messages.';
     $messages = [];
 }
 ?>

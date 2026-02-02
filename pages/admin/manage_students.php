@@ -25,18 +25,18 @@ require_role(['admin']);
 
 // Fetch students with programme info
 try {
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT s.user_id, s.student_number, s.programme_id, u.name, u.email, u.status, p.name AS programme_name
         FROM students s
         JOIN users u ON s.user_id = u.id
         JOIN programmes p ON s.programme_id = p.id
         ORDER BY u.name
-    ");
+    ');
     $stmt->execute();
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database error fetching students: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to load students.";
+    error_log('Database error fetching students: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load students.';
     $students = [];
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: includes/security_headers.php
  * Purpose: Apply security-related HTTP headers globally.
@@ -15,10 +16,14 @@ if (!isset($GLOBALS['ET_CSP_NONCE'])) {
 }
 
 if (!function_exists('et_csp_nonce')) {
-    function et_csp_nonce(): string { return (string)($GLOBALS['ET_CSP_NONCE'] ?? ''); }
+    function et_csp_nonce(): string
+    {
+        return (string)($GLOBALS['ET_CSP_NONCE'] ?? '');
+    }
 }
 if (!function_exists('et_csp_attr')) {
-    function et_csp_attr(string $tag = 'script'): string {
+    function et_csp_attr(string $tag = 'script'): string
+    {
         $n = et_csp_nonce();
         return $n ? ('nonce="' . htmlspecialchars($n, ENT_QUOTES, 'UTF-8') . '"') : '';
     }

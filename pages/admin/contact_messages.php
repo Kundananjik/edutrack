@@ -27,7 +27,7 @@ $searchSQL = '';
 $params = [];
 
 if ($search) {
-    $searchSQL = "WHERE name LIKE :search OR email LIKE :search OR subject LIKE :search";
+    $searchSQL = 'WHERE name LIKE :search OR email LIKE :search OR subject LIKE :search';
     $params[':search'] = "%$search%";
 }
 

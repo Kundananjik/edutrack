@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/admin/view_course.php
@@ -20,51 +23,51 @@ require_role(['admin']);
 // Get the course ID from the URL
 $course_id = intval($_GET['id'] ?? 0);
 if ($course_id <= 0) {
-    $_SESSION['error_message'] = "Invalid course ID.";
+    $_SESSION['error_message'] = 'Invalid course ID.';
     redirect('manage_courses.php');
 }
 
 try {
     // Fetch course details
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT c.*, p.name AS programme_name, p.code AS programme_code
         FROM courses c
         LEFT JOIN programmes p ON c.programme_id = p.id
         WHERE c.id = ?
-    ");
+    ');
     $stmt->execute([$course_id]);
     $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$course) {
-        $_SESSION['error_message'] = "Course not found.";
+        $_SESSION['error_message'] = 'Course not found.';
         redirect('manage_courses.php');
     }
 
     // Fetch lecturers assigned to this course
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT u.id, u.name
         FROM lecturer_courses lc
         JOIN users u ON lc.lecturer_id = u.id
         WHERE lc.course_id = ?
-    ");
+    ');
     $stmt->execute([$course_id]);
     $lecturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Fetch students enrolled in this course
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT u.id, u.name, s.student_number
         FROM enrollments e
         JOIN students s ON e.student_id = s.user_id
         JOIN users u ON s.user_id = u.id
         WHERE e.course_id = ?
         ORDER BY u.name
-    ");
+    ');
     $stmt->execute([$course_id]);
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Database error in view_course.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not retrieve course data. Please try again later.";
+    error_log('Database error in view_course.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not retrieve course data. Please try again later.';
     redirect('manage_courses.php');
 }
 ?>
@@ -105,11 +108,11 @@ try {
                 <li class="list-group-item"><strong>Lecturer(s):</strong> 
                     <?php
                     if (!empty($lecturers)) {
-                        echo implode(", ", array_map(fn($l) => htmlspecialchars($l['name']), $lecturers));
+                        echo implode(', ', array_map(fn ($l) => htmlspecialchars($l['name']), $lecturers));
                     } else {
-                        echo "Not assigned";
+                        echo 'Not assigned';
                     }
-                    ?>
+?>
                 </li>
                 <li class="list-group-item"><strong>Created At:</strong> <?= htmlspecialchars($course['created_at']) ?></li>
                 <li class="list-group-item"><strong>Last Updated:</strong> <?= htmlspecialchars($course['updated_at']) ?></li>

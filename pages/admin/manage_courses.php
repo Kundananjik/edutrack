@@ -26,10 +26,10 @@ require_role(['admin']);
 
 // Fetch programmes for dropdown filter
 try {
-    $stmt = $pdo->query("SELECT id, name FROM programmes ORDER BY name ASC");
+    $stmt = $pdo->query('SELECT id, name FROM programmes ORDER BY name ASC');
     $programmesForFilter = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Error fetching programmes: " . $e->getMessage());
+    error_log('Error fetching programmes: ' . $e->getMessage());
     $programmesForFilter = [];
 }
 
@@ -57,20 +57,20 @@ try {
 
     $params = [];
     if ($programmeFilter > 0) {
-        $query .= " WHERE c.programme_id = ?";
+        $query .= ' WHERE c.programme_id = ?';
         $params[] = $programmeFilter;
     }
 
-    $query .= " GROUP BY c.id ORDER BY c.id DESC";
+    $query .= ' GROUP BY c.id ORDER BY c.id DESC';
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("Database error in manage_courses.php: " . $e->getMessage());
+    error_log('Database error in manage_courses.php: ' . $e->getMessage());
     $courses = [];
-    $_SESSION['error_message'] = "Could not fetch course data. Please try again later.";
+    $_SESSION['error_message'] = 'Could not fetch course data. Please try again later.';
 }
 ?>
 <!DOCTYPE html>

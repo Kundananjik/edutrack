@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // auth/forgot_password.php
@@ -20,33 +23,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         $message = 'Invalid CSRF token.';
     } else {
-    $identifier = cleanInput($_POST['identifier'] ?? '');
+        $identifier = cleanInput($_POST['identifier'] ?? '');
 
-    // Check if user exists
-    $stmt = $pdo->prepare("SELECT email FROM users WHERE student_number = :id OR email = :id LIMIT 1");
-    $stmt->execute(['id' => $identifier]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Check if user exists
+        $stmt = $pdo->prepare('SELECT email FROM users WHERE student_number = :id OR email = :id LIMIT 1');
+        $stmt->execute(['id' => $identifier]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        $email = $user['email'];
-        $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        if ($user) {
+            $email = $user['email'];
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
-        // Store reset token
-        $insert = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at)
-                                 VALUES (:email, :token, :expires)");
-        $insert->execute([
-            'email' => $email,
-            'token' => $token,
-            'expires' => $expires
-        ]);
+            // Store reset token
+            $insert = $pdo->prepare('INSERT INTO password_resets (email, token, expires_at)
+                                 VALUES (:email, :token, :expires)');
+            $insert->execute([
+                'email' => $email,
+                'token' => $token,
+                'expires' => $expires
+            ]);
 
-        // Simulate email (replace with mail() or PHPMailer in prod)
-        $reset_link = BASE_URL . "auth/reset_password.php?token=$token";
-        $message = "Reset link sent! <br><a href='$reset_link'>$reset_link</a>";
-    } else {
-        $message = "No account found with that email or student number.";
-    }
+            // Simulate email (replace with mail() or PHPMailer in prod)
+            $reset_link = BASE_URL . "auth/reset_password.php?token=$token";
+            $message = "Reset link sent! <br><a href='$reset_link'>$reset_link</a>";
+        } else {
+            $message = 'No account found with that email or student number.';
+        }
     }
 }
 ?>

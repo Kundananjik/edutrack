@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/admin/edit_course.php
@@ -20,8 +23,8 @@ require_role(['admin']);
 
 // Validate course ID
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    $_SESSION['error_message'] = "Invalid course ID.";
-    redirect("manage_courses.php");
+    $_SESSION['error_message'] = 'Invalid course ID.';
+    redirect('manage_courses.php');
 }
 
 $courseId = intval($_GET['id']);
@@ -29,18 +32,18 @@ $course = null;
 
 // Fetch course, lecturers, programmes
 try {
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT c.*, lc.lecturer_id 
         FROM courses c 
         LEFT JOIN lecturer_courses lc ON c.id = lc.course_id 
         WHERE c.id = ?
-    ");
+    ');
     $stmt->execute([$courseId]);
     $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$course) {
-        $_SESSION['error_message'] = "Course not found.";
-        redirect("manage_courses.php");
+        $_SESSION['error_message'] = 'Course not found.';
+        redirect('manage_courses.php');
     }
 
     $currentLecturerId = $course['lecturer_id'];
@@ -51,20 +54,20 @@ try {
     $lecturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // All programmes
-    $stmt = $pdo->prepare("SELECT id, name FROM programmes ORDER BY name");
+    $stmt = $pdo->prepare('SELECT id, name FROM programmes ORDER BY name');
     $stmt->execute();
     $programmes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    error_log("DB error edit_course.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not load course data.";
-    redirect("manage_courses.php");
+    error_log('DB error edit_course.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not load course data.';
+    redirect('manage_courses.php');
 }
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
     } else {
         $name = trim($_POST['name'] ?? '');
         $course_code = trim($_POST['course_code'] ?? '');
@@ -76,37 +79,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newLecturerId = intval($_POST['lecturer_id'] ?? 0);
 
         if (!$name || !$course_code || $credits <= 0 || !$status || $programme_id <= 0 || $newLecturerId <= 0) {
-            $_SESSION['error_message'] = "Please fill all required fields.";
+            $_SESSION['error_message'] = 'Please fill all required fields.';
         } else {
             try {
                 $pdo->beginTransaction();
 
-                $stmt = $pdo->prepare("
+                $stmt = $pdo->prepare('
                     UPDATE courses
                     SET name = ?, course_code = ?, description = ?, credits = ?, status = ?, class_schedule = ?, programme_id = ?, updated_at = CURRENT_TIMESTAMP()
                     WHERE id = ?
-                ");
+                ');
                 $stmt->execute([$name, $course_code, $description, $credits, $status, $schedule, $programme_id, $courseId]);
 
                 if ($currentLecturerId != $newLecturerId) {
-                    $stmt = $pdo->prepare("DELETE FROM lecturer_courses WHERE course_id = ?");
+                    $stmt = $pdo->prepare('DELETE FROM lecturer_courses WHERE course_id = ?');
                     $stmt->execute([$courseId]);
 
-                    $stmt = $pdo->prepare("INSERT INTO lecturer_courses (lecturer_id, course_id) VALUES (?, ?)");
+                    $stmt = $pdo->prepare('INSERT INTO lecturer_courses (lecturer_id, course_id) VALUES (?, ?)');
                     $stmt->execute([$newLecturerId, $courseId]);
                 }
 
                 $pdo->commit();
-                $_SESSION['success_message'] = "Course updated successfully!";
-                redirect("manage_courses.php");
+                $_SESSION['success_message'] = 'Course updated successfully!';
+                redirect('manage_courses.php');
 
             } catch (PDOException $e) {
                 $pdo->rollBack();
                 if ($e->getCode() === '23000') {
-                    $_SESSION['error_message'] = "Course code already exists.";
+                    $_SESSION['error_message'] = 'Course code already exists.';
                 } else {
-                    error_log("DB error edit_course.php: " . $e->getMessage());
-                    $_SESSION['error_message'] = "Failed to update course.";
+                    error_log('DB error edit_course.php: ' . $e->getMessage());
+                    $_SESSION['error_message'] = 'Failed to update course.';
                 }
             }
         }

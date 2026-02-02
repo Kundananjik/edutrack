@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: config/database.php
  * Purpose: Create a shared PDO connection ($pdo) using environment variables.
@@ -43,10 +44,10 @@ try {
 
 } catch (PDOException $e) {
     // Log the error instead of displaying it in production
-    error_log("Database connection error: " . $e->getMessage());
+    error_log('Database connection error: ' . $e->getMessage());
     if (($_ENV['APP_ENV'] ?? 'development') === 'production') {
-        die("A database connection error occurred. Please try again later.");
+        die('A database connection error occurred. Please try again later.');
     }
     // Show detailed message in non-production to help debugging
-    die("Database connection failed: " . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage());
 }

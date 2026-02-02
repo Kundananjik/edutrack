@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -25,17 +28,17 @@ try {
 
         // Validate input
         if (empty($name)) {
-            $error = "Name cannot be empty.";
+            $error = 'Name cannot be empty.';
         } else {
             // Prepare and execute the update query
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ? WHERE id = ?");
+            $stmt = $pdo->prepare('UPDATE users SET name = ?, phone = ? WHERE id = ?');
             $stmt->execute([$name, $phone, $user_id]);
-            $message = "Profile updated successfully!";
+            $message = 'Profile updated successfully!';
         }
     }
 
     // Fetch the current user data to populate the form
-    $stmt = $pdo->prepare("SELECT name, email, phone FROM users WHERE id = ?");
+    $stmt = $pdo->prepare('SELECT name, email, phone FROM users WHERE id = ?');
     $stmt->execute([$user_id]);
     $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -46,8 +49,8 @@ try {
 
 } catch (Exception $e) {
     // Log the error for debugging and set a user-friendly message
-    error_log("Database error in profile.php: " . $e->getMessage());
-    $error = "An error occurred. Please try again later.";
+    error_log('Database error in profile.php: ' . $e->getMessage());
+    $error = 'An error occurred. Please try again later.';
     $current_name = '';
     $current_email = '';
     $current_phone = '';

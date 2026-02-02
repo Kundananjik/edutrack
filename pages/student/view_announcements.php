@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/student/view_announcements.php
@@ -19,7 +22,7 @@ require_role(['student']);
 $student_id = $_SESSION['user_id'];
 
 try {
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT a.id, a.title, a.message, a.created_at,
                u.name AS sender_name, u.role AS sender_role
         FROM announcements a
@@ -27,7 +30,7 @@ try {
         INNER JOIN users u ON a.created_by = u.id
         WHERE ast.student_id = ?
         ORDER BY a.created_at DESC
-    ");
+    ');
     $stmt->execute([$student_id]);
     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

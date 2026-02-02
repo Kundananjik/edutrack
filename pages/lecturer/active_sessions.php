@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // pages/lecturer/active_sessions.php
@@ -23,27 +26,27 @@ unset($_SESSION['session_started']);
 
 try {
     // Auto-remove expired sessions (older than 4 hours)
-    $stmtCleanup = $pdo->prepare("
+    $stmtCleanup = $pdo->prepare('
         UPDATE attendance_sessions
         SET is_active = 0
         WHERE is_active = 1 AND created_at < NOW() - INTERVAL 4 HOUR
-    ");
+    ');
     $stmtCleanup->execute();
 
     // Fetch active sessions
-    $stmt = $pdo->prepare("
+    $stmt = $pdo->prepare('
         SELECT asess.id, c.course_code, c.name AS course_name, asess.session_code, asess.created_at
         FROM attendance_sessions asess
         JOIN courses c ON asess.course_id = c.id
         WHERE asess.lecturer_id = ? AND asess.is_active = 1
         ORDER BY asess.created_at DESC
-    ");
+    ');
     $stmt->execute([$user_id]);
     $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (Exception $e) {
-    error_log("Database error in active_sessions.php: " . $e->getMessage());
-    $error = "An error occurred while fetching active sessions. Please try again later.";
+    error_log('Database error in active_sessions.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching active sessions. Please try again later.';
 }
 ?>
 

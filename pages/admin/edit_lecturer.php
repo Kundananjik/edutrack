@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -16,7 +19,9 @@ require_login();
 require_role(['admin']);
 
 $id = intval($_GET['id'] ?? 0);
-if ($id <= 0) redirect('manage_lecturers.php');
+if ($id <= 0) {
+    redirect('manage_lecturers.php');
+}
 
 // Fetch lecturer data
 $stmt = $pdo->prepare("SELECT id, name, email, phone, status FROM users WHERE id = ? AND role = 'lecturer'");
@@ -24,13 +29,13 @@ $stmt->execute([$id]);
 $lecturer = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$lecturer) {
-    $_SESSION['error_message'] = "Lecturer not found.";
+    $_SESSION['error_message'] = 'Lecturer not found.';
     redirect('manage_lecturers.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
     } else {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -39,26 +44,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = trim($_POST['password'] ?? '');
 
         if (empty($name) || empty($email)) {
-            $_SESSION['error_message'] = "Name and email are required.";
+            $_SESSION['error_message'] = 'Name and email are required.';
         } else {
             try {
-                $updateQuery = "UPDATE users SET name = ?, email = ?, phone = ?, status = ?";
+                $updateQuery = 'UPDATE users SET name = ?, email = ?, phone = ?, status = ?';
                 $params = [$name, $email, $phone, $status];
                 if (!empty($password)) {
-                    $updateQuery .= ", password = ?";
+                    $updateQuery .= ', password = ?';
                     $params[] = password_hash($password, PASSWORD_DEFAULT);
                 }
-                $updateQuery .= " WHERE id = ?";
+                $updateQuery .= ' WHERE id = ?';
                 $params[] = $id;
 
                 $stmt = $pdo->prepare($updateQuery);
                 $stmt->execute($params);
 
-                $_SESSION['success_message'] = "Lecturer updated successfully!";
+                $_SESSION['success_message'] = 'Lecturer updated successfully!';
                 redirect('manage_lecturers.php');
             } catch (PDOException $e) {
                 error_log($e->getMessage());
-                $_SESSION['error_message'] = "Failed to update lecturer.";
+                $_SESSION['error_message'] = 'Failed to update lecturer.';
             }
         }
     }

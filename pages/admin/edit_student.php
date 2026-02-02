@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -21,22 +24,22 @@ if ($id <= 0) {
 }
 
 // Fetch student data
-$stmt = $pdo->prepare("
+$stmt = $pdo->prepare('
     SELECT u.id, u.name, u.email, u.status, s.student_number, s.programme_id
     FROM users u
     JOIN students s ON u.id = s.user_id
     WHERE u.id = ?
-");
+');
 $stmt->execute([$id]);
 $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$student) {
-    $_SESSION['error_message'] = "Student not found.";
+    $_SESSION['error_message'] = 'Student not found.';
     redirect('manage_students.php');
 }
 
 // Fetch programmes
-$programmes = $pdo->query("SELECT id, name FROM programmes ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$programmes = $pdo->query('SELECT id, name FROM programmes ORDER BY name')->fetchAll(PDO::FETCH_ASSOC);
 
 // Initialize form variables (preserve submitted values)
 $name = $_POST['name'] ?? $student['name'];
@@ -47,38 +50,38 @@ $status = $_POST['status'] ?? $student['status'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
     } else {
         $password = trim($_POST['password'] ?? '');
 
         if (empty($name) || empty($email) || empty($student_number) || $programme_id <= 0) {
-            $_SESSION['error_message'] = "All fields are required.";
+            $_SESSION['error_message'] = 'All fields are required.';
         } else {
             try {
                 $pdo->beginTransaction();
 
-                $updateUserQuery = "UPDATE users SET name = ?, email = ?, status = ?";
+                $updateUserQuery = 'UPDATE users SET name = ?, email = ?, status = ?';
                 $params = [$name, $email, $status];
                 if (!empty($password)) {
-                    $updateUserQuery .= ", password = ?";
+                    $updateUserQuery .= ', password = ?';
                     $params[] = password_hash($password, PASSWORD_DEFAULT);
                 }
-                $updateUserQuery .= " WHERE id = ?";
+                $updateUserQuery .= ' WHERE id = ?';
                 $params[] = $id;
 
                 $stmt = $pdo->prepare($updateUserQuery);
                 $stmt->execute($params);
 
-                $stmt = $pdo->prepare("UPDATE students SET student_number = ?, programme_id = ? WHERE user_id = ?");
+                $stmt = $pdo->prepare('UPDATE students SET student_number = ?, programme_id = ? WHERE user_id = ?');
                 $stmt->execute([$student_number, $programme_id, $id]);
 
                 $pdo->commit();
-                $_SESSION['success_message'] = "Student updated successfully!";
+                $_SESSION['success_message'] = 'Student updated successfully!';
                 redirect('manage_students.php');
             } catch (PDOException $e) {
                 $pdo->rollBack();
                 error_log($e->getMessage());
-                $_SESSION['error_message'] = "Failed to update student.";
+                $_SESSION['error_message'] = 'Failed to update student.';
             }
         }
     }

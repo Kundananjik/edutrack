@@ -26,10 +26,10 @@ require_role(['admin']);
 
 // Fetch distinct departments for filter
 try {
-    $stmt = $pdo->query("SELECT DISTINCT department FROM programmes ORDER BY department");
+    $stmt = $pdo->query('SELECT DISTINCT department FROM programmes ORDER BY department');
     $departments = $stmt->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
-    error_log("Database error fetching departments: " . $e->getMessage());
+    error_log('Database error fetching departments: ' . $e->getMessage());
     $departments = [];
 }
 
@@ -37,22 +37,22 @@ try {
 $departmentFilter = trim($_GET['department'] ?? '');
 
 try {
-    $query = "SELECT * FROM programmes";
+    $query = 'SELECT * FROM programmes';
     $params = [];
 
     if (!empty($departmentFilter)) {
-        $query .= " WHERE department = ?";
+        $query .= ' WHERE department = ?';
         $params[] = $departmentFilter;
     }
 
-    $query .= " ORDER BY id DESC";
+    $query .= ' ORDER BY id DESC';
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $programmes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database error in manage_programmes.php: " . $e->getMessage());
-    $_SESSION['error_message'] = "Could not fetch programme data. Please try again later.";
+    error_log('Database error in manage_programmes.php: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Could not fetch programme data. Please try again later.';
     $programmes = [];
 }
 ?>

@@ -27,5 +27,7 @@
 <main role="main">
     <div class="container">
         <!-- Main content will be injected here -->
-        <?php if (isset($content)) echo $content; ?>
+        <?php if (isset($content)) {
+            echo $content;
+        } ?>
     </div>

@@ -1,17 +1,20 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // auth/login.php
 
 require_once '../includes/config.php';
 require_once '../includes/db.php';
-require_once '../includes/session.php'; 
+require_once '../includes/session.php';
 require_once '../includes/functions.php';
 require_once '../includes/csrf.php';
 
@@ -42,13 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password   = $_POST['password'] ?? '';
 
         if (empty($identifier) || empty($password)) {
-            $error = "Both fields are required.";
+            $error = 'Both fields are required.';
         } else {
             try {
                 $user = null;
 
                 // 1️⃣ Try login by email (for all users)
-                $stmt = $pdo->prepare("SELECT id, name, password, role FROM users WHERE email = :identifier LIMIT 1");
+                $stmt = $pdo->prepare('SELECT id, name, password, role FROM users WHERE email = :identifier LIMIT 1');
                 $stmt->execute(['identifier' => $identifier]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -88,12 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             redirect('login.php?error=unknown_role');
                     }
                 } else {
-                    $error = "Invalid login credentials.";
+                    $error = 'Invalid login credentials.';
                 }
 
             } catch (PDOException $e) {
-                error_log("Login error: " . $e->getMessage());
-                $error = "An error occurred. Please try again later.";
+                error_log('Login error: ' . $e->getMessage());
+                $error = 'An error occurred. Please try again later.';
             }
         }
     }

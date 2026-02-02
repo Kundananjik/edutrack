@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 
@@ -20,11 +23,11 @@ $error = null;
 
 try {
     // Fetch all courses
-    $stmt = $pdo->query("SELECT id, name FROM courses ORDER BY name");
+    $stmt = $pdo->query('SELECT id, name FROM courses ORDER BY name');
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    error_log("Database error in admin/attendance_reports.php: " . $e->getMessage());
-    $error = "An error occurred while fetching courses. Please try again later.";
+    error_log('Database error in admin/attendance_reports.php: ' . $e->getMessage());
+    $error = 'An error occurred while fetching courses. Please try again later.';
 }
 ?>
 <!DOCTYPE html>

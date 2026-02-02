@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -22,29 +25,29 @@ $id = intval($_GET['id'] ?? 0);
 $programme = null;
 if ($id > 0) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM programmes WHERE id = ?");
+        $stmt = $pdo->prepare('SELECT * FROM programmes WHERE id = ?');
         $stmt->execute([$id]);
         $programme = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$programme) {
-            $_SESSION['error_message'] = "Programme not found.";
+            $_SESSION['error_message'] = 'Programme not found.';
             redirect('manage_programmes.php');
         }
 
     } catch (PDOException $e) {
-        error_log("Database error: " . $e->getMessage());
-        $_SESSION['error_message'] = "Could not retrieve programme data.";
+        error_log('Database error: ' . $e->getMessage());
+        $_SESSION['error_message'] = 'Could not retrieve programme data.';
         redirect('manage_programmes.php');
     }
 } else {
-    $_SESSION['error_message'] = "Invalid programme ID.";
+    $_SESSION['error_message'] = 'Invalid programme ID.';
     redirect('manage_programmes.php');
 }
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
-        $_SESSION['error_message'] = "Invalid CSRF token.";
+        $_SESSION['error_message'] = 'Invalid CSRF token.';
     } else {
         $id         = intval($_POST['id'] ?? 0);
         $name       = trim($_POST['name'] ?? '');
@@ -54,30 +57,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $isValid = true;
         if ($id <= 0 || empty($name) || empty($code) || empty($department) || $duration <= 0) {
-            $_SESSION['error_message'] = "All fields are required and duration must be positive.";
+            $_SESSION['error_message'] = 'All fields are required and duration must be positive.';
             $isValid = false;
         }
 
         if ($isValid) {
             try {
-                $stmt = $pdo->prepare("
+                $stmt = $pdo->prepare('
                     UPDATE programmes
                     SET name = ?, code = ?, department = ?, duration = ?, updated_at = NOW()
                     WHERE id = ?
-                ");
+                ');
                 $stmt->execute([$name, $code, $department, $duration, $id]);
 
-                $_SESSION['success_message'] = ($stmt->rowCount() > 0) 
-                    ? "Programme updated successfully!" 
-                    : "No changes made.";
+                $_SESSION['success_message'] = ($stmt->rowCount() > 0)
+                    ? 'Programme updated successfully!'
+                    : 'No changes made.';
 
                 redirect('manage_programmes.php');
             } catch (PDOException $e) {
                 if ($e->getCode() == '23000') {
-                    $_SESSION['error_message'] = "A programme with this code already exists.";
+                    $_SESSION['error_message'] = 'A programme with this code already exists.';
                 } else {
-                    error_log("Database error: " . $e->getMessage());
-                    $_SESSION['error_message'] = "Failed to update programme.";
+                    error_log('Database error: ' . $e->getMessage());
+                    $_SESSION['error_message'] = 'Failed to update programme.';
                 }
             }
         }

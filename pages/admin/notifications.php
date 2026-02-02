@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -39,18 +42,18 @@ try {
         ");
         $stmt->execute();
     } else { // admin sees all
-        $stmt = $pdo->prepare("
+        $stmt = $pdo->prepare('
             SELECT a.title, a.message, a.audience, a.created_at, u.name AS sender
             FROM announcements a
             JOIN users u ON a.created_by = u.id
             ORDER BY a.created_at DESC
-        ");
+        ');
         $stmt->execute();
     }
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Failed to fetch notifications: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to load notifications.";
+    error_log('Failed to fetch notifications: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load notifications.';
     $notifications = [];
 }
 ?>

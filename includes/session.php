@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: includes/session.php
  * Purpose: Session initialization and hygiene (ID regeneration, idle timeout).
@@ -19,17 +20,16 @@ if (!isset($_SESSION['initiated'])) {
 // === Session Timeout (30 minutes) ===
 $timeout_duration = 1800; // 30 minutes
 
-if (isset($_SESSION['LAST_ACTIVITY']) && 
+if (isset($_SESSION['LAST_ACTIVITY']) &&
     (time() - $_SESSION['LAST_ACTIVITY']) > $timeout_duration) {
-    
+
     // Destroy session and redirect to login with timeout flag
     session_unset();
     session_destroy();
 
-    header("Location: /edutrack/index.php?timeout=true");
+    header('Location: /edutrack/index.php?timeout=true');
     exit();
 }
 
 // Update activity timestamp
 $_SESSION['LAST_ACTIVITY'] = time();
-?>

@@ -1,10 +1,14 @@
 <?php
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/config.php';
@@ -12,8 +16,8 @@ require_once '../../includes/db.php';
 require_once '../../vendor/autoload.php';
 require_once '../../includes/auth_check.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 require_login();
 require_role(['admin']);
@@ -43,14 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Reply from EduTrack Support';
-            $mail->Body    = "<p>Hello,</p><p>" . htmlspecialchars($messageBody) . "</p><p>-- EduTrack Team</p>";
+            $mail->Body    = '<p>Hello,</p><p>' . htmlspecialchars($messageBody) . '</p><p>-- EduTrack Team</p>';
             $mail->AltBody = "Hello,\n\n" . $messageBody . "\n\n-- EduTrack Team"; // Plain text version for better compatibility
 
             $mail->send();
 
             // Log reply in database
             // CORRECTED: changed 'admin_id' to 'responder_id'
-            $stmt = $pdo->prepare("INSERT INTO contact_replies (message_id, responder_id, reply_message) VALUES (?, ?, ?)");
+            $stmt = $pdo->prepare('INSERT INTO contact_replies (message_id, responder_id, reply_message) VALUES (?, ?, ?)');
             $stmt->execute([$messageId, $responderId, $messageBody]);
 
             echo "<span style='color:green;'>Reply sent and logged successfully ✅</span>";
@@ -63,4 +67,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<span style='color:red;'>Invalid recipient, message, or message ID ❌</span>";
     }
 }
-?>

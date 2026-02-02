@@ -1,16 +1,20 @@
 <?php
+
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // File: public/send_message.php
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 require_once 'includes/config.php';
 require_once 'includes/db.php';
@@ -19,19 +23,19 @@ require 'vendor/autoload.php';
 $status = '';
 
 // Check POST
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     // Sanitize input
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $subject = trim($_POST['subject'] ?? '');
     $message = trim($_POST['message'] ?? '');
-    
+
     if ($name && $email && filter_var($email, FILTER_VALIDATE_EMAIL) && $subject && $message) {
         try {
             // 1. Save message in DB using PDO
-            $stmt = $pdo->prepare("INSERT INTO contact_messages (name, email, subject, message, created_at)
-                                   VALUES (:name, :email, :subject, :message, NOW())");
+            $stmt = $pdo->prepare('INSERT INTO contact_messages (name, email, subject, message, created_at)
+                                   VALUES (:name, :email, :subject, :message, NOW())');
             $stmt->execute([
                 ':name' => $name,
                 ':email' => $email,
@@ -64,10 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Email failed but message is stored
             $status = 'email_failed';
             // Optional: log error
-            error_log("PHPMailer Error: " . $mail->ErrorInfo);
+            error_log('PHPMailer Error: ' . $mail->ErrorInfo);
         } catch (PDOException $e) {
             $status = 'db_error';
-            error_log("DB Error: " . $e->getMessage());
+            error_log('DB Error: ' . $e->getMessage());
         }
     } else {
         $status = 'invalid_input';
@@ -77,4 +81,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: ../contact.php?status=$status");
     exit;
 }
-?>

@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -19,31 +22,31 @@ require_role(['admin']);
 if (isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     try {
-        $stmt = $pdo->prepare("DELETE FROM announcements WHERE id = ?");
+        $stmt = $pdo->prepare('DELETE FROM announcements WHERE id = ?');
         $stmt->execute([$delete_id]);
-        $_SESSION['success_message'] = "Announcement deleted successfully.";
-        header("Location: view_announcements.php");
+        $_SESSION['success_message'] = 'Announcement deleted successfully.';
+        header('Location: view_announcements.php');
         exit();
     } catch (PDOException $e) {
-        error_log("Failed to delete announcement: " . $e->getMessage());
-        $_SESSION['error_message'] = "Failed to delete announcement.";
-        header("Location: view_announcements.php");
+        error_log('Failed to delete announcement: ' . $e->getMessage());
+        $_SESSION['error_message'] = 'Failed to delete announcement.';
+        header('Location: view_announcements.php');
         exit();
     }
 }
 
 // Fetch announcements
 try {
-    $stmt = $pdo->query("
+    $stmt = $pdo->query('
         SELECT a.id, a.title, a.message, a.audience, a.created_at, u.name AS sender
         FROM announcements a
         JOIN users u ON a.created_by = u.id
         ORDER BY a.created_at DESC
-    ");
+    ');
     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Failed to fetch announcements: " . $e->getMessage());
-    $_SESSION['error_message'] = "Failed to load announcements.";
+    error_log('Failed to fetch announcements: ' . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load announcements.';
     $announcements = [];
 }
 ?>

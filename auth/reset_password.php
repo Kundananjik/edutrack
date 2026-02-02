@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 // auth/reset_password.php
@@ -20,12 +23,12 @@ $success = '';
 
 // Validate token on GET
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $token) {
-    $stmt = $pdo->prepare("SELECT email, expires_at FROM password_resets WHERE token = :token LIMIT 1");
+    $stmt = $pdo->prepare('SELECT email, expires_at FROM password_resets WHERE token = :token LIMIT 1');
     $stmt->execute(['token' => $token]);
     $reset = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$reset || strtotime($reset['expires_at']) < time()) {
-        $error = "This reset link is invalid or has expired.";
+        $error = 'This reset link is invalid or has expired.';
         $token = '';
     }
 }
@@ -40,11 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     if ($new_password !== $confirm_password) {
-        $error = "Passwords do not match.";
+        $error = 'Passwords do not match.';
     } elseif (strlen($new_password) < 6) {
-        $error = "Password must be at least 6 characters.";
+        $error = 'Password must be at least 6 characters.';
     } else {
-        $stmt = $pdo->prepare("SELECT email FROM password_resets WHERE token = :token LIMIT 1");
+        $stmt = $pdo->prepare('SELECT email FROM password_resets WHERE token = :token LIMIT 1');
         $stmt->execute(['token' => $token]);
         $reset = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -52,16 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashed = password_hash($new_password, PASSWORD_DEFAULT);
 
             // Update user's password
-            $update = $pdo->prepare("UPDATE users SET password = :pwd WHERE email = :email");
+            $update = $pdo->prepare('UPDATE users SET password = :pwd WHERE email = :email');
             $update->execute(['pwd' => $hashed, 'email' => $reset['email']]);
 
             // Remove token
-            $pdo->prepare("DELETE FROM password_resets WHERE token = :token")->execute(['token' => $token]);
+            $pdo->prepare('DELETE FROM password_resets WHERE token = :token')->execute(['token' => $token]);
 
             $success = "Password updated successfully! <a href='login.php'>Login here</a>.";
             $token = ''; // Prevent reuse
         } else {
-            $error = "Invalid reset request.";
+            $error = 'Invalid reset request.';
         }
     }
 }

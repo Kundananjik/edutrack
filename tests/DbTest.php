@@ -1,4 +1,5 @@
 <?php
+
 // tests/DbTest.php
 use PHPUnit\Framework\TestCase;
 

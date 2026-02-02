@@ -1,10 +1,13 @@
 <?php
 // Preload (auto-locate includes/preload.php)
-$__et=__DIR__;
-for($__i=0;$__i<6;$__i++){
-    $__p=$__et . '/includes/preload.php';
-    if (file_exists($__p)) { require_once $__p; break; }
-    $__et=dirname($__et);
+$__et = __DIR__;
+for ($__i = 0;$__i < 6;$__i++) {
+    $__p = $__et . '/includes/preload.php';
+    if (file_exists($__p)) {
+        require_once $__p;
+        break;
+    }
+    $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
@@ -22,21 +25,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $admin_id = $_SESSION['user_id'];
 
     if (empty($title) || empty($message)) {
-        $_SESSION['error_message'] = "Title and message cannot be empty.";
-        header("Location: send_announcement.php");
+        $_SESSION['error_message'] = 'Title and message cannot be empty.';
+        header('Location: send_announcement.php');
         exit();
     }
 
     try {
-        $stmt = $pdo->prepare("INSERT INTO announcements (title, message, audience, created_by) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo->prepare('INSERT INTO announcements (title, message, audience, created_by) VALUES (?, ?, ?, ?)');
         $stmt->execute([$title, $message, $audience, $admin_id]);
-        $_SESSION['success_message'] = "Announcement sent successfully!";
-        header("Location: send_announcement.php");
+        $_SESSION['success_message'] = 'Announcement sent successfully!';
+        header('Location: send_announcement.php');
         exit();
     } catch (PDOException $e) {
-        error_log("Announcement insert error: " . $e->getMessage());
-        $_SESSION['error_message'] = "Failed to send announcement.";
-        header("Location: send_announcement.php");
+        error_log('Announcement insert error: ' . $e->getMessage());
+        $_SESSION['error_message'] = 'Failed to send announcement.';
+        header('Location: send_announcement.php');
         exit();
     }
 }
