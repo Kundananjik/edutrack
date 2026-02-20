@@ -20,8 +20,47 @@ require_login();
 require_role(['student']);
 
 $student_id = $_SESSION['user_id'];
+$per_page = 10;
+$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$offset = ($page - 1) * $per_page;
+$total_count = 0;
+$total_pages = 1;
+
+$tz_name = $_SESSION['timezone'] ?? 'UTC';
+try {
+    $tz = new DateTimeZone($tz_name);
+} catch (Exception $e) {
+    $tz = new DateTimeZone('UTC');
+}
+
+function format_announcement_time(?string $dt, DateTimeZone $tz): string {
+    if (empty($dt)) {
+        return '';
+    }
+    try {
+        $d = new DateTime($dt);
+        $d->setTimezone($tz);
+        return $d->format('F j, Y, g:i a');
+    } catch (Exception $e) {
+        return '';
+    }
+}
 
 try {
+    $count_stmt = $pdo->prepare('
+        SELECT COUNT(*)
+        FROM announcements a
+        INNER JOIN announcement_students ast ON ast.announcement_id = a.id
+        WHERE ast.student_id = ?
+    ');
+    $count_stmt->execute([$student_id]);
+    $total_count = (int) $count_stmt->fetchColumn();
+    $total_pages = max(1, (int) ceil($total_count / $per_page));
+    if ($page > $total_pages) {
+        $page = $total_pages;
+        $offset = ($page - 1) * $per_page;
+    }
+
     $stmt = $pdo->prepare('
         SELECT a.id, a.title, a.message, a.created_at,
                u.name AS sender_name, u.role AS sender_role
@@ -30,8 +69,12 @@ try {
         INNER JOIN users u ON a.created_by = u.id
         WHERE ast.student_id = ?
         ORDER BY a.created_at DESC
+        LIMIT ? OFFSET ?
     ');
-    $stmt->execute([$student_id]);
+    $stmt->bindValue(1, $student_id, PDO::PARAM_INT);
+    $stmt->bindValue(2, $per_page, PDO::PARAM_INT);
+    $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+    $stmt->execute();
     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log('Error fetching announcements: ' . $e->getMessage());
@@ -95,12 +138,34 @@ try {
                             </div>
                             <div class="card-footer d-flex justify-content-between small">
                                 <span><i class="fas fa-user"></i> <?= htmlspecialchars(ucfirst($a['sender_role'])) ?>: <?= htmlspecialchars($a['sender_name']); ?></span>
-                                <span><i class="fas fa-clock"></i> <?= htmlspecialchars(date('F j, Y, g:i a', strtotime($a['created_at']))); ?></span>
+                                <span><i class="fas fa-clock"></i> <?= htmlspecialchars(format_announcement_time($a['created_at'], $tz)); ?></span>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
+
+            <?php if ($total_pages > 1): ?>
+                <nav aria-label="Announcement pages" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                            <a class="page-link" href="?page=<?= max(1, $page - 1) ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                            <li class="page-item <?= $p === $page ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $p ?>"><?= $p ?></a>
+                            </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                            <a class="page-link" href="?page=<?= min($total_pages, $page + 1) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            <?php endif; ?>
         <?php endif; ?>
     </main>
 
