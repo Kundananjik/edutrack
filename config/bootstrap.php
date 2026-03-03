@@ -46,3 +46,10 @@ if (file_exists($dbFile)) {
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', realpath(__DIR__ . '/../'));
 }
+
+// Define BASE_URL for consistent linking when not loaded via includes/config.php
+if (!defined('BASE_URL')) {
+    $app_url = $_ENV['APP_URL'] ?? 'http://localhost/edutrack/';
+    define('BASE_URL', rtrim($app_url, '/') . '/');
+    unset($app_url);
+}

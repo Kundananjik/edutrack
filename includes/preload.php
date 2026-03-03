@@ -12,6 +12,8 @@
 require_once __DIR__ . '/error_handlers.php';
 // Apply security headers
 require_once __DIR__ . '/security_headers.php';
+// Common helpers
+require_once __DIR__ . '/functions.php';
 
 // Locate and include config/bootstrap.php by walking up the tree
 $__et_dir = __DIR__;

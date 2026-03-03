@@ -16,7 +16,7 @@ unset($__et,$__i,$__p);
 <head>
     <meta charset="UTF-8">
     <title>EduTrack Help</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="wrapper-main">
@@ -36,7 +36,7 @@ unset($__et,$__i,$__p);
             </p>
         </section>
 
-        <?php require_once 'includes/footer.php'; ?>
+        <?php require_once '../includes/footer.php'; ?>
     </div>
 </body>
 </html>

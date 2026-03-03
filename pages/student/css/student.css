@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 /*
  * File: pages/student/css/student.css
  * Purpose: Styles specific to the EduTrack Student Dashboard
@@ -19,11 +20,11 @@
     --text-muted: #777;
     --border-color: #ddd;
     --border-light: #eee;
-    --container-width: 1200px;
-    --padding-sm: 10px;
-    --padding-md: 20px;
-    --padding-lg: 40px;
-    --gap-md: 20px;
+    --container-width: min(1200px, 95vw);
+    --padding-sm: clamp(0.5rem, 2vw, 0.625rem);
+    --padding-md: clamp(1rem, 3vw, 1.25rem);
+    --padding-lg: clamp(2rem, 5vw, 2.5rem);
+    --gap-md: clamp(1rem, 3vw, 1.25rem);
     --border-radius-sm: 8px;
     --border-radius-lg: 12px;
     --box-shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
@@ -37,7 +38,7 @@
 html, body {
     height: 100%;
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-light);
     color: var(--text-color);
     display: flex;
@@ -83,6 +84,17 @@ html, body {
     height: 40px;
 }
 
+.role-navbar .role-badge {
+    margin-left: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    background: #eafff1;
+    color: var(--primary-color);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
 .nav-links {
     list-style: none;
     display: flex;
@@ -105,6 +117,11 @@ html, body {
 =========================== */
 h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color);
+    font-family: 'Source Serif 4', Georgia, serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
 }
 
 .dashboard-container h1 {
@@ -119,6 +136,61 @@ h1, h2, h3, h4, h5, h6 {
 .card {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--box-shadow-sm);
+    border: 1px solid var(--border-light);
+}
+
+.btn-primary,
+.btn-success {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.site-footer.compact {
+    padding: 20px 15px 11px;
+    font-size: 12px;
+}
+
+.site-footer.compact .footer-container {
+    gap: 13px;
+}
+
+.site-footer.compact .footer-brand .brand-title {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+}
+
+.site-footer.compact .footer-brand .brand-description {
+    max-width: 240px;
+    line-height: 1.4;
+}
+
+.site-footer.compact .footer-column h5 {
+    font-size: 0.8rem;
+    margin-bottom: 7px;
+}
+
+.site-footer.compact .footer-column li {
+    margin-bottom: 6px;
+}
+
+.site-footer.compact .footer-contact {
+    gap: 5px;
+}
+
+.site-footer.compact .footer-contact i {
+    font-size: 1rem;
+}
+
+.site-footer.compact .footer-bottom {
+    margin-top: 11px;
+    padding-top: 9px;
+    font-size: 11px;
 }
 
 .announcement-card {

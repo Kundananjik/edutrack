@@ -81,34 +81,14 @@ try {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/student.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container">
-        <a class="navbar-brand" href="../../index.php">
-            <img src="../../assets/logo.png" alt="EduTrack Logo" height="40">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="../../index.php">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#take-attendance">Take Attendance</a></li>
-                <li class="nav-item"><a class="nav-link" href="#my-attendance">My Attendance</a></li>
-                <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="#summary">Summary</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../logout.php">Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<?php require_once '../../includes/student_navbar.php'; ?>
 
 <div class="container my-5">
     <h1 class="mb-4">Welcome, <?= htmlspecialchars($student['name']); ?>!</h1>
@@ -286,3 +266,4 @@ require_once '../../includes/footer.php';
 ?>
 </body>
 </html>
+

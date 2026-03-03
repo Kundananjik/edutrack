@@ -43,6 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $identifier = trim($_POST['identifier'] ?? '');
         $password   = $_POST['password'] ?? '';
+        $role_hint  = $_POST['role_hint'] ?? 'auto';
+        $remember_me = !empty($_POST['remember_me']);
+
+        $allowed_roles = ['auto', 'student', 'lecturer', 'admin'];
+        if (!in_array($role_hint, $allowed_roles, true)) {
+            $role_hint = 'auto';
+        }
 
         if (empty($identifier) || empty($password)) {
             $error = 'Both fields are required.';
@@ -71,10 +78,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // 3️⃣ Verify credentials
                 if ($user && password_verify($password, $user['password'])) {
+                    if ($role_hint !== 'auto' && $user['role'] !== $role_hint) {
+                        $error = 'Role selection does not match this account.';
+                    } else {
                     session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name']    = $user['name'];
                     $_SESSION['role']    = $user['role'];
+                    $_SESSION['REMEMBER_ME'] = $remember_me;
+
+                    if ($remember_me) {
+                        $cookieParams = session_get_cookie_params();
+                        setcookie(
+                            session_name(),
+                            session_id(),
+                            time() + (60 * 60 * 24 * 30),
+                            $cookieParams['path'],
+                            $cookieParams['domain'],
+                            !empty($_SERVER['HTTPS']),
+                            true
+                        );
+                    }
 
                     switch ($user['role']) {
                         case 'admin':
@@ -89,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         default:
                             session_destroy();
                             redirect('login.php?error=unknown_role');
+                    }
                     }
                 } else {
                     $error = 'Invalid login credentials.';
@@ -108,61 +133,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - EduTrack</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/style.css') ?>">
 </head>
-<body>
+<body class="auth-page">
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container justify-content-center">
-        <!-- Logo -->
-        <a class="navbar-brand" href="../index.php">
-            <img src="../assets/logo.png" alt="EduTrack Logo" height="50">
+<nav class="navbar navbar-light landing-navbar">
+    <div class="container landing-nav">
+        <!-- Brand (Centered) -->
+        <a class="navbar-brand mx-auto" href="../index.php">
+            <img src="<?= asset_url('assets/logo.png') ?>" alt="EduTrack Logo" height="40" width="auto">
         </a>
 
-        <!-- Toggler for mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Links -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
+        <!-- Desktop Navigation -->
+        <div class="d-none d-lg-flex ms-auto landing-nav-actions">
+            <ul class="navbar-nav d-flex flex-row gap-2 align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link" href="../index.php">Home</a>
+                    <a class="btn btn-success ms-2" href="login.php">Login</a>
                 </li>
             </ul>
+        </div>
+        <div class="d-lg-none ms-auto landing-nav-actions">
+            <a href="login.php" class="btn btn-success w-100">Login</a>
         </div>
     </div>
 </nav>
 
+<main class="auth-wrapper">
+    <div class="container auth-layout">
+        <section class="auth-aside">
+            <p class="eyebrow dark">Secure Access</p>
+            <h1>Sign in to EduTrack</h1>
+            <p>Access your role-based dashboard and manage attendance in real time.</p>
+            <ul>
+                <li>Use your student number or institutional email.</li>
+                <li>Attendance records update instantly.</li>
+                <li>Secure sessions with role-based access.</li>
+            </ul>
+        </section>
+        <section class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Enter your credentials to continue.</p>
 
-    <div class="container">
-        <h2>EduTrack Login</h2>
+            <?php if ($error): ?>
+                <div class="error"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
 
-        <?php if ($error): ?>
-            <div class="error"><?php echo htmlspecialchars($error); ?></div>
-        <?php endif; ?>
+            <form class="auth-form" method="POST" action="login.php" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
 
-        <form method="POST" action="login.php" autocomplete="off">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
-            <label for="identifier">Student Number or Email:</label>
-            <input type="text" name="identifier" id="identifier" required>
+                <label for="role_hint">Role (optional)</label>
+                <select name="role_hint" id="role_hint">
+                    <option value="auto">Auto-detect</option>
+                    <option value="student">Student</option>
+                    <option value="lecturer">Lecturer</option>
+                    <option value="admin">Admin</option>
+                </select>
 
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
+                <label for="identifier">Student Number or Email</label>
+                <input type="text" name="identifier" id="identifier" required>
 
-            <button type="submit">Login</button>
-        </form>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
 
-        <p>Don’t have an account? <a href="register.php">Register Here</a></p>
-        <p><a href="forgot_password.php">Forgot Password?</a></p>
+                <div class="auth-options">
+                    <label class="checkbox">
+                        <input type="checkbox" name="remember_me">
+                        <span>Remember me on this device</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-success">Login</button>
+            </form>
+
+            <div class="auth-links">
+                <a href="forgot_password.php">Forgot Password?</a>
+                <span>Don’t have an account? <a href="register.php">Register Here</a></span>
+            </div>
+        </section>
     </div>
+</main>
 
-    <?php require_once '../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>
 
 </body>
 </html>

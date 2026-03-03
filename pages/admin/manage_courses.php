@@ -81,10 +81,10 @@ try {
     <title>Manage Courses - EduTrack Admin</title>
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- Custom Admin CSS (EduTrack Branding) -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -207,7 +207,7 @@ try {
 </main>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script <?= et_csp_attr('script') ?>>
 document.querySelectorAll('.delete-course-form').forEach(form => {
     form.addEventListener('submit', function(e) {
@@ -221,3 +221,4 @@ document.querySelectorAll('.delete-course-form').forEach(form => {
 <?php require_once '../../includes/footer.php'; ?>
 </body>
 </html>
+

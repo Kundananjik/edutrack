@@ -9,33 +9,11 @@ define('ASSET_VERSION', '1.0.2'); // Easy cache busting
 // ============================================
 // BOOTSTRAP & ERROR HANDLING
 // ============================================
-require_once APP_ROOT . '/includes/error_handlers.php';
-
-$bootstrap = APP_ROOT . '/config/bootstrap.php';
-if (file_exists($bootstrap)) {
-    require_once $bootstrap;
-} else {
-    et_simple_error_page('Bootstrap missing', 'Expected config/bootstrap.php but it was not found.');
-}
-
-$dbconf = APP_ROOT . '/config/database.php';
-if (file_exists($dbconf)) {
-    require_once $dbconf;
-}
+require_once APP_ROOT . '/includes/preload.php';
 
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
-
-/**
- * Generate versioned asset URL for cache busting
- * @param string $path Asset path
- * @return string Versioned URL
- */
-function asset_url($path)
-{
-    return $path . '?v=' . ASSET_VERSION;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,69 +31,34 @@ function asset_url($path)
     <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     
     <!-- Stylesheets -->
-    <link href="http://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= asset_url('assets/css/style.css') ?>">
     
     <!-- Bootstrap Icons (lighter alternative to Font Awesome) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="landing">
 
 <!-- ============================================
      NAVIGATION BAR
      ============================================ -->
-<nav class="navbar navbar-light bg-white shadow-sm">
-    <div class="container">
-        <!-- Brand -->
-        <a class="navbar-brand" href="index.php">
+<nav class="navbar navbar-light landing-navbar">
+    <div class="container landing-nav">
+        <!-- Brand (Centered) -->
+        <a class="navbar-brand mx-auto" href="index.php">
             <img src="<?= asset_url('assets/logo.png') ?>" alt="EduTrack Logo" height="40" width="auto">
         </a>
 
-        <!-- Mobile Toggle -->
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav" aria-controls="offcanvasNav" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         <!-- Desktop Navigation -->
-        <div class="d-none d-lg-flex ms-auto">
+        <div class="d-none d-lg-flex ms-auto landing-nav-actions">
             <ul class="navbar-nav d-flex flex-row gap-2 align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="about.php">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="help.php">Help</a>
-                </li>
                 <li class="nav-item">
                     <a class="btn btn-success ms-2" href="auth/login.php">Login</a>
                 </li>
             </ul>
         </div>
-
-        <!-- Mobile Offcanvas Menu -->
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasNavLabel">Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav flex-column gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.php">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="help.php">Help</a>
-                    </li>
-                </ul>
-                <div class="mt-3">
-                    <a href="auth/login.php" class="btn btn-success w-100">Login</a>
-                </div>
-            </div>
+        <div class="d-lg-none ms-auto landing-nav-actions">
+            <a href="auth/login.php" class="btn btn-success w-100">Login</a>
         </div>
     </div>
 </nav>
@@ -123,36 +66,110 @@ function asset_url($path)
 <!-- ============================================
      HERO SECTION
      ============================================ -->
-<section class="hero py-5 bg-light">
-    <div class="container text-center">
-        <h1 class="display-5 fw-bold">Welcome to EduTrack – University Attendance Tracking System</h1>
-        <p class="lead mt-3">Mark attendance in seconds, track in real-time, and save valuable lecturing minutes in every course.</p>
-        <p class="lead">Track, monitor, and manage your university attendance with ease. Access your dashboard from any device, anytime.</p>
+<section class="hero">
+    <div class="container hero-inner">
+        <div class="hero-copy">
+            <p class="eyebrow">Modern Academic Attendance</p>
+            <h1 class="hero-title">EduTrack powers smart, QR-based attendance for universities.</h1>
+            <p class="hero-subtitle">Reduce roll-call time, increase accountability, and give every lecturer a real-time view of engagement.</p>
+            <div class="hero-actions">
+                <a class="btn btn-success" href="auth/login.php">Sign In</a>
+                <a class="btn btn-outline-light" href="about.php">Learn More</a>
+            </div>
+            <div class="hero-meta">
+                <span><i class="bi bi-shield-check" aria-hidden="true"></i> Secure & role-based</span>
+                <span><i class="bi bi-phone" aria-hidden="true"></i> Mobile-first</span>
+                <span><i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Instant analytics</span>
+            </div>
+        </div>
+        <div class="hero-card">
+            <div class="hero-card-header">
+                <span class="pill">Instant Insights</span>
+                <span class="muted">Attendance Overview</span>
+            </div>
+            <div class="hero-card-body">
+                <p class="hero-card-title">Attendance Snapshot</p>
+                <div class="hero-card-grid">
+                    <div>
+                        <p class="stat">86%</p>
+                        <p class="stat-label">Present</p>
+                    </div>
+                    <div>
+                        <p class="stat">12</p>
+                        <p class="stat-label">Late</p>
+                    </div>
+                    <div>
+                        <p class="stat">4</p>
+                        <p class="stat-label">Absent</p>
+                    </div>
+                </div>
+                <div class="hero-card-footer">
+                    <span class="dot"></span>
+                    <span>Real-time updates</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="container stats-grid">
+        <div class="stat-card">
+            <p class="stat-number">10 min</p>
+            <p class="stat-text">Average class time saved</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-number">3 roles</p>
+            <p class="stat-text">Student, Lecturer, Admin views</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-number">100%</p>
+            <p class="stat-text">QR attendance accuracy</p>
+        </div>
+    </div>
+</section>
+
+<section class="trust">
+    <div class="container trust-inner">
+        <div class="trust-copy">
+            <p class="eyebrow dark">Built for academic operations</p>
+            <h2>Trusted by lecturers, admins, and student services teams.</h2>
+            <p>EduTrack supports the daily academic workflow with attendance you can audit, verify, and report with confidence.</p>
+        </div>
+        <div class="trust-logos">
+            <div class="logo-tile">College of Science</div>
+            <div class="logo-tile">Faculty of Education</div>
+            <div class="logo-tile">School of Business</div>
+            <div class="logo-tile">Student Services</div>
+        </div>
     </div>
 </section>
 
 <!-- ============================================
      BENEFITS SECTION
      ============================================ -->
-<section class="benefits py-5">
+<section class="benefits">
     <div class="container">
-        <h2 class="text-center mb-5">Why Choose EduTrack?</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <i class="bi bi-clock-history text-success mb-3" style="font-size: 3rem;" aria-hidden="true"></i>
-                <h4>Save Time</h4>
-                <p>Save up to 10 minutes each class using automated QR attendance. Lecturers can focus on teaching rather than admin tasks.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="bi bi-shield-lock text-success mb-3" style="font-size: 3rem;" aria-hidden="true"></i>
-                <h4>Secure Data</h4>
-                <p>Your student information is encrypted and GDPR-compliant. Industry-standard encryption protects personal and academic info.</p>
-            </div>
-            <div class="col-md-4">
-                <i class="bi bi-file-earmark-text text-success mb-3" style="font-size: 3rem;" aria-hidden="true"></i>
-                <h4>Instant Reports</h4>
-                <p>Download attendance reports instantly for any course or date range. Track engagement and make informed decisions.</p>
-            </div>
+        <div class="section-header">
+            <h2>Why Universities Choose EduTrack</h2>
+            <p>Academic tools designed to reduce manual work and improve student outcomes.</p>
+        </div>
+        <div class="feature-cards">
+            <article class="feature-card">
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                <h3>Save Lecturing Time</h3>
+                <p>Capture attendance in seconds so every class starts on time.</p>
+            </article>
+            <article class="feature-card">
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                <h3>Secure by Design</h3>
+                <p>Role-based access and encrypted records keep student data protected.</p>
+            </article>
+            <article class="feature-card">
+                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                <h3>Instant Reports</h3>
+                <p>Generate course-level summaries and export in seconds.</p>
+            </article>
         </div>
     </div>
 </section>
@@ -160,41 +177,36 @@ function asset_url($path)
 <!-- ============================================
      HOW IT WORKS SECTION
      ============================================ -->
-<section class="how-it-works py-5 bg-light">
+<section class="how-it-works">
     <div class="container">
-        <h2 class="text-center mb-5">How EduTrack Works</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-3">
-                <div class="p-3 border rounded bg-white h-100">
-                    <div class="mb-2 fw-bold fs-4">1</div>
-                    <i class="bi bi-qr-code text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                    <h5>Generate QR Code</h5>
-                    <p>Lecturers create a unique QR code for each class session with one click.</p>
-                </div>
+        <div class="section-header">
+            <h2>How EduTrack Works</h2>
+            <p>Built for campuses that want speed, clarity, and accountability.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <i class="bi bi-qr-code" aria-hidden="true"></i>
+                <h4>Generate QR Code</h4>
+                <p>Lecturers launch a session and share a secure QR instantly.</p>
             </div>
-            <div class="col-md-3">
-                <div class="p-3 border rounded bg-white h-100">
-                    <div class="mb-2 fw-bold fs-4">2</div>
-                    <i class="bi bi-camera text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                    <h5>Scan & Attend</h5>
-                    <p>Students scan the QR code using their smartphone cameras to mark attendance instantly.</p>
-                </div>
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <i class="bi bi-camera" aria-hidden="true"></i>
+                <h4>Scan & Attend</h4>
+                <p>Students scan with any smartphone and mark attendance.</p>
             </div>
-            <div class="col-md-3">
-                <div class="p-3 border rounded bg-white h-100">
-                    <div class="mb-2 fw-bold fs-4">3</div>
-                    <i class="bi bi-graph-up text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                    <h5>Track & Analyze</h5>
-                    <p>View real-time attendance data and generate comprehensive reports for analysis.</p>
-                </div>
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                <h4>Track & Analyze</h4>
+                <p>Dashboards update in real time for lecturers and admins.</p>
             </div>
-            <div class="col-md-3">
-                <div class="p-3 border rounded bg-white h-100">
-                    <div class="mb-2 fw-bold fs-4">4</div>
-                    <i class="bi bi-download text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                    <h5>Export Reports</h5>
-                    <p>Download attendance records in CSV format for administrative purposes and record-keeping.</p>
-                </div>
+            <div class="step-card">
+                <div class="step-number">04</div>
+                <i class="bi bi-download" aria-hidden="true"></i>
+                <h4>Export Reports</h4>
+                <p>Download verified attendance records for every course.</p>
             </div>
         </div>
     </div>
@@ -203,33 +215,37 @@ function asset_url($path)
 <!-- ============================================
      FEATURES SECTION
      ============================================ -->
-<section class="features py-5">
+<section class="features">
     <div class="container">
-        <h2 class="text-center mb-5">Powerful Features</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-3">
-                <i class="bi bi-phone text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                <h5>Mobile-Friendly</h5>
-                <p>Works seamlessly on all devices – smartphones, tablets, and computers.</p>
+        <div class="section-header">
+            <h2>Everything You Need</h2>
+            <p>Simple workflows for staff, clear experiences for students.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-tile">
+                <i class="bi bi-phone" aria-hidden="true"></i>
+                <h4>Mobile-First</h4>
+                <p>Designed for quick scanning and on-the-go access.</p>
             </div>
-            <div class="col-md-3">
-                <i class="bi bi-lightning-charge text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                <h5>Real-Time Updates</h5>
-                <p>See attendance updates instantly as students scan the QR codes.</p>
+            <div class="feature-tile">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                <h4>Real-Time Updates</h4>
+                <p>Attendance syncs instantly across every dashboard.</p>
             </div>
-            <div class="col-md-3">
-                <i class="bi bi-people text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                <h5>Multi-Role Access</h5>
-                <p>Different dashboards for students, lecturers, and administrators.</p>
+            <div class="feature-tile">
+                <i class="bi bi-people" aria-hidden="true"></i>
+                <h4>Multi-Role Access</h4>
+                <p>Dedicated views for Admins, Lecturers, and Students.</p>
             </div>
-            <div class="col-md-3">
-                <i class="bi bi-cloud text-success mb-2" style="font-size: 2rem;" aria-hidden="true"></i>
-                <h5>Cloud-Based</h5>
-                <p>Access your data from anywhere with our secure cloud infrastructure.</p>
+            <div class="feature-tile">
+                <i class="bi bi-cloud" aria-hidden="true"></i>
+                <h4>Cloud Ready</h4>
+                <p>Secure access from any campus or device.</p>
             </div>
         </div>
     </div>
 </section>
+
 
 <!-- ============================================
      FOOTER
@@ -239,7 +255,7 @@ function asset_url($path)
 <!-- ============================================
      SCRIPTS
      ============================================ -->
-<script src="http://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 </body>
 </html>

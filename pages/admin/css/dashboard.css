@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 /*
  * File: pages/admin/css/dashboard.css
  * Purpose: Admin Dashboard CSS matching EduTrack theme & Lecturer Dashboard
@@ -44,9 +45,9 @@
 }
 
 html, body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+  margin: 0;
+  font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-color); /* Now black */
     background-color: var(--background-light);
     display: flex;
@@ -97,6 +98,17 @@ html, body {
 
 .navbar .logo:hover img {
     transform: scale(1.05); /* MODERN: Hover effect */
+}
+
+.role-navbar .role-badge {
+    margin-left: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    background: #eafff1;
+    color: var(--primary-color);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .nav-links {
@@ -150,6 +162,66 @@ html, body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+.card {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-sm);
+    border: 1px solid var(--border-light);
+}
+
+.btn-primary,
+.btn-success {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.site-footer.compact {
+    padding: 20px 15px 11px;
+    font-size: 12px;
+}
+
+.site-footer.compact .footer-container {
+    gap: 13px;
+}
+
+.site-footer.compact .footer-brand .brand-title {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+}
+
+.site-footer.compact .footer-brand .brand-description {
+    max-width: 240px;
+    line-height: 1.4;
+}
+
+.site-footer.compact .footer-column h5 {
+    font-size: 0.8rem;
+    margin-bottom: 7px;
+}
+
+.site-footer.compact .footer-column li {
+    margin-bottom: 6px;
+}
+
+.site-footer.compact .footer-contact {
+    gap: 5px;
+}
+
+.site-footer.compact .footer-contact i {
+    font-size: 1rem;
+}
+
+.site-footer.compact .footer-bottom {
+    margin-top: 11px;
+    padding-top: 9px;
+    font-size: 11px;
+}
+
 /* ===========================
    4. DASHBOARD CONTAINER & HEADINGS (Consistent with lecturer) - MODERN ENHANCEMENTS ADDED
 =========================== */
@@ -179,6 +251,16 @@ html, body {
 .dashboard-container h2 {
     color: var(--primary-color);
     margin-bottom: var(--padding-md);
+    font-family: 'Source Serif 4', Georgia, serif;
+}
+
+.container h1,
+.container h2,
+.container h3,
+.container h4,
+.container h5,
+.container h6 {
+    font-weight: 500;
 }
 
 .dashboard-container h1 { 

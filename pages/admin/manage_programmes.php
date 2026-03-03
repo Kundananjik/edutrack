@@ -64,10 +64,10 @@ try {
     <title>Manage Programmes - EduTrack Admin</title>
     
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -175,7 +175,7 @@ try {
 <?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script <?= et_csp_attr('script') ?>>
 document.querySelectorAll('.delete-programme-form').forEach(form => {
     form.addEventListener('submit', function(e) {
@@ -188,3 +188,4 @@ document.querySelectorAll('.delete-programme-form').forEach(form => {
 
 </body>
 </html>
+

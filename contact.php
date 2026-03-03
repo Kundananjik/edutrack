@@ -29,90 +29,121 @@ $success = isset($_GET['success']);
     <title><?= htmlspecialchars($page_title) ?></title>
     <meta name="description" content="<?= htmlspecialchars($page_description) ?>">
 
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=1.0.2">
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/style.css') ?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="contact-page">
+    <nav class="navbar navbar-light landing-navbar">
+        <div class="container landing-nav">
+            <!-- Brand (Centered) -->
+            <a class="navbar-brand mx-auto" href="index.php">
+                <img src="<?= asset_url('assets/logo.png') ?>" alt="EduTrack Logo" height="40" width="auto">
+            </a>
 
-<?php
-$navbar = __DIR__ . '/includes/navbar.php';
-if (file_exists($navbar)) {
-    require_once $navbar;
-}
-?>
+            <!-- Desktop Navigation -->
+            <div class="d-none d-lg-flex ms-auto landing-nav-actions">
+                <ul class="navbar-nav d-flex flex-row gap-2 align-items-center">
+                    <li class="nav-item">
+                        <a class="btn btn-success ms-2" href="auth/login.php">Login</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-lg-none ms-auto landing-nav-actions">
+                <a href="auth/login.php" class="btn btn-success w-100">Login</a>
+            </div>
+        </div>
+    </nav>
 
-<main class="container my-5">
-    <div class="row">
-        <div class="col-lg-9 mx-auto">
-
-            <h1 class="mb-2">Contact Us</h1>
-            <p class="text-muted">
-                Use the form below to contact EduTrack administration or technical support.
-            </p>
-
-            <?php if ($success): ?>
-                <div class="alert alert-success">
-                    Your message has been submitted successfully. We will respond shortly.
+    <header class="page-hero contact-hero">
+        <div class="container page-hero-inner">
+            <div>
+                <p class="eyebrow dark">Contact Us</p>
+                <h1>Formal support and service inquiries.</h1>
+                <p>Submit requests for technical support, operational guidance, or administrative assistance.</p>
+            </div>
+            <div class="page-hero-card">
+                <div class="page-hero-card-row">
+                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                    <div>
+                        <h4>Email Support</h4>
+                        <p>Standard response within one business day.</p>
+                    </div>
                 </div>
-            <?php endif; ?>
-
-            <div class="row mt-4">
-                <div class="col-md-5 mb-4">
-                    <h5>Contact Information</h5>
-                    <ul class="list-unstyled mt-3">
-                        <li class="mb-2">
-                            <strong>Email</strong><br>
-                            <a href="mailto:kundananjisimukonda@gmail.com">
-                                kundananjisimukonda@gmail.com
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <strong>Phone</strong><br>
-                            <a href="tel:+260967591264">+260 967 591 264</a><br>
-                            <a href="tel:+260971863462">+260 971 863 462</a>
-                        </li>
-                        <li class="mb-2">
-                            <strong>Office Hours</strong><br>
-                            Monday to Friday, 08:00 – 17:00
-                        </li>
-                    </ul>
+                <div class="page-hero-card-row">
+                    <i class="bi bi-telephone" aria-hidden="true"></i>
+                    <div>
+                        <h4>Phone Support</h4>
+                        <p>Weekdays, 08:00 – 17:00 (local time).</p>
+                    </div>
                 </div>
-
-                <div class="col-md-7">
-                    <h5>Send a Message</h5>
-
-                    <form method="post" action="process_contact.php" novalidate>
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Subject</label>
-                            <input type="text" name="subject" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Message</label>
-                            <textarea name="message" rows="5" class="form-control" required></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            Send Message
-                        </button>
-                    </form>
+                <div class="page-hero-card-row">
+                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                    <div>
+                        <h4>Request Tracking</h4>
+                        <p>Requests are logged and tracked to completion.</p>
+                    </div>
                 </div>
             </div>
-
         </div>
-    </div>
-</main>
+    </header>
+
+    <main class="page-section">
+        <div class="container contact-layout">
+            <div class="contact-card">
+                <h2>Contact Information</h2>
+                <ul class="contact-list">
+                    <li>
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <a href="mailto:kundananjisimukonda@gmail.com">kundananjisimukonda@gmail.com</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="bi bi-telephone" aria-hidden="true"></i>
+                        <div>
+                            <strong>Phone</strong>
+                            <a href="tel:+260967591264">+260 967 591 264</a>
+                            <a href="tel:+260971863462">+260 971 863 462</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        <div>
+                            <strong>Office Hours</strong>
+                            <span>Monday to Friday, 08:00 – 17:00</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="contact-card">
+                <h2>Submit a Request</h2>
+                <?php if ($success): ?>
+                    <div class="alert alert-success">
+                        Your message has been submitted successfully. We will respond shortly.
+                    </div>
+                <?php endif; ?>
+                <form method="post" action="process_contact.php" class="contact-form" novalidate>
+                    <label>Full Name</label>
+                    <input type="text" name="name" required>
+
+                    <label>Email Address</label>
+                    <input type="email" name="email" required>
+
+                    <label>Subject</label>
+                    <input type="text" name="subject" required>
+
+                    <label>Message</label>
+                    <textarea name="message" rows="5" required></textarea>
+
+                    <button type="submit" class="btn btn-success">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </main>
 
 <?php
 $footer = __DIR__ . '/includes/footer.php';
@@ -124,13 +155,6 @@ if (file_exists($footer)) {
           </footer>';
 }
 ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script <?= et_csp_attr('script') ?>>
-    const yearEl = document.getElementById('year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-</script>
 
 </body>
 </html>

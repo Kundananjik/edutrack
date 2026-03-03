@@ -31,108 +31,121 @@ $page_description = 'Learn how EduTrack collects, uses, and protects your person
     <meta name="robots" content="index, follow">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     
     <!-- Stylesheets -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=1.0.2">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/style.css') ?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="policy-page">
+    <nav class="navbar navbar-light landing-navbar">
+        <div class="container landing-nav">
+            <!-- Brand (Centered) -->
+            <a class="navbar-brand mx-auto" href="index.php">
+                <img src="<?= asset_url('assets/logo.png') ?>" alt="EduTrack Logo" height="40" width="auto">
+            </a>
 
-<!-- Navigation (if you have a navbar include, add it here) -->
-<?php
-$navbar = __DIR__ . '/includes/navbar.php';
-if (file_exists($navbar)) {
-    require_once $navbar;
-}
-?>
+            <!-- Desktop Navigation -->
+            <div class="d-none d-lg-flex ms-auto landing-nav-actions">
+                <ul class="navbar-nav d-flex flex-row gap-2 align-items-center">
+                    <li class="nav-item">
+                        <a class="btn btn-success ms-2" href="auth/login.php">Login</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-lg-none ms-auto landing-nav-actions">
+                <a href="auth/login.php" class="btn btn-success w-100">Login</a>
+            </div>
+        </div>
+    </nav>
 
-<!-- Main Content -->
-<main class="container my-5">
-    <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <h1 class="mb-3">Privacy Policy</h1>
-            <p class="text-muted">Effective date: August 4, 2025</p>
-            
-            <section class="my-4">
+    <header class="page-hero policy-hero">
+        <div class="container page-hero-inner">
+            <div>
+                <p class="eyebrow dark">Privacy Policy</p>
+                <h1>Privacy and data protection notice.</h1>
+                <p>This Privacy Policy describes the categories of data we collect, the purposes of processing, and the safeguards applied.</p>
+                <p class="policy-date">Effective date: August 4, 2025</p>
+            </div>
+            <div class="page-hero-card">
+                <div class="page-hero-card-row">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    <div>
+                        <h4>Security Controls</h4>
+                        <p>Role-based access, auditability, and protective measures.</p>
+                    </div>
+                </div>
+                <div class="page-hero-card-row">
+                    <i class="bi bi-person-lock" aria-hidden="true"></i>
+                    <div>
+                        <h4>Purpose Limitation</h4>
+                        <p>Processing restricted to academic attendance and administration.</p>
+                    </div>
+                </div>
+                <div class="page-hero-card-row">
+                    <i class="bi bi-envelope-check" aria-hidden="true"></i>
+                    <div>
+                        <h4>Data Subject Rights</h4>
+                        <p>Requests are handled in accordance with applicable policy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-section">
+        <div class="container policy-layout">
+            <section class="policy-card">
                 <h2>1. Introduction</h2>
-                <p>
-                    EduTrack ("we", "our", or "us") is committed to protecting and respecting your privacy.
-                    This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our attendance tracking system.
-                </p>
+                <p>EduTrack ("we", "our", or "us") is committed to protecting personal information. This policy explains how we collect, use, disclose, and safeguard information in connection with the Service.</p>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>2. Information We Collect</h2>
-                <ul>
-                    <li><strong>Personal Identification Information:</strong> Name, email address, student or lecturer ID, and contact details.</li>
-                    <li><strong>Usage Data:</strong> Attendance records, login times, device information, and interaction with the system.</li>
-                    <li><strong>Cookies and Tracking:</strong> We use cookies to improve your user experience and analyze site traffic.</li>
+                <ul class="policy-list">
+                    <li><strong>Personal Identification:</strong> Name, email address, student or lecturer ID, and contact details.</li>
+                    <li><strong>Usage Data:</strong> Attendance records, login times, device information, and system interactions.</li>
+                    <li><strong>Cookies:</strong> Used for system functionality and analytics.</li>
                 </ul>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>3. How We Use Your Information</h2>
-                <p>We use your data to:</p>
-                <ul>
-                    <li>Manage and track attendance accurately.</li>
-                    <li>Provide personalized access to your dashboard.</li>
-                    <li>Improve our services and system security.</li>
-                    <li>Communicate important updates, notifications, and support.</li>
+                <ul class="policy-list">
+                    <li>Provide and operate the Service, including attendance tracking.</li>
+                    <li>Authenticate users and manage role-based access.</li>
+                    <li>Maintain security, integrity, and auditability.</li>
+                    <li>Communicate operational notices and support responses.</li>
                 </ul>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>4. Data Security</h2>
-                <p>
-                    We implement industry-standard security measures to protect your data against unauthorized access, alteration, disclosure, or destruction.
-                    However, no internet transmission is completely secure. Please use strong passwords and keep your login credentials confidential.
-                </p>
+                <p>We implement reasonable administrative, technical, and physical safeguards. However, no method of transmission or storage is fully secure; users are responsible for maintaining credential confidentiality.</p>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>5. Sharing Your Information</h2>
-                <p>
-                    We do not sell, trade, or rent your personal information to third parties.
-                    We may share your information with authorized university staff or service providers strictly for attendance management and system maintenance.
-                </p>
+                <p>We do not sell personal information. We may disclose data to authorized university personnel or service providers for attendance management, system maintenance, or compliance purposes.</p>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>6. Your Rights</h2>
-                <p>
-                    You have the right to access, update, or request deletion of your personal information.
-                    To exercise these rights, please contact us using the information provided below.
-                </p>
+                <p>Subject to applicable law and institutional policy, you may request access, correction, or deletion of personal information.</p>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>7. Cookies Policy</h2>
-                <p>
-                    EduTrack uses cookies to enhance your experience. You can set your browser to refuse cookies or alert you when cookies are being sent.
-                    Note that some parts of the system may not function properly without cookies.
-                </p>
+                <p>You may disable cookies in your browser; certain features may be unavailable or impaired.</p>
             </section>
-            
-            <section class="my-4">
-                <h2>8. Changes to This Privacy Policy</h2>
-                <p>
-                    We may update this Privacy Policy periodically. We encourage you to review this page regularly for any changes.
-                    Continued use of EduTrack after changes constitutes your acceptance of the updated policy.
-                </p>
+            <section class="policy-card">
+                <h2>8. Changes to This Policy</h2>
+                <p>We may modify this policy from time to time. Continued use of the Service after publication of changes constitutes acceptance.</p>
             </section>
-            
-            <section class="my-4">
+            <section class="policy-card">
                 <h2>9. Contact Us</h2>
-                <p>If you have questions or concerns about this Privacy Policy, please contact us:</p>
-                <ul>
+                <ul class="policy-list">
                     <li>Email: <a href="mailto:kundananjisimukonda@gmail.com">kundananjisimukonda@gmail.com</a></li>
                     <li>Phone: <a href="tel:+260967591264">+260 967 591 264</a> / <a href="tel:+260971863462">+260 971 863 462</a></li>
                 </ul>
             </section>
         </div>
-    </div>
-</main>
+    </main>
 
 <!-- Footer -->
 <?php
@@ -145,15 +158,6 @@ if (file_exists($footer)) {
           </footer>';
 }
 ?>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Year Update Script -->
-<script <?= et_csp_attr('script') ?>>
-    const yearEl = document.getElementById('year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-</script>
 
 </body>
 </html>

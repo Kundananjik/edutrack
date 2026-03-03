@@ -64,25 +64,12 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
 <body>
-<nav class="navbar">
-    <div class="container">
-        <div class="logo">
-            <a href="../../index.php">
-                <img src="../../assets/logo.png" alt="EduTrack Logo">
-            </a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="../../index.php">Home</a></li>
-            <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="../../logout.php">Logout</a></li>
-        </ul>
-    </div>
-</nav>
+<?php require_once '../../includes/lecturer_navbar.php'; ?>
 
 <div class="dashboard-container">
     <a href="dashboard.php" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
@@ -116,3 +103,4 @@ try {
 <?php require_once '../../includes/footer.php'; ?>
 </body>
 </html>
+

@@ -10,15 +10,21 @@ for ($__i = 0;$__i < 6;$__i++) {
     $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
-// pages/contact/contact_us.php
-require_once(__DIR__ . '/../../includes/header.php'); // optional header include
+// pages/student/contact.php
 require_once(__DIR__ . '/../../includes/csrf.php');
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - EduTrack Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/student.css">
+</head>
+<body>
 
-<!-- Bootstrap CSS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Your custom stylesheet -->
-<link rel="stylesheet" href="../../assets/css/style.css">
+<?php require_once '../../includes/student_navbar.php'; ?>
 
 <main class="container my-5">
     <h2 class="mb-3">Contact Us</h2>
@@ -53,6 +59,7 @@ require_once(__DIR__ . '/../../includes/csrf.php');
 <!-- Optional Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<?php
-require_once(__DIR__ . '/../../includes/footer.php');
-?>
+<?php require_once '../../includes/footer.php'; ?>
+
+</body>
+</html>

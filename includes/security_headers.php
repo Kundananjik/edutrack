@@ -37,10 +37,10 @@ if (!headers_sent()) {
     $csp = [
         "default-src 'self'",
         "img-src 'self' data:",
-        "style-src 'self' 'unsafe-inline' http://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-        "script-src 'self' 'nonce-{$nonce}' http://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
-        "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
-        "connect-src 'self'",
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+        "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+        "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com",
+        "connect-src 'self' https://cdn.jsdelivr.net",
         "object-src 'none'",
         "base-uri 'self'",
         "frame-ancestors 'self'"

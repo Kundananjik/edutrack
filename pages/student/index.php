@@ -25,26 +25,14 @@ $dotenv->load();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduTrack - Smart Attendance System</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>EduTrack - Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/student.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="container">
-        <div class="logo">
-            <a href="index.php"><img src="assets/logo.png" alt="EduTrack Logo"></a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.php">Home</a></li>
-            <li><a href="about.php">About</a></li>
-            <li><a href="help.php">Help</a></li>
-            <li><a href="auth/login.php">Login</a></li>
-        </ul>
-    </div>
-</nav>
+<?php require_once '../../includes/student_navbar.php'; ?>
 
 <!-- HERO SECTION -->
 <section class="hero">
@@ -102,3 +90,4 @@ $dotenv->load();
 
 </body>
 </html>
+

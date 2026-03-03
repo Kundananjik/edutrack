@@ -17,8 +17,11 @@ if (!isset($_SESSION['initiated'])) {
     $_SESSION['initiated'] = true;
 }
 
-// === Session Timeout (30 minutes) ===
-$timeout_duration = 1800; // 30 minutes
+// === Session Timeout ===
+$timeout_duration = 1800; // default 30 minutes
+if (!empty($_SESSION['REMEMBER_ME'])) {
+    $timeout_duration = 60 * 60 * 24 * 30; // 30 days
+}
 
 if (isset($_SESSION['LAST_ACTIVITY']) &&
     (time() - $_SESSION['LAST_ACTIVITY']) > $timeout_duration) {

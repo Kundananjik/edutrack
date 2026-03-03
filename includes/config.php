@@ -45,4 +45,6 @@ define('DB_PASS', $__DB_PASS);
 unset($__DB_HOST, $__DB_NAME, $__DB_USER, $__DB_PASS);
 
 // Base URL for redirects or asset linking
-define('BASE_URL', $_ENV['APP_URL'] ?? 'http://localhost/edutrack/');
+if (!defined('BASE_URL')) {
+    define('BASE_URL', rtrim($_ENV['APP_URL'] ?? 'http://localhost/edutrack/', '/') . '/');
+}

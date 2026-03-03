@@ -113,27 +113,12 @@ if ($hour < 12) {
     <link rel="stylesheet" href="css/dashboard.css">
 
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<!-- ============================================
-     NAVBAR
-=============================================== -->
-<nav class="navbar navbar-expand-lg" style="background-color:#2fa360;">
-    <div class="container">
-        <a class="navbar-brand text-white" href="../../index.php">
-            <img src="../../assets/logo.png" alt="EduTrack Logo" height="40">
-        </a>
-
-        <!-- Menu Items -->
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link text-white" href="../../index.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="../../logout.php">Logout</a></li>
-        </ul>
-    </div>
-</nav>
+<?php require_once '../../includes/lecturer_navbar.php'; ?>
 
 <!-- ============================================
      MAIN DASHBOARD CONTENT
@@ -288,3 +273,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+

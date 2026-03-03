@@ -10,11 +10,20 @@ for ($__i = 0;$__i < 6;$__i++) {
     $__et = dirname($__et);
 }
 unset($__et,$__i,$__p);
-// pages/legal/privacy_policy.php
-require_once(__DIR__ . '/../../includes/header.php'); // optional header include
+// pages/student/privacy-policy.php
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - EduTrack Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/student.css">
+</head>
+<body>
 
-<link rel="stylesheet" href="../../assets/css/style.css">
+<?php require_once '../../includes/student_navbar.php'; ?>
 
 <main class="container my-5">
     <h1 class="mb-4">Privacy Policy</h1>
@@ -98,6 +107,7 @@ require_once(__DIR__ . '/../../includes/header.php'); // optional header include
     </section>
 </main>
 
-<?php
-require_once(__DIR__ . '/../../includes/footer.php');
-?>
+<?php require_once '../../includes/footer.php'; ?>
+
+</body>
+</html>
