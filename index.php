@@ -137,7 +137,7 @@ require_once APP_ROOT . '/includes/preload.php';
             <p>EduTrack supports the daily academic workflow with attendance you can audit, verify, and report with confidence.</p>
         </div>
         <div class="trust-logos">
-            <div class="logo-tile">College of Science</div>
+            <div class="logo-tile">School of Humanities</div>
             <div class="logo-tile">Faculty of Education</div>
             <div class="logo-tile">School of Business</div>
             <div class="logo-tile">Student Services</div>
