@@ -36,11 +36,12 @@ if (!headers_sent()) {
     // Remove 'unsafe-inline' and permit inline via nonce
     $csp = [
         "default-src 'self'",
-        "img-src 'self' data:",
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
-        "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
-        "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com",
-        "connect-src 'self' https://cdn.jsdelivr.net",
+        "img-src 'self' data: https://cdn.jotfor.ms https://www.jotform.com",
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jotfor.ms https://www.jotform.com",
+        "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jotfor.ms https://www.jotform.com",
+        "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com https://cdn.jotfor.ms https://www.jotform.com",
+        "connect-src 'self' https://cdn.jsdelivr.net https://cdn.jotfor.ms https://agent.jotform.com https://www.jotform.com https://events.jotform.com wss://ai.jotform.com",
+        "frame-src https://agent.jotform.com https://www.jotform.com",
         "object-src 'none'",
         "base-uri 'self'",
         "frame-ancestors 'self'"
@@ -51,5 +52,5 @@ if (!headers_sent()) {
     header('Referrer-Policy: same-origin');
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
-    header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    header('Permissions-Policy: geolocation=(), microphone=("https://www.jotform.com" "https://agent.jotform.com"), camera=("https://www.jotform.com" "https://agent.jotform.com")');
 }
