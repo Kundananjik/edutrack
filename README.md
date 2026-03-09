@@ -1,239 +1,161 @@
-# EduTrack - University Attendance & Academic Management System
+# EduTrack
 
-EduTrack is a comprehensive web-based system designed to streamline university academic and attendance management. It provides role-based dashboards for **Admins**, **Lecturers**, and **Students**, ensuring effective monitoring, reporting, and management of academic activities.
+EduTrack is a web-based university attendance and academic management system with role-based workflows for admins, lecturers, and students.
 
----
+## What It Covers
 
-## Features
-
-### Authentication & Security
-- Secure login system with role-based access (Admin, Lecturer, Student).
-- Password reset and email verification.
-- Role-based access control (RBAC).
-- Account activation/deactivation.
-
-### Admin Dashboard
-- **User Management:** Add, edit, delete, and manage Students, Lecturers, and Admins.
-- **Academic Structure:** Manage Departments, Programmes, and Courses.
-- **Enrollment Management:** Enroll students manually or in bulk, manage transfers, and withdrawals.
-- **Attendance Control:** Configure attendance policies, approve correction requests, override attendance with audit trails.
-- **Reporting & Analytics:** Generate attendance reports (PDF/Excel/CSV), visualize trends, identify low attendance.
-
-### Lecturer Dashboard
-- View and manage assigned courses, students, and departments.
-- Mark and track student attendance (QR code-based system).
-- Manage class times and schedules.
-- Access attendance reports for courses.
-
-### Student Dashboard
-- View enrolled courses and programmes.
-- Scan QR codes to mark attendance.
-- Track personal attendance records.
-- Receive notifications for low attendance.
-
-### QR Code Attendance Tracking
-- Unique QR code generated for each course session.
-- Students scan to mark attendance.
-- Logs attendance in real-time.
-
----
+- Authentication with role-based access control.
+- Admin management for students, lecturers, programmes, courses, and reports.
+- Lecturer tools for sessions, attendance, announcements, and reporting.
+- Student views for dashboard, announcements, and attendance tracking.
+- QR-supported attendance flow and reporting/export features.
+- Embedded AI assistant widget on the landing page (Jotform Agent).
 
 ## Tech Stack
-- **Frontend:** HTML, CSS (`style.css` with EduTrack branding), JavaScript (vanilla JS).
-- **Backend:** PHP (MVC structured).
-- **Database:** MySQL.
-- **Reports:** PDF/Excel/CSV export support.
 
----
+- PHP 8+ (server-side app)
+- MySQL (database)
+- Composer (PHP dependencies)
+- Vite + vanilla JavaScript (frontend asset build)
+- Jotform Agent embed (floating AI assistant on landing page)
 
 ## Project Structure
 
-Key directories and entry points:
+- `public/index.php`: front controller and route entrypoint.
+- `index.php`: landing page rendered for `/`.
+- `auth/`: authentication pages.
+- `pages/admin/`, `pages/lecturer/`, `pages/student/`: role-specific pages.
+- `controllers/student/`: student-facing controller actions (for example attendance marking).
+- `config/bootstrap.php`: app bootstrap (autoload, env load, DB bootstrap).
+- `config/database.php`: shared PDO connection setup.
+- `includes/`: shared config, session, auth checks, CSRF, helpers, layout includes.
+- `tests/`: PHPUnit tests.
+- `edutrack_db.sql`: database schema/data bootstrap script.
 
-- **Root entry:** `index.php` – public landing page and marketing site.
-- **Front controller:** `public/index.php` – central router; all HTTP requests should be rewritten here by `.htaccess` or the web server.
-- **Routing targets (allow-listed in `public/index.php`):**
-  - Root pages: `about.php`, `help.php`, `contact.php`, `privacy-policy.php`, `terms-of-service.php`, `send_message.php`, `send_messages.php`, `logout.php`.
-  - Auth: `auth/` (login, register, password reset, etc.).
-  - Dashboards & pages:
-    - Admin: `pages/admin/*.php` (manage students, lecturers, programmes, courses, attendance reports, announcements, messages, etc.).
-    - Lecturer: `pages/lecturer/*.php` (my courses, sessions, attendance, reports, profile, announcements).
-    - Student: `pages/student/*.php` (dashboard, announcements, help, policies).
-  - Controllers: `controllers/student/*.php` (e.g. `mark_attendance.php`).
+## Requirements
 
-- **Configuration & bootstrap:**
-  - `config/bootstrap.php` – loads Composer autoloader, `.env` via `vlucas/phpdotenv`, registers error handlers, and bootstraps the database (`config/database.php`).
-  - `config/database.php` – database credentials and connection bootstrap (used by `config/bootstrap.php`).
-  - `includes/config.php` – defines constants like `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` consumed by `includes/db.php`.
+- PHP `>=8.0`
+- MySQL or MariaDB
+- Composer
+- Node.js + npm
+- PHP extension: `pdo_mysql`
 
-- **Includes & infrastructure:**
-  - `includes/preload.php` – shared preload for entry scripts; registers error handlers, security headers, and includes `config/bootstrap.php`.
-  - `includes/error_handlers.php` – global error/exception/shutdown handlers and helpers like `et_simple_error_page()`.
-  - `includes/security_headers.php` – common security-related HTTP headers.
-  - `includes/db.php` – PDO MySQL bootstrap using constants from `includes/config.php`.
-  - `includes/session.php`, `includes/auth_check.php`, `includes/csrf.php`, `includes/functions.php` – session, auth, CSRF protection, and helper utilities.
-  - `includes/header.php`, `includes/admin_header.php`, `includes/footer.php`, `includes/unauthorized.php` – shared layout and access control views.
+## Setup
 
-- **Vendor & tests:**
-  - `vendor/` – Composer dependencies (autoloaded by `config/bootstrap.php`).
-  - `tests/` – PHPUnit tests (e.g. `AuthTest.php`, `DbTest.php`) and `tests/bootstrap.php` for test environment setup.
+1. Clone into your web root (example: `C:\xampp\htdocs\edutrack`).
+2. Install PHP dependencies:
 
----
-
-## Routing Overview
-
-All web traffic is routed through the front controller:
-
-- Web server document root → `public/`
-- `.htaccess` (or equivalent) rewrites all requests to `public/index.php`.
-
-High-level flow:
-
-```
-Browser Request           Web Server Rewrite          Front Controller & Router
------------------   ---------------------------   -----------------------------
-https://.../          → public/index.php           → includes/preload.php
-  /                    (document root = public/)     (error handlers, security,
-                                                     bootstrap, env, DB)
-                                                  → inspect ?path=...
-                                                    (e.g. auth/login,
-                                                     pages/admin/dashboard)
-                                                  → map to allowed PHP file
-                                                    or show 404 via
-                                                    et_simple_error_page()
+```bash
+composer install
 ```
 
-1. **User hits URL** → `public/index.php` receives the request.
-2. `includes/preload.php` is loaded (error handlers, security headers, bootstrap).
-3. The `path` query parameter is read (e.g. `/auth/login`, `/pages/admin/dashboard`).
-4. Router checks against allow-listed routes:
-   - Root pages like `/about`, `/help`, `/contact` → corresponding `*.php` at the project root.
-   - `/auth/...` → `auth/*.php` (authentication screens).
-   - `/pages/admin/...` → `pages/admin/*.php` (admin dashboard and management pages).
-   - `/pages/lecturer/...` → `pages/lecturer/*.php`.
-   - `/pages/student/...` → `pages/student/*.php`.
-   - `/controllers/student/...` → `controllers/student/*.php` (e.g. marking attendance).
-5. If the route is unknown or the file does not exist, a 404 is returned via `et_simple_error_page()`.
+3. Install frontend dependencies:
 
-### Common URLs → PHP files
+```bash
+npm install
+```
 
-| URL path                          | PHP file                             | Role       |
-|-----------------------------------|--------------------------------------|-----------|
-| `/`                               | `index.php`                          | Public    |
-| `/about`                          | `about.php`                          | Public    |
-| `/help`                           | `help.php`                           | Public    |
-| `/contact`                        | `contact.php`                        | Public    |
-| `/auth/login`                     | `auth/login.php`                     | All       |
-| `/auth/register`                  | `auth/register.php`                  | Student   |
-| `/pages/admin/dashboard`          | `pages/admin/dashboard.php`          | Admin     |
-| `/pages/admin/manage_students`    | `pages/admin/manage_students.php`    | Admin     |
-| `/pages/admin/attendance_reports` | `pages/admin/attendance_reports.php` | Admin     |
-| `/pages/lecturer/dashboard`       | `pages/lecturer/dashboard.php`       | Lecturer  |
-| `/pages/lecturer/my_courses`      | `pages/lecturer/my_courses.php`      | Lecturer  |
-| `/pages/student/dashboard`        | `pages/student/dashboard.php`        | Student   |
-| `/pages/student/view_announcements` | `pages/student/view_announcements.php` | Student |
-| `/controllers/student/mark_attendance` | `controllers/student/mark_attendance.php` | Student/Lecturer |
+4. Create and configure `.env` in project root:
 
-### Role dashboards → files
+```env
+APP_ENV=development
+APP_DEBUG=1
+APP_URL=http://localhost/edutrack/
+DB_HOST=127.0.0.1
+DB_NAME=edutrack
+DB_USER=root
+DB_PASS=
+```
 
-**Admin** (under `pages/admin/`):
+5. Create database (example: `edutrack`) and import:
 
-- `dashboard.php` – admin overview.
-- `manage_students.php`, `add_student.php`, `edit_student.php`, `delete_student.php`.
-- `manage_lecturers.php`, `add_lecturer.php`, `edit_lecturer.php`, `delete_lecturer.php`.
-- `manage_programmes.php`, `add_programme.php`, `edit_programme.php`, `delete_programme.php`, `view_programme.php`.
-- `manage_courses.php`, `add_course.php`, `edit_course.php`, `delete_course.php`, `view_course.php`.
-- `attendance_reports.php`, `generate_report.php`.
-- `send_announcement.php`, `view_announcements.php`, `notifications.php`.
-- `contact_messages.php`, `view_messages.php`, `reply_message.php`, `send_message.php`.
-- `help.php`, `privacy-policy.php`, `terms-of-service.php`.
+```bash
+mysql -u root -p edutrack < edutrack_db.sql
+```
 
-**Lecturer** (under `pages/lecturer/`):
+6. Ensure your web server points to `public/` as document root (recommended).
 
-- `dashboard.php` – lecturer overview.
-- `my_courses.php`, `view_course.php`.
-- `start_session.php`, `stop_session.php`, `active_sessions.php`, `view_session.php`.
-- `attendance_reports.php`, `generate_report.php`.
-- `my_students.php`.
-- `profile.php`, `update_profile.php`.
-- `send_announcement.php`, `view_announcements.php`.
-- `contact.php`, `privacy-policy.php`, `terms-of-service.php`.
+## Running the App
 
-**Student** (under `pages/student/`):
+### Option 1: Local PHP server
 
-- `dashboard.php` – student overview.
-- `index.php` – student landing/entry.
-- `view_announcements.php`.
-- `contact.php`, `help.php`, `privacy-policy.php`, `terms-of-service.php`.
+```bash
+composer start
+```
 
----
+Then open `http://localhost:8000`.
 
-## Installation & Setup
+### Option 2: Apache/XAMPP
 
-1. **Clone the repository** into your web server directory (e.g. `htdocs/edutrack`).
-2. **Install PHP dependencies:**
-   ```bash
-   composer install
-   ```
-3. **Create a database** in MySQL (e.g. `edutrack`). Import the provided SQL schema if available.
-4. **Configure environment variables:** create a `.env` file in the project root:
-   ```env
-   APP_ENV=development
-   APP_DEBUG=1
-   DB_HOST=127.0.0.1
-   DB_NAME=edutrack
-   DB_USER=root
-   DB_PASS=
-   ```
-5. **Configure PHP constants** in `includes/config.php` (these should match your `.env` values):
-   ```php
-   <?php
-   define('DB_HOST', '127.0.0.1');
-   define('DB_NAME', 'edutrack');
-   define('DB_USER', 'root');
-   define('DB_PASS', '');
-   ```
-6. **Ensure extensions are enabled:** PHP must have `pdo_mysql` enabled for `includes/db.php` to work.
-7. **Set the document root / virtual host:** point your web server to the `public/` directory so that all requests go through `public/index.php`.
+- Place project in `htdocs`.
+- Set virtual host/document root to `public/`.
+- Open your configured local URL (for example `http://localhost/edutrack/public/` if no vhost is set).
 
----
+## Frontend Assets
 
-## Error Handling & Debugging
+- Development watcher:
 
-- Global error/exception/fatal handlers are registered via `includes/error_handlers.php` and are always loaded by `includes/preload.php` or `config/bootstrap.php`.
-- Configure verbosity in `.env`:
-  - Development (detailed errors): `APP_ENV=development` and `APP_DEBUG=1`
-  - Production (friendly messages): `APP_ENV=production` and `APP_DEBUG=0`
+```bash
+npm run dev
+```
 
-### Quick manual tests
+- Production build:
 
-- Visit the landing page via the front controller (recommended): `http://localhost/edutrack/public/`.
-- Or hit the root directly (if your document root is the project root): `http://localhost/edutrack/`.
-- To verify error handling and DB connectivity, you can temporarily create files under a `debug/` folder, for example:
-  - `debug/handler_test.php`
-    ```php
-    <?php
-    require_once __DIR__ . '/../includes/preload.php';
-    throw new Exception('Test exception from handler_test.php');
-    ```
-  - `debug/db_test.php`
-    ```php
-    <?php
-    require_once __DIR__ . '/../includes/preload.php';
-    $ok = $pdo->query('SELECT 1')->fetchColumn();
-    echo $ok ? 'DB OK' : 'DB query failed';
-    ```
-- Remove these temporary debug files after testing.
+```bash
+npm run build
+```
 
----
+## Testing and Quality
+
+- Run PHPUnit:
+
+```bash
+composer test
+```
+
+- Optional code style check/fix (if using dev dependencies):
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
+## Routing Notes
+
+- Requests are handled by `public/index.php`.
+- Allowed root pages include: `about`, `help`, `contact`, `privacy-policy`, `terms-of-service`.
+- Allowed route prefixes include:
+  - `auth`
+  - `pages/admin`
+  - `pages/lecturer`
+  - `pages/student`
+  - `controllers/student`
+
+## AI Agent
+
+- A floating Jotform AI agent is embedded in `index.php` for visitor assistance.
+- Embed source: `https://cdn.jotfor.ms/agent/embedjs/.../embed.js`.
+- CSP and permissions allowlist for this integration is configured in `includes/security_headers.php` (including `agent.jotform.com` and related endpoints).
+
+## Troubleshooting
+
+- If you see autoload errors, run `composer install`.
+- If DB connection fails, verify `.env` values and that MySQL is running.
+- If MySQL driver errors appear, enable `pdo_mysql` in PHP.
+- Use `APP_ENV=development` and `APP_DEBUG=1` during local debugging.
+
+## Additional Docs
+
+- [API Documentation](API_DOCUMENTATION.md)
+- [User Manual](USER_MANUAL.md)
+- [Contributing](CONTRIBUTING.md)
+- [License Agreement](LICENCE.md)
 
 ## License
 
-This project is proprietary software developed for educational purposes. All rights reserved.
+See [LICENCE.md](LICENCE.md) for the project license terms.
 
 ## Contact
 
-For questions or support, contact:
-- **Developer:** Kundananji Simukonda
-- **Email:** kundananjisimukonda@gmail.com
-- **Phone:** +260 967 591 264 / +260 971 863 462
+- Developer: Kundananji Simukonda
+- Email: kundananjisimukonda@gmail.com
+- Phone: +260 967 591 264 / +260 971 863 462
