@@ -103,7 +103,8 @@ if ($hour < 12) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <title>EduTrack - Lecturer Dashboard</title>
 
     <!-- Bootstrap -->

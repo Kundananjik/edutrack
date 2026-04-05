@@ -52,5 +52,5 @@ if (!headers_sent()) {
     header('Referrer-Policy: same-origin');
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
-    header('Permissions-Policy: geolocation=(), microphone=("https://www.jotform.com" "https://agent.jotform.com"), camera=("https://www.jotform.com" "https://agent.jotform.com")');
+    header('Permissions-Policy: geolocation=(), microphone=(self "https://www.jotform.com" "https://agent.jotform.com"), camera=(self "https://www.jotform.com" "https://agent.jotform.com")');
 }

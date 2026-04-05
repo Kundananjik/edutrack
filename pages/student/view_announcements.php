@@ -84,7 +84,8 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <title>View Announcements - EduTrack</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">

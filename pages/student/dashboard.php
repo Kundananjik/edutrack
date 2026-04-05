@@ -75,7 +75,8 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <meta name="csrf-token" content="<?= htmlspecialchars(get_csrf_token()) ?>">
     <title>Student Dashboard - EduTrack</title>
     <!-- Bootstrap CSS -->
@@ -98,7 +99,7 @@ try {
         <h2>Take Attendance</h2>
         <p>Scan the QR code provided by your lecturer to mark your attendance.</p>
         <div id="qr-reader" class="mb-3"></div>
-        <p id="qr-result"></p>
+        <div id="qr-result" class="alert d-none" role="status" aria-live="polite"></div>
 
         <h5>Or Sign-in Manually</h5>
         <?php if (!empty($_SESSION['sign_in_message'])): ?>
@@ -220,7 +221,23 @@ try {
 
 <!-- JS -->
 <script <?= et_csp_attr('script') ?>>
+let scanInProgress = false;
+let attendanceCaptured = false;
+
+function showQrFeedback(message, type = 'info') {
+    const el = document.getElementById('qr-result');
+    const bsType = type === 'success' ? 'success' : (type === 'danger' ? 'danger' : 'info');
+    el.className = `alert alert-${bsType}`;
+    el.textContent = message;
+}
+
 function onScanSuccess(decodedText) {
+    if (scanInProgress || attendanceCaptured) {
+        return;
+    }
+    scanInProgress = true;
+    showQrFeedback('Processing scan...', 'info');
+
     const token = document.querySelector('meta[name="csrf-token"]').content;
     const formData = new FormData();
     formData.append('session_code', decodedText);
@@ -231,8 +248,22 @@ function onScanSuccess(decodedText) {
         method: 'POST',
         body: formData
     }).then(res => res.text())
-      .then(data => document.getElementById('qr-result').innerText = data)
-      .catch(err => document.getElementById('qr-result').innerText = "Error: " + err);
+      .then(data => {
+          const message = (data || '').trim();
+          if (/successfully recorded/i.test(message)) {
+              attendanceCaptured = true;
+              showQrFeedback('QR scanned successfully. Attendance has been taken.', 'success');
+              scanner.clear().catch(() => {});
+          } else {
+              showQrFeedback(message || 'Unable to record attendance.', 'danger');
+          }
+      })
+      .catch(err => showQrFeedback('Error: ' + err, 'danger'))
+      .finally(() => {
+          if (!attendanceCaptured) {
+              scanInProgress = false;
+          }
+      });
 }
 
 const scanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });

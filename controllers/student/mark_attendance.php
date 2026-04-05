@@ -22,6 +22,7 @@ require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 require_once '../../includes/csrf.php';
+require_once '../../includes/functions.php';
 
 require_login();
 require_role(['student']);
@@ -42,20 +43,29 @@ if (!$user_id) {
 $session_code = trim($_POST['session_code'] ?? '');
 $course_id = $_POST['course_id'] ?? null;
 $qr = isset($_POST['qr']) ? true : false;
+$device_hash = et_device_fingerprint_hash();
+$client_ip = et_client_ip();
+$user_agent = substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255);
 
 try {
     if ($qr && $session_code) {
-        // QR scan: validate session code
+        // QR scan: validate short-lived signed token (rotates every 20s)
+        if (!preg_match('/^ETQR1\.(\d+)\.(\d+)\.([a-f0-9]{20})$/i', $session_code, $parts)) {
+            throw new Exception('Invalid or expired QR token. Please re-scan.');
+        }
+
+        $token_session_id = (int)$parts[1];
         $stmt = $pdo->prepare('
-            SELECT id, course_id
+            SELECT id, course_id, session_code
             FROM attendance_sessions 
-            WHERE session_code = ? AND is_active = 1
+            WHERE id = ? AND is_active = 1
+            LIMIT 1
         ');
-        $stmt->execute([$session_code]);
+        $stmt->execute([$token_session_id]);
         $session = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$session) {
-            throw new Exception('Invalid or inactive session.');
+        if (!$session || !et_validate_session_qr_token($session_code, (int)$session['id'], (string)$session['session_code'])) {
+            throw new Exception('Invalid or expired QR token. Please re-scan.');
         }
 
         $course_id = $session['course_id'];
@@ -93,12 +103,59 @@ try {
         throw new Exception('You have already marked attendance for this session.');
     }
 
+    // Optional strict device binding:
+    // when enabled, the account can only mark attendance from the same previously used device fingerprint.
+    $strict_device_binding = et_env_bool('ATTENDANCE_DEVICE_STRICT', false);
+    $has_device_hash_col = et_db_column_exists($pdo, 'attendance_records', 'device_hash');
+    $has_ip_col = et_db_column_exists($pdo, 'attendance_records', 'ip_address');
+    $has_ua_col = et_db_column_exists($pdo, 'attendance_records', 'user_agent');
+
+    if ($strict_device_binding) {
+        if (!$has_device_hash_col) {
+            throw new Exception('Device binding is enabled but database migration is missing. Contact admin.');
+        }
+
+        $stmt = $pdo->prepare('
+            SELECT device_hash
+            FROM attendance_records
+            WHERE student_id = ?
+              AND device_hash IS NOT NULL
+              AND device_hash <> ""
+            ORDER BY signed_in_at DESC
+            LIMIT 1
+        ');
+        $stmt->execute([$user_id]);
+        $known_device_hash = (string)$stmt->fetchColumn();
+
+        if ($known_device_hash !== '' && !hash_equals($known_device_hash, $device_hash)) {
+            throw new Exception('Device verification failed. Please use your registered device for attendance.');
+        }
+    }
+
     // Insert attendance record
-    $stmt = $pdo->prepare('
-        INSERT INTO attendance_records (student_id, session_id, signed_in_at)
-        VALUES (?, ?, NOW())
-    ');
-    $stmt->execute([$user_id, $session_id]);
+    $columns = ['student_id', 'session_id', 'signed_in_at'];
+    $valuesSql = ['?', '?', 'NOW()'];
+    $params = [$user_id, $session_id];
+
+    if ($has_device_hash_col) {
+        $columns[] = 'device_hash';
+        $valuesSql[] = '?';
+        $params[] = $device_hash;
+    }
+    if ($has_ua_col) {
+        $columns[] = 'user_agent';
+        $valuesSql[] = '?';
+        $params[] = $user_agent;
+    }
+    if ($has_ip_col) {
+        $columns[] = 'ip_address';
+        $valuesSql[] = '?';
+        $params[] = $client_ip;
+    }
+
+    $sql = 'INSERT INTO attendance_records (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $valuesSql) . ')';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
 
     if ($qr) {
         echo 'Attendance successfully recorded!';

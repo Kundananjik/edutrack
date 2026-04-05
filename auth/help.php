@@ -14,7 +14,8 @@ unset($__et,$__i,$__p);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <title>EduTrack Help</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>

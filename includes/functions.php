@@ -123,3 +123,137 @@ if (!function_exists('dd')) {
         exit();
     }
 }
+
+// Security helpers for rotating, signed attendance QR tokens
+if (!function_exists('et_qr_token_secret')) {
+    function et_qr_token_secret()
+    {
+        $secret = $_ENV['QR_TOKEN_SECRET'] ?? (getenv('QR_TOKEN_SECRET') ?: '');
+        if ($secret === '') {
+            $secret = $_ENV['APP_KEY'] ?? (getenv('APP_KEY') ?: '');
+        }
+        if ($secret === '') {
+            $secret = 'edutrack-default-qr-secret-change-me';
+        }
+        return (string)$secret;
+    }
+}
+
+if (!function_exists('et_generate_session_qr_token')) {
+    function et_generate_session_qr_token($sessionId, $sessionCode, $timestamp = null)
+    {
+        $sessionId = (int)$sessionId;
+        $sessionCode = (string)$sessionCode;
+        $timestamp = $timestamp === null ? time() : (int)$timestamp;
+        $ttlSeconds = 20;
+        $bucket = (int)floor($timestamp / $ttlSeconds);
+
+        $payload = $sessionId . '|' . $bucket . '|' . $sessionCode;
+        $signature = substr(hash_hmac('sha256', $payload, et_qr_token_secret()), 0, 20);
+
+        return 'ETQR1.' . $sessionId . '.' . $bucket . '.' . $signature;
+    }
+}
+
+if (!function_exists('et_validate_session_qr_token')) {
+    function et_validate_session_qr_token($token, $sessionId, $sessionCode)
+    {
+        $token = trim((string)$token);
+        $sessionId = (int)$sessionId;
+        $sessionCode = (string)$sessionCode;
+
+        if (!preg_match('/^ETQR1\.(\d+)\.(\d+)\.([a-f0-9]{20})$/i', $token, $m)) {
+            return false;
+        }
+
+        $tokenSessionId = (int)$m[1];
+        $bucket = (int)$m[2];
+        $signature = strtolower($m[3]);
+
+        if ($tokenSessionId !== $sessionId) {
+            return false;
+        }
+
+        $currentBucket = (int)floor(time() / 20);
+        if (abs($currentBucket - $bucket) > 1) {
+            return false;
+        }
+
+        $payload = $sessionId . '|' . $bucket . '|' . $sessionCode;
+        $expected = strtolower(substr(hash_hmac('sha256', $payload, et_qr_token_secret()), 0, 20));
+
+        return hash_equals($expected, $signature);
+    }
+}
+
+if (!function_exists('et_env_bool')) {
+    function et_env_bool($key, $default = false)
+    {
+        $raw = $_ENV[$key] ?? (getenv($key) ?: null);
+        if ($raw === null || $raw === '') {
+            return (bool)$default;
+        }
+        $value = strtolower(trim((string)$raw));
+        return in_array($value, ['1', 'true', 'yes', 'on'], true);
+    }
+}
+
+if (!function_exists('et_client_ip')) {
+    function et_client_ip()
+    {
+        $candidates = [
+            $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '',
+            $_SERVER['HTTP_X_REAL_IP'] ?? '',
+            $_SERVER['REMOTE_ADDR'] ?? ''
+        ];
+        foreach ($candidates as $entry) {
+            if (!$entry) {
+                continue;
+            }
+            $first = trim(explode(',', $entry)[0]);
+            if (filter_var($first, FILTER_VALIDATE_IP)) {
+                return $first;
+            }
+        }
+        return '';
+    }
+}
+
+if (!function_exists('et_device_fingerprint_hash')) {
+    function et_device_fingerprint_hash()
+    {
+        $ua = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $lang = (string)($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
+        $ip = et_client_ip();
+        $material = implode('|', [$ua, $lang, $ip]);
+        return hash('sha256', $material);
+    }
+}
+
+if (!function_exists('et_db_column_exists')) {
+    function et_db_column_exists($pdo, $table, $column)
+    {
+        static $cache = [];
+        $key = $table . '.' . $column;
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
+        }
+
+        try {
+            $stmt = $pdo->prepare('
+                SELECT COUNT(*) 
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = ?
+                  AND COLUMN_NAME = ?
+            ');
+            $stmt->execute([$table, $column]);
+            $exists = ((int)$stmt->fetchColumn()) > 0;
+            $cache[$key] = $exists;
+            return $exists;
+        } catch (Throwable $e) {
+            $cache[$key] = false;
+            return false;
+        }
+    }
+}

@@ -31,7 +31,7 @@ function et_simple_error_page(string $title, string $message, array $context = [
     if (!empty($context)) {
         $ctx = '<pre style="background:#f8f9fa;padding:12px;border:1px solid #eee;overflow:auto;">' . htmlspecialchars(print_r($context, true)) . '</pre>';
     }
-    echo '<!doctype html><html><head><meta charset="utf-8"><title>' . htmlspecialchars($title) . '</title>' .
+    echo '<!doctype html><html><head><meta charset="utf-8"><link rel="icon" type="image/png" href="/edutrack/assets/favicon.png"><title>' . htmlspecialchars($title) . '</title>' .
          '<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;max-width:820px;margin:40px auto;padding:0 16px;color:#222} .box{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#fff} h1{font-size:20px;margin:0 0 8px} .muted{color:#6b7280}</style>' .
          '</head><body><div class="box"><h1>' . htmlspecialchars($title) . '</h1><div class="muted">' . $message . '</div>' . $ctx . '</div></body></html>';
 }

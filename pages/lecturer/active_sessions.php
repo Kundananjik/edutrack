@@ -54,7 +54,8 @@ try {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
 <title>Active Sessions - EduTrack</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -122,7 +123,10 @@ try {
                         <td><?= htmlspecialchars($session['course_code']); ?></td>
                         <td><?= htmlspecialchars($session['course_name']); ?></td>
                         <td><strong><?= htmlspecialchars($session['session_code']); ?></strong></td>
-                        <td><div class="qr-code" data-code="<?= htmlspecialchars($session['session_code']); ?>"></div></td>
+                        <td>
+                            <div class="qr-code" data-session-id="<?= (int)$session['id']; ?>"></div>
+                            <small class="text-muted d-block mt-1">Secure QR rotates every 20 seconds</small>
+                        </td>
                         <td><?= (new DateTime($session['created_at']))->format('F j, Y, g:i a'); ?></td>
                         <td>
                             <button class="btn btn-danger btn-sm delete" data-id="<?= $session['id']; ?>" title="Stop Session">
@@ -146,18 +150,40 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script <?= et_csp_attr('script') ?>>
 document.addEventListener('DOMContentLoaded', () => {
-    // Generate QR codes
-    document.querySelectorAll('.qr-code').forEach(el => {
-        const code = el.getAttribute('data-code');
-        if (code) new QRCode(el, {
-            text: code,
-            width: 150,
-            height: 140,
-            colorDark: "#000000",
-            colorLight: "#fff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    });
+    async function refreshSecureQr(el) {
+        const sessionId = el.getAttribute('data-session-id');
+        if (!sessionId) return;
+
+        try {
+            const res = await fetch(`session_qr_token.php?session_id=${encodeURIComponent(sessionId)}`, {
+                credentials: 'same-origin'
+            });
+            if (!res.ok) return;
+
+            const data = await res.json();
+            if (!data || data.status !== 'ok' || !data.token) return;
+
+            // Skip redraw if token didn't rotate yet
+            if (el.dataset.currentToken === data.token) return;
+            el.dataset.currentToken = data.token;
+
+            el.innerHTML = '';
+            new QRCode(el, {
+                text: data.token,
+                width: 150,
+                height: 140,
+                colorDark: '#000000',
+                colorLight: '#fff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } catch (err) {
+            console.error('QR refresh failed:', err);
+        }
+    }
+
+    const qrEls = Array.from(document.querySelectorAll('.qr-code'));
+    qrEls.forEach(refreshSecureQr);
+    setInterval(() => qrEls.forEach(refreshSecureQr), 15000);
 
     // Stop session via AJAX
     document.querySelectorAll('.delete').forEach(btn => {
