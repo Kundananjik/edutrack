@@ -60,7 +60,7 @@ try {
 
 <div class="container my-4">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
 
@@ -113,10 +113,10 @@ try {
                             <span><?= htmlspecialchars($course['name']) ?> (<?= htmlspecialchars($course['course_code']) ?>)</span>
                             <div class="course-actions">
                                 <a href="view_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-info">
-                                    <i class="fas fa-eye"></i> View
+                                    <i class="bi bi-eye"></i> View
                                 </a>
                                 <a href="edit_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-edit">
-                                    <i class="fas fa-edit"></i> Edit
+                                    <i class="bi bi-pencil-square"></i> Edit
                                 </a>
                             </div>
                         </li>
@@ -127,10 +127,10 @@ try {
 
         <div class="actions" style="margin-top: 20px;">
             <a href="edit_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Edit Programme
+                <i class="bi bi-pencil-square"></i> Edit Programme
             </a>
             <a href="manage_programmes.php" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to List
+                <i class="bi bi-arrow-left"></i> Back to List
             </a>
         </div>
     </div>
@@ -185,7 +185,7 @@ try {
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <!-- Custom CSS -->
 <link rel="stylesheet" href="css/dashboard.css">
 
@@ -230,8 +230,8 @@ main { flex: 1 0 auto; }
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <?= htmlspecialchars($course['name']) ?> (<?= htmlspecialchars($course['course_code']) ?>)
                             <div class="course-actions">
-                                <a href="view_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> View</a>
-                                <a href="edit_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="view_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-info"><i class="bi bi-eye"></i> View</a>
+                                <a href="edit_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
                             </div>
                         </li>
                     <?php endforeach; ?>
@@ -241,8 +241,8 @@ main { flex: 1 0 auto; }
     </div>
 
     <div class="mb-5">
-        <a href="edit_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-primary me-2"><i class="fas fa-edit"></i> Edit Programme</a>
-        <a href="manage_programmes.php" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+        <a href="edit_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-primary me-2"><i class="bi bi-pencil-square"></i> Edit Programme</a>
+        <a href="manage_programmes.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
     </div>
 </main>
 

@@ -30,7 +30,7 @@ require_role(['lecturer']);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <!-- EduTrack Custom CSS -->
 <link rel="stylesheet" href="css/dashboard.css">
@@ -51,9 +51,9 @@ a:hover { text-decoration: underline; }
 
 <div class="container my-5">
 
-    <a href="dashboard.php" class="btn btn-back mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+    <a href="dashboard.php" class="btn btn-back mb-3"><i class="bi bi-arrow-left me-1"></i> Back to Dashboard</a>
 
-    <h1 class="mb-4"><i class="fas fa-shield-alt me-2"></i>Privacy Policy</h1>
+    <h1 class="mb-4"><i class="bi bi-shield-lock me-2"></i>Privacy Policy</h1>
     <p class="text-muted">Effective date: August 4, 2025</p>
 
     <div class="card p-4 bg-white">

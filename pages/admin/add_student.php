@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
         <!-- Custom EduTrack CSS -->
         <link rel="stylesheet" href="css/dashboard.css">
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
                 <a href="dashboard.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
 
@@ -165,10 +165,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Add Student
+                        <i class="bi bi-plus-lg"></i> Add Student
                     </button>
                     <a href="manage_students.php" class="btn btn-secondary ms-2">
-                        <i class="fas fa-arrow-left"></i> Back to Students
+                        <i class="bi bi-arrow-left"></i> Back to Students
                     </a>
                 </div>
             </form>

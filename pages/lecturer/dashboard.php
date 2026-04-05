@@ -113,7 +113,7 @@ if ($hour < 12) {
     <link rel="stylesheet" href="css/dashboard.css">
 
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -143,9 +143,9 @@ if ($hour < 12) {
             <?php
             // Cards dynamically rendered from array
             $cards = [
-                ['title' => 'My Courses', 'count' => $my_courses_count, 'icon' => 'fa-book-open', 'link' => 'my_courses.php'],
-                ['title' => 'My Students', 'count' => $my_students_count, 'icon' => 'fa-user-graduate', 'link' => 'my_students.php'],
-                ['title' => 'Active Sessions', 'count' => $active_sessions_count, 'icon' => 'fa-chalkboard-teacher', 'link' => 'active_sessions.php']
+                ['title' => 'My Courses', 'count' => $my_courses_count, 'icon' => 'bi-book', 'link' => 'my_courses.php'],
+                ['title' => 'My Students', 'count' => $my_students_count, 'icon' => 'bi-mortarboard', 'link' => 'my_students.php'],
+                ['title' => 'Active Sessions', 'count' => $active_sessions_count, 'icon' => 'bi-easel', 'link' => 'active_sessions.php']
             ];
 
         foreach ($cards as $c):
@@ -153,7 +153,7 @@ if ($hour < 12) {
             <div class="col">
                 <a href="<?= $c['link'] ?>" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
                     <div class="card-body">
-                        <i class="fas <?= $c['icon'] ?> fa-2x mb-2"></i>
+                        <i class="bi <?= $c['icon'] ?> fs-2 mb-2"></i>
                         <h5 class="card-title"><?= $c['title'] ?></h5>
                         <p class="card-text display-6"><?= htmlspecialchars($c['count']) ?></p>
                     </div>
@@ -170,7 +170,7 @@ if ($hour < 12) {
             <div class="col">
                 <a href="attendance_reports.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
                     <div class="card-body">
-                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <i class="bi bi-graph-up fs-2 mb-2"></i>
                         <h5 class="card-title">Attendance Reports</h5>
                     </div>
                 </a>
@@ -186,7 +186,7 @@ if ($hour < 12) {
             <div class="col">
                 <a href="send_announcement.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
                     <div class="card-body">
-                        <i class="fas fa-paper-plane fa-2x mb-2"></i>
+                        <i class="bi bi-send fs-2 mb-2"></i>
                         <h5 class="card-title">Send Announcement</h5>
                     </div>
                 </a>
@@ -195,7 +195,7 @@ if ($hour < 12) {
             <div class="col">
                 <a href="view_announcements.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
                     <div class="card-body">
-                        <i class="fas fa-bullhorn fa-2x mb-2"></i>
+                        <i class="bi bi-megaphone fs-2 mb-2"></i>
                         <h5 class="card-title">View Announcements</h5>
                     </div>
                 </a>

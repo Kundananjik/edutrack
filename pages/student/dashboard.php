@@ -81,7 +81,7 @@ try {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/student.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -176,7 +176,7 @@ try {
     <section class="mb-5">
         <h2>Announcements</h2>
         <a href="view_announcements.php" class="btn btn-success btn-lg w-100">
-            <i class="fas fa-bullhorn me-2"></i> View Announcements
+            <i class="bi bi-megaphone me-2"></i> View Announcements
         </a>
     </section>
 

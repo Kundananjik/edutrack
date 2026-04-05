@@ -28,7 +28,7 @@ $dotenv->load();
     <title>EduTrack - Student Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/student.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
 
@@ -53,19 +53,19 @@ $dotenv->load();
         <h1>Why Choose EduTrack?</h1>
         <div class="benefit-items">
             <div class="benefit">
-                <i class="fa-solid fa-clock benefit-icon"></i>
+                <i class="bi bi-clock benefit-icon"></i>
                 <h3>Save Time</h3>
                 <p>Save up to 10 minutes each class by using automated QR attendance.</p>
                 <p>Lecturers can focus on teaching rather than administrative tasks, ensuring high-quality learning.</p>
             </div>
             <div class="benefit">
-                <i class="fa-solid fa-lock benefit-icon"></i>
+                <i class="bi bi-lock benefit-icon"></i>
                 <h3>Secure Data</h3>
                 <p>Your student information is encrypted and protected under GDPR standards.</p>
                 <p>We use industry-standard encryption protocols to safeguard personal and academic information, fully compliant with regulations.</p>
             </div>
             <div class="benefit">
-                <i class="fa-solid fa-file-lines benefit-icon"></i>
+                <i class="bi bi-file-earmark-text benefit-icon"></i>
                 <h3>Instant Reports</h3>
                 <p>Download attendance reports instantly for any course or date range.</p>
                 <p>Comprehensive insights allow lecturers to track engagement and make informed decisions quickly.</p>
@@ -79,7 +79,7 @@ $dotenv->load();
     <div class="container">
         <h1>Trusted</h1>
         <div class="badges">
-            <i class="fa-brands fa-gdpr benefit-icon" title="GDPR Compliant"></i>
+            <i class="bi bi-shield-check benefit-icon" title="GDPR Compliant"></i>
         </div>
         <p>EduTrack prioritizes confidentiality and data integrity. All student and lecturer information is protected from unauthorized access and adheres to the highest privacy standards.</p>
     </div>

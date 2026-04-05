@@ -101,7 +101,7 @@ table th, table td { vertical-align: middle !important; text-align: center; }
     <div class="d-flex justify-content-between mb-3 no-print">
         <h3>Attendance Report: <?= htmlspecialchars($course['name'] ?? '') ?></h3>
         <button onclick="window.print()" class="btn btn-primary">
-            <i class="fas fa-print"></i> Print / Save PDF
+            <i class="bi bi-printer"></i> Print / Save PDF
         </button>
     </div>
 
@@ -156,7 +156,6 @@ table th, table td { vertical-align: middle !important; text-align: center; }
 </div>
 
 <!-- Font Awesome -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
 </body>
 </html>
 

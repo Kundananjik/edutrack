@@ -50,7 +50,7 @@ try {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <!-- Custom EduTrack CSS -->
 <link rel="stylesheet" href="css/dashboard.css">
@@ -63,7 +63,7 @@ try {
     <!-- Back Button -->
     <div class="mb-4">
         <a href="dashboard.php" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
         </a>
     </div>
 
@@ -86,7 +86,7 @@ try {
                        class="card h-100 text-decoration-none text-dark shadow-sm">
 
                         <div class="card-body text-center">
-                            <i class="fas fa-file-alt fa-3x mb-3 text-success"></i>
+                            <i class="bi bi-file-earmark-text fs-1 mb-3 text-success"></i>
                             <h5 class="card-title">
                                 <?= htmlspecialchars($course['name']) ?>
                             </h5>

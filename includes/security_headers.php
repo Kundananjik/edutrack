@@ -36,7 +36,7 @@ if (!headers_sent()) {
     // Remove 'unsafe-inline' and permit inline via nonce
     $csp = [
         "default-src 'self'",
-        "img-src 'self' data: https://cdn.jotfor.ms https://www.jotform.com",
+        "img-src 'self' data: https://cdn.jotfor.ms https://www.jotform.com https://files.jotform.com",
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jotfor.ms https://www.jotform.com",
         "script-src 'self' 'nonce-{$nonce}' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jotfor.ms https://www.jotform.com",
         "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com https://cdn.jotfor.ms https://www.jotform.com",

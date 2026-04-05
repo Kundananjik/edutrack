@@ -22,7 +22,7 @@ unset($__et,$__i,$__p);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../assets/css/style.css">
@@ -32,7 +32,7 @@ unset($__et,$__i,$__p);
 <?php require_once '../../includes/admin_navbar.php'; ?>
 
 <div class="container my-5">
-    <h1 class="mb-4 text-success"><i class="fas fa-file-contract me-2"></i>Terms of Service</h1>
+    <h1 class="mb-4 text-success"><i class="bi bi-file-earmark-text me-2"></i>Terms of Service</h1>
     <p class="text-muted">Effective date: August 4, 2025</p>
 
     <div class="card p-4 shadow-sm bg-white">

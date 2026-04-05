@@ -60,7 +60,7 @@ try {
 <title>My Students</title>
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
@@ -68,7 +68,7 @@ try {
 <?php require_once '../../includes/lecturer_navbar.php'; ?>
 
 <div class="container dashboard-container">
-    <a href="dashboard.php" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <a href="dashboard.php" class="btn btn-secondary mb-3"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     <h1 class="mb-4">My Students</h1>
 
     <?php if (isset($error)): ?>

@@ -148,16 +148,7 @@ $page_description = 'Learn how EduTrack collects, uses, and protects your person
     </main>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="text-center text-muted py-4">
-            <p>&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-          </footer>';
-}
-?>
+<?php require_once 'includes/footer.php'; ?>
 
 </body>
 </html>

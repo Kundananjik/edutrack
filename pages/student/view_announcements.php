@@ -90,16 +90,16 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- EduTrack Custom CSS -->
     <link rel="stylesheet" href="css/student.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
     <?php require_once '../../includes/student_navbar.php'; ?>
 
     <main class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1><i class="fas fa-bullhorn"></i> Announcements</h1>
+            <h1><i class="bi bi-megaphone"></i> Announcements</h1>
             <a href="dashboard.php" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
         <p class="text-muted mb-4">
@@ -118,8 +118,8 @@ try {
                                 <p class="card-text"><?= nl2br(htmlspecialchars($a['message'])); ?></p>
                             </div>
                             <div class="card-footer d-flex justify-content-between small">
-                                <span><i class="fas fa-user"></i> <?= htmlspecialchars(ucfirst($a['sender_role'])) ?>: <?= htmlspecialchars($a['sender_name']); ?></span>
-                                <span><i class="fas fa-clock"></i> <?= htmlspecialchars(format_announcement_time($a['created_at'], $tz)); ?></span>
+                                <span><i class="bi bi-person"></i> <?= htmlspecialchars(ucfirst($a['sender_role'])) ?>: <?= htmlspecialchars($a['sender_name']); ?></span>
+                                <span><i class="bi bi-clock"></i> <?= htmlspecialchars(format_announcement_time($a['created_at'], $tz)); ?></span>
                             </div>
                         </div>
                     </div>

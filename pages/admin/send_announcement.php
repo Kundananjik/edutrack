@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <!-- Custom CSS -->
 <link rel="stylesheet" href="css/dashboard.css">
@@ -66,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require_once '../../includes/admin_navbar.php'; ?>
 
 <div class="container mb-5">
-    <h1 class="mb-4 text-success"><i class="fas fa-bullhorn me-2"></i>Send Announcement</h1>
+    <h1 class="mb-4 text-success"><i class="bi bi-megaphone me-2"></i>Send Announcement</h1>
     <div class="d-flex justify-content-between mb-3">
-        <a href="dashboard.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <a href="dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
     </div>
 
     <!-- Alerts -->
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane me-1"></i> Send Announcement</button>
+        <button type="submit" class="btn btn-success"><i class="bi bi-send me-1"></i> Send Announcement</button>
     </form>
 </div>
 

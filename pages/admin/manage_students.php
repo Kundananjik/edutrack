@@ -51,7 +51,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -65,10 +65,10 @@ try {
         <h1 class="fw-bold">Manage Students</h1>
         <div>
             <a href="dashboard.php" class="btn btn-secondary me-2">
-                <i class="fas fa-arrow-left"></i> Dashboard
+                <i class="bi bi-arrow-left"></i> Dashboard
             </a>
             <a href="add_student.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add Student
+                <i class="bi bi-plus-lg"></i> Add Student
             </a>
         </div>
     </div>
@@ -118,12 +118,12 @@ try {
                                 </td>
                                 <td class="text-center">
                                     <a href="edit_student.php?id=<?= urlencode($student['user_id']) ?>" class="btn btn-sm btn-primary me-1" title="Edit Student">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <form action="delete_student.php" method="POST" class="d-inline delete-form">
                                         <input type="hidden" name="id" value="<?= htmlspecialchars($student['user_id']) ?>">
                                         <button type="submit" class="btn btn-sm btn-danger" title="Delete Student">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -141,18 +141,7 @@ try {
 </main>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/../../includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="mt-auto py-4 bg-white border-top">
-            <div class="container text-center text-muted">
-                <p class="mb-0">&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-            </div>
-          </footer>';
-}
-?>
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

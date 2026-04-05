@@ -94,7 +94,7 @@ $formValues = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : [];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom EduTrack Styles -->
     <link rel="stylesheet" href="/edutrack/pages/admin/css/dashboard.css">
@@ -108,7 +108,7 @@ $formValues = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : [];
         <!-- Back to Dashboard Button on Top -->
         <div class="mb-4">
             <a href="dashboard.php" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
 
@@ -175,7 +175,7 @@ $formValues = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : [];
 
                 <div class="mt-4 text-end">
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Add Lecturer
+                        <i class="bi bi-plus-lg"></i> Add Lecturer
                     </button>
                 </div>
             </form>
@@ -186,7 +186,7 @@ $formValues = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : [];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom EduTrack CSS -->
     <link rel="stylesheet" href="css/dashboard.css">

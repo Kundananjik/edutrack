@@ -46,7 +46,7 @@ $messages = $stmt->fetchAll();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- EduTrack Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -61,7 +61,7 @@ $messages = $stmt->fetchAll();
         <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
                 <a href="dashboard.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
             
@@ -74,7 +74,7 @@ $messages = $stmt->fetchAll();
                 </div>
                 <div class="col-md-4">
                     <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-search"></i> Search
+                        <i class="bi bi-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -109,7 +109,7 @@ $messages = $stmt->fetchAll();
                                                 data-subject="<?= htmlspecialchars($msg['subject']) ?>" 
                                                 data-message="<?= htmlspecialchars($msg['message']) ?>"
                                                 aria-label="View message from <?= htmlspecialchars($msg['name']) ?>">
-                                            <i class="fas fa-eye"></i> View
+                                            <i class="bi bi-eye"></i> View
                                         </button>
                                     </td>
                                 </tr>
@@ -156,18 +156,7 @@ $messages = $stmt->fetchAll();
 </div>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/../../includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="mt-auto py-4 bg-white border-top">
-            <div class="container text-center text-muted">
-                <p class="mb-0">&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-            </div>
-          </footer>';
-}
-?>
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

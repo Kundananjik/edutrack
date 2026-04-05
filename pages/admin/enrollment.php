@@ -173,7 +173,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -188,7 +188,7 @@ try {
 
         <div class="d-flex justify-content-between mb-3">
             <a href="dashboard.php" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
 
@@ -221,7 +221,7 @@ try {
         <!-- Add Enrollment Form -->
         <div class="card border-success mb-5">
             <div class="card-header bg-success text-white fw-bold">
-                <i class="fas fa-plus-circle"></i> Add New Enrollment
+                <i class="bi bi-plus-circle"></i> Add New Enrollment
             </div>
             <div class="card-body">
                 <form action="enrollment.php" method="POST" class="row g-3">
@@ -250,7 +250,7 @@ try {
 
                     <div class="col-12 text-end">
                         <button type="submit" class="btn btn-success rounded-pill px-4">
-                            <i class="fas fa-plus-circle"></i> Enroll Student
+                            <i class="bi bi-plus-circle"></i> Enroll Student
                         </button>
                     </div>
                 </form>
@@ -295,7 +295,7 @@ try {
                                         </select>
 
                                         <button type="submit" class="btn btn-outline-success btn-sm" title="Change Programme" aria-label="Change programme">
-                                            <i class="fas fa-exchange-alt"></i>
+                                            <i class="bi bi-arrow-left-right"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -306,7 +306,7 @@ try {
                                         <input type="hidden" name="student_id" value="<?= htmlspecialchars($enrollment['student_id']) ?>">
                                         <input type="hidden" name="programme_id" value="<?= htmlspecialchars($enrollment['programme_id']) ?>">
                                         <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Enrollment" aria-label="Delete enrollment">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -321,16 +321,7 @@ try {
 </main>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/../../includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="text-center text-muted py-4">
-            <p>&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-          </footer>';
-}
-?>
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

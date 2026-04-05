@@ -66,7 +66,7 @@ $lastUpdated = date('F j, Y, g:i a');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom EduTrack CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -84,26 +84,26 @@ $lastUpdated = date('F j, Y, g:i a');
         <div class="row g-4">
             <div class="col-md-3 col-sm-6">
                 <a href="add_student.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-user-plus fa-2x mb-2"></i>
+                    <i class="bi bi-person-plus fs-2 mb-2"></i>
                     <h3>Add Student</h3>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="manage_students.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-user-graduate fa-2x mb-2"></i>
+                    <i class="bi bi-mortarboard fs-2 mb-2"></i>
                     <h3>Manage Students</h3>
                     <p><?= $students ?></p>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="add_lecturer.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-user-plus fa-2x mb-2"></i>
+                    <i class="bi bi-person-plus fs-2 mb-2"></i>
                     <h3>Add Lecturer</h3>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="manage_lecturers.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-chalkboard-teacher fa-2x mb-2"></i>
+                    <i class="bi bi-easel fs-2 mb-2"></i>
                     <h3>Manage Lecturers</h3>
                     <p><?= $lecturers ?></p>
                 </a>
@@ -117,21 +117,21 @@ $lastUpdated = date('F j, Y, g:i a');
         <div class="row g-4">
             <div class="col-md-3 col-sm-6">
                 <a href="manage_programmes.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-book fa-2x mb-2"></i>
+                    <i class="bi bi-book fs-2 mb-2"></i>
                     <h3>Programmes</h3>
                     <p><?= $programmes ?></p>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="manage_courses.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-book-open fa-2x mb-2"></i>
+                    <i class="bi bi-book fs-2 mb-2"></i>
                     <h3>Courses</h3>
                     <p><?= $courses ?></p>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="enrollment.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-user-plus fa-2x mb-2"></i>
+                    <i class="bi bi-person-plus fs-2 mb-2"></i>
                     <h3>Enrollments</h3>
                     <p><?= $enrollments ?></p>
                 </a>
@@ -145,7 +145,7 @@ $lastUpdated = date('F j, Y, g:i a');
         <div class="row g-4">
             <div class="col-md-3 col-sm-6">
                 <a href="attendance_reports.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-chart-line fa-2x mb-2"></i>
+                    <i class="bi bi-graph-up fs-2 mb-2"></i>
                     <h3>Attendance Reports</h3>
                 </a>
             </div>
@@ -158,25 +158,25 @@ $lastUpdated = date('F j, Y, g:i a');
         <div class="row g-4">
             <div class="col-md-3 col-sm-6">
                 <a href="send_announcement.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-bullhorn fa-2x mb-2"></i>
+                    <i class="bi bi-megaphone fs-2 mb-2"></i>
                     <h3>Send Announcement</h3>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="view_announcements.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-eye fa-2x mb-2"></i>
+                    <i class="bi bi-eye fs-2 mb-2"></i>
                     <h3>View Announcements</h3>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="view_messages.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <i class="bi bi-envelope fs-2 mb-2"></i>
                     <h3>Messages</h3>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <a href="notifications.php" class="dashboard-card text-center d-block">
-                    <i class="fas fa-bell fa-2x mb-2"></i>
+                    <i class="bi bi-bell fs-2 mb-2"></i>
                     <h3>Notifications</h3>
                 </a>
             </div>

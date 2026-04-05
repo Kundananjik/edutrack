@@ -84,7 +84,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom Admin CSS (EduTrack Branding) -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -98,13 +98,13 @@ try {
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-success fw-bold">Manage Courses</h1>
             <a href="add_course.php" class="btn btn-success">
-                <i class="fas fa-plus"></i> Add Course
+                <i class="bi bi-plus-lg"></i> Add Course
             </a>
         </div>
 
         <div class="d-flex justify-content-between mb-3">
             <a href="dashboard.php" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
 
@@ -180,16 +180,16 @@ try {
                                 </td>
                                 <td class="text-center">
                                     <a href="view_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-outline-success me-1">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="edit_course.php?id=<?= urlencode($course['id']) ?>" class="btn btn-sm btn-outline-primary me-1">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <form action="delete_course.php" method="POST" class="d-inline delete-course-form">
                                         <input type="hidden" name="id" value="<?= htmlspecialchars($course['id']) ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>

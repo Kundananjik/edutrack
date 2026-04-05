@@ -78,7 +78,7 @@ $formValues = $_POST ?? [];
         <!-- Bootstrap 5 -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
         <!-- Custom CSS -->
         <link rel="stylesheet" href="/edutrack/pages/admin/css/dashboard.css">
         </head>
@@ -134,10 +134,10 @@ $formValues = $_POST ?? [];
 
                         <div class="col-12">
                             <button type="submit" class="btn btn-success rounded-3">
-                                <i class="fas fa-plus"></i> Add Programme
+                                <i class="bi bi-plus-lg"></i> Add Programme
                             </button>
                             <a href="manage_programmes.php" class="btn btn-secondary rounded-3 ms-2">
-                                <i class="fas fa-arrow-left"></i> Back to Programmes
+                                <i class="bi bi-arrow-left"></i> Back to Programmes
                             </a>
                         </div>
                     </form>
@@ -148,7 +148,7 @@ $formValues = $_POST ?? [];
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
             <!-- Font Awesome -->
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
             <!-- Custom EduTrack CSS -->
             <link rel="stylesheet" href="css/dashboard.css">

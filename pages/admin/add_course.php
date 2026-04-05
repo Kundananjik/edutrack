@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom EduTrack CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="page-wrapper container py-4">
         <div class="dashboard-container shadow-sm p-4 rounded bg-white">
-            <h1 class="text-success mb-4"><i class="fas fa-book-open"></i> Add Course</h1>
+            <h1 class="text-success mb-4"><i class="bi bi-book"></i> Add Course</h1>
 
             <!-- Alerts Section -->
             <div class="alerts mb-4">
@@ -225,10 +225,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="col-12 text-end">
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Add Course
+                        <i class="bi bi-plus-lg"></i> Add Course
                     </button>
                     <a href="manage_courses.php" class="btn btn-secondary ms-2">
-                        <i class="fas fa-arrow-left"></i> Back to Courses
+                        <i class="bi bi-arrow-left"></i> Back to Courses
                     </a>
                 </div>
             </form>

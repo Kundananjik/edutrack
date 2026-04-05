@@ -53,7 +53,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -68,7 +68,7 @@ try {
 
             <div class="d-flex justify-content-between mb-3">
                 <a href="dashboard.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
 
@@ -112,7 +112,7 @@ try {
                                             data-email="<?= htmlspecialchars($msg['email']) ?>" 
                                             data-name="<?= htmlspecialchars($msg['name']) ?>"
                                             aria-label="Reply to <?= htmlspecialchars($msg['name']) ?>">
-                                        <i class="fas fa-reply"></i> Reply
+                                        <i class="bi bi-reply"></i> Reply
                                     </button>
                                 </td>
                             </tr>
@@ -153,7 +153,7 @@ try {
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                     <div id="reply-status" class="mb-2" role="status" aria-live="polite"></div>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-paper-plane"></i> Send Reply
+                        <i class="bi bi-send"></i> Send Reply
                     </button>
                 </form>
             </div>
@@ -162,18 +162,7 @@ try {
 </div>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/../../includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="mt-auto py-4 bg-white border-top">
-            <div class="container text-center text-muted">
-                <p class="mb-0">&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-            </div>
-          </footer>';
-}
-?>
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

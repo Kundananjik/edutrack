@@ -30,7 +30,7 @@ require_role(['lecturer']);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <!-- EduTrack Custom CSS -->
 <link rel="stylesheet" href="css/dashboard.css">
@@ -54,9 +54,9 @@ h2 { color: #2fa360; }
 
 <div class="container my-5">
 
-    <a href="dashboard.php" class="btn btn-back mb-3"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+    <a href="dashboard.php" class="btn btn-back mb-3"><i class="bi bi-arrow-left me-1"></i> Back to Dashboard</a>
 
-    <h2 class="mb-3"><i class="fas fa-envelope me-2"></i>Contact Us</h2>
+    <h2 class="mb-3"><i class="bi bi-envelope me-2"></i>Contact Us</h2>
     <p class="mb-4">If you have any questions or need support, feel free to reach out using the form below.</p>
 
     <div class="card p-4 bg-white">
@@ -81,7 +81,7 @@ h2 { color: #2fa360; }
                 <textarea id="message" name="message" rows="5" required placeholder="Your message..." class="form-control"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-submit"><i class="fas fa-paper-plane me-2"></i>Send Message</button>
+            <button type="submit" class="btn btn-submit"><i class="bi bi-send me-2"></i>Send Message</button>
         </form>
     </div>
 </div>

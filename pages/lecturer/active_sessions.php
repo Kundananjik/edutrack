@@ -57,7 +57,7 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Active Sessions - EduTrack</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/active_sessions.css">
 <style>
@@ -83,13 +83,13 @@ try {
 
 <div class="container dashboard-container">
 
-    <a href="dashboard.php" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <a href="dashboard.php" class="btn btn-secondary mb-3"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
 
     <h1 class="mb-4" style="color:#2fa360;">Active Attendance Sessions</h1>
 
     <?php if (!empty($notification)): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> <?= htmlspecialchars($notification) ?>
+            <i class="bi bi-check-circle"></i> <?= htmlspecialchars($notification) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
@@ -126,10 +126,10 @@ try {
                         <td><?= (new DateTime($session['created_at']))->format('F j, Y, g:i a'); ?></td>
                         <td>
                             <button class="btn btn-danger btn-sm delete" data-id="<?= $session['id']; ?>" title="Stop Session">
-                                <i class="fas fa-stop-circle"></i> Stop
+                                <i class="bi bi-stop-circle"></i> Stop
                             </button>
                             <a href="view_session.php?id=<?= $session['id']; ?>" class="btn btn-success btn-sm" title="View Attendance">
-                                <i class="fas fa-eye"></i> View
+                                <i class="bi bi-eye"></i> View
                             </a>
                         </td>
                     </tr>

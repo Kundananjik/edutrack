@@ -153,7 +153,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .site-footer.compact {
     padding: 20px 15px 11px;
-    font-size: 12px;
+    font-size: 0.95rem;
+    line-height: 1.55;
 }
 
 .site-footer.compact .footer-container {
@@ -171,7 +172,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .site-footer.compact .footer-column h5 {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     margin-bottom: 7px;
 }
 
@@ -190,7 +191,7 @@ h1, h2, h3, h4, h5, h6 {
 .site-footer.compact .footer-bottom {
     margin-top: 11px;
     padding-top: 9px;
-    font-size: 11px;
+    font-size: 0.875rem;
 }
 
 .announcement-card {
@@ -438,7 +439,8 @@ table tr:nth-child(even) {
     background-color: var(--background-dark);
     color: var(--text-light);
     padding: var(--padding-lg) var(--padding-md) var(--padding-md);
-    font-size: 14px;
+    font-size: 0.95rem;
+    line-height: 1.55;
 }
 
 .footer-container {
@@ -464,7 +466,7 @@ table tr:nth-child(even) {
     margin-top: 30px;
     border-top: 1px solid #444;
     padding-top: 15px;
-    font-size: 13px;
+    font-size: 0.875rem;
     color: #bbb;
 }
 
@@ -771,7 +773,8 @@ table tr:nth-child(even) {
 /* High-resolution displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .navbar .logo img {
-        image-rendering: -webkit-optimize-contrast;
+        image-rendering: auto;
+        image-rendering: crisp-edges;
     }
 }
 

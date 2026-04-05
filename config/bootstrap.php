@@ -49,7 +49,24 @@ if (!defined('BASE_PATH')) {
 
 // Define BASE_URL for consistent linking when not loaded via includes/config.php
 if (!defined('BASE_URL')) {
-    $app_url = $_ENV['APP_URL'] ?? 'http://localhost/edutrack/';
+    $env_app_url = trim((string)($_ENV['APP_URL'] ?? (getenv('APP_URL') ?: '')));
+    $http_host = $_SERVER['HTTP_HOST'] ?? '';
+    $is_lan_host = $http_host !== '' && stripos($http_host, 'localhost') === false && strpos($http_host, '127.0.0.1') === false;
+    $env_is_localhost = $env_app_url !== '' && stripos($env_app_url, 'localhost') !== false;
+
+    if ($env_app_url !== '' && !($env_is_localhost && $is_lan_host)) {
+        $app_url = $env_app_url;
+    } else {
+        $https = $_SERVER['HTTPS'] ?? '';
+        $scheme = (!empty($https) && strtolower((string)$https) !== 'off') ? 'https' : 'http';
+        $host = $http_host ?: 'localhost';
+        $script_name = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
+        $base_path = '/edutrack/';
+        if ($script_name !== '' && preg_match('#^(.*?/edutrack/)#i', $script_name, $m)) {
+            $base_path = $m[1];
+        }
+        $app_url = $scheme . '://' . $host . $base_path;
+    }
     define('BASE_URL', rtrim($app_url, '/') . '/');
-    unset($app_url);
+    unset($app_url, $env_app_url, $http_host, $is_lan_host, $env_is_localhost, $https, $scheme, $host, $script_name, $base_path, $m);
 }

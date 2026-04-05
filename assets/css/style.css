@@ -1082,7 +1082,8 @@ body {
     background-color: var(--et-ink);
     color: #f1f1f1;
     padding: 16px 12px 8px;
-    font-size: 11px;
+    font-size: 0.95rem;
+    line-height: 1.55;
     flex-shrink: 0;
 }
 
@@ -1108,7 +1109,7 @@ body {
 }
 
 .footer-column h5 {
-    font-size: 0.7rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #e2e8f0;
@@ -1157,7 +1158,7 @@ body {
     margin-top: 8px;
     border-top: 1px solid rgba(255,255,255,0.12);
     padding-top: 6px;
-    font-size: 10px;
+    font-size: 0.875rem;
     color: #94a3b8;
 }
 
@@ -1526,7 +1527,7 @@ button[type="submit"]:hover {
 
     .footer-column h5 {
         margin-bottom: 6px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
     }
 
     .footer-column li {

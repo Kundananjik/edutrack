@@ -51,7 +51,7 @@ try {
     <title>View Announcements - EduTrack</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
@@ -60,7 +60,7 @@ try {
 
 <!-- MAIN CONTENT -->
 <div class="container">
-    <h1 class="mb-4"><i class="fas fa-bullhorn"></i> Announcements</h1>
+    <h1 class="mb-4"><i class="bi bi-megaphone"></i> Announcements</h1>
 
     <!-- ALERTS -->
     <?php if (!empty($_SESSION['error_message'])): ?>
@@ -95,7 +95,7 @@ try {
     <?php endif; ?>
 
     <a href="dashboard.php" class="btn btn-secondary mt-4">
-        <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 </div>
 

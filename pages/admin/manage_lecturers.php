@@ -56,7 +56,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom EduTrack CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
@@ -69,7 +69,7 @@ try {
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold">Manage Lecturers</h1>
         <a href="add_lecturer.php" class="btn btn-success rounded-3">
-            <i class="fas fa-plus"></i> Add Lecturer
+            <i class="bi bi-plus-lg"></i> Add Lecturer
         </a>
     </div>
 
@@ -94,7 +94,7 @@ try {
         <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
                 <a href="dashboard.php" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
 
@@ -124,16 +124,16 @@ try {
                                 <td class="text-center">
                                     <div class="btn-group" role="group" aria-label="Lecturer actions">
                                         <a href="view_lecturer.php?id=<?= urlencode($lecturer['id']) ?>" class="btn btn-sm btn-outline-info" title="View Lecturer">
-                                            <i class="fas fa-eye"></i>
+                                            <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="edit_lecturer.php?id=<?= urlencode($lecturer['id']) ?>" class="btn btn-sm btn-outline-secondary" title="Edit Lecturer">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                         <form action="delete_lecturer.php" method="POST" class="d-inline delete-lecturer-form">
                                             <input type="hidden" name="id" value="<?= htmlspecialchars($lecturer['id']) ?>">
                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Lecturer">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -153,18 +153,7 @@ try {
 </main>
 
 <!-- Footer -->
-<?php
-$footer = __DIR__ . '/../../includes/footer.php';
-if (file_exists($footer)) {
-    require_once $footer;
-} else {
-    echo '<footer class="mt-auto py-4 bg-white border-top">
-            <div class="container text-center text-muted">
-                <p class="mb-0">&copy; ' . date('Y') . ' EduTrack. All rights reserved.</p>
-            </div>
-          </footer>';
-}
-?>
+<?php require_once '../../includes/footer.php'; ?>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

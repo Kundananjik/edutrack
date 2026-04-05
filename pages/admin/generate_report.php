@@ -94,7 +94,7 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Attendance Report - Admin</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body class="bg-light">
@@ -103,7 +103,7 @@ try {
 
 <div class="container py-5">
     <a href="attendance_reports.php" class="btn btn-secondary back-link mb-3">
-        <i class="fas fa-arrow-left"></i> Back to Reports
+        <i class="bi bi-arrow-left"></i> Back to Reports
     </a>
 
     <?php if (!empty($error)): ?>
@@ -127,7 +127,7 @@ try {
         <!-- Download / Print -->
         <div class="mb-3 no-print">
             <a href="download_report.php?course_id=<?= $course_id ?>&month=<?= urlencode($month_filter) ?>" class="btn btn-success">
-                <i class="fas fa-download"></i> Download PDF
+                <i class="bi bi-download"></i> Download PDF
             </a>
         </div>
 
