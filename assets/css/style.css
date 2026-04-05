@@ -1150,7 +1150,8 @@ body {
 
 .footer-contact i {
     color: #8ddbb2;
-    font-size: 0.85rem;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .footer-bottom {

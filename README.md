@@ -1,147 +1,163 @@
 # EduTrack
 
-EduTrack is a web-based university attendance and academic management system with role-based workflows for admins, lecturers, and students.
+EduTrack is a web-based attendance and academic workflow system for universities/colleges with role-based interfaces for admin, lecturer, and student users.
 
-## What It Covers
+## Features
 
-- Authentication with role-based access control.
-- Admin management for students, lecturers, programmes, courses, and reports.
-- Lecturer tools for sessions, attendance, announcements, and reporting.
-- Student views for dashboard, announcements, and attendance tracking.
-- QR-supported attendance flow and reporting/export features.
-- Embedded AI assistant widget on the landing page (Jotform Agent).
+- Authentication and role-based access control.
+- Admin modules for users, programmes, courses, enrollment, announcements, reports, and contact messages.
+- Lecturer modules for course management, starting/stopping attendance sessions, active session monitoring, and reports.
+- Student modules for attendance marking (QR/manual), attendance history/summary, and announcements.
+- Shared public pages (`about`, `help`, `contact`, policies/terms).
+- Embedded Jotform AI assistant on the landing page.
+
+## Attendance Security (Current)
+
+- **Rotating signed QR tokens** for active lecturer sessions.
+- QR tokens are short-lived and validated server-side before recording attendance.
+- CSRF protection enforced on attendance POST requests.
+- Duplicate attendance checks (same student + same session).
+- Optional **device-binding strict mode** controlled by env var.
+- Security headers (CSP, Permissions-Policy, etc.) applied globally.
 
 ## Tech Stack
 
-- PHP 8+ (server-side app)
-- MySQL (database)
-- Composer (PHP dependencies)
-- Vite + vanilla JavaScript (frontend asset build)
-- Jotform Agent embed (floating AI assistant on landing page)
+- PHP `>=8.0`
+- MySQL/MariaDB
+- Composer dependencies:
+  - `vlucas/phpdotenv`
+  - `phpmailer/phpmailer`
+  - `dompdf/dompdf`
+- Frontend tooling: Vite (plus project CSS/JS and CDN assets)
 
-## Project Structure
+## Project Layout
 
-- `public/index.php`: front controller and route entrypoint.
-- `index.php`: landing page rendered for `/`.
-- `auth/`: authentication pages.
-- `pages/admin/`, `pages/lecturer/`, `pages/student/`: role-specific pages.
-- `controllers/student/`: student-facing controller actions (for example attendance marking).
-- `config/bootstrap.php`: app bootstrap (autoload, env load, DB bootstrap).
-- `config/database.php`: shared PDO connection setup.
-- `includes/`: shared config, session, auth checks, CSRF, helpers, layout includes.
-- `tests/`: PHPUnit tests.
-- `edutrack_db.sql`: database schema/data bootstrap script.
+- `public/index.php`: front controller + allowlisted router.
+- `index.php`: landing page.
+- `auth/`: auth and account flows.
+- `pages/admin/`, `pages/lecturer/`, `pages/student/`: role pages.
+- `controllers/student/mark_attendance.php`: student attendance capture endpoint.
+- `pages/lecturer/session_qr_token.php`: signed QR token endpoint for lecturer active sessions.
+- `includes/`: shared bootstrap, security headers, helpers, session/auth/CSRF, nav/footer partials.
+- `config/bootstrap.php`, `config/database.php`: core bootstrap and DB bootstrap.
+- `edutrack_db.sql`: base database schema/data.
+- `scripts/migrations/`: incremental schema migrations.
 
 ## Requirements
 
-- PHP `>=8.0`
+- PHP `>=8.0` with `pdo_mysql`
 - MySQL or MariaDB
 - Composer
-- Node.js + npm
-- PHP extension: `pdo_mysql`
+- Node.js + npm (for frontend build tooling)
 
 ## Setup
 
-1. Clone into your web root (example: `C:\xampp\htdocs\edutrack`).
+1. Clone into web root, e.g. `C:\xampp\htdocs\edutrack`.
 2. Install PHP dependencies:
-
 ```bash
 composer install
 ```
-
 3. Install frontend dependencies:
-
 ```bash
 npm install
 ```
-
-4. Create and configure `.env` in project root:
-
+4. Create/update `.env`:
 ```env
 APP_ENV=development
 APP_DEBUG=1
 APP_URL=http://localhost/edutrack/
 DB_HOST=127.0.0.1
-DB_NAME=edutrack
+DB_NAME=edutrack_db
 DB_USER=root
 DB_PASS=
+
+# Optional security hardening
+QR_TOKEN_SECRET=change-this-to-a-long-random-secret
+ATTENDANCE_DEVICE_STRICT=0
 ```
-
-5. Create database (example: `edutrack`) and import:
-
+5. Import base schema:
 ```bash
-mysql -u root -p edutrack < edutrack_db.sql
+mysql -u root -p edutrack_db < edutrack_db.sql
+```
+6. Apply migration(s):
+```sql
+-- run file: scripts/migrations/2026-04-05-attendance-device-binding.sql
 ```
 
-6. Ensure your web server points to `public/` as document root (recommended).
+## Run
 
-## Running the App
-
-### Option 1: Local PHP server
+### Option 1: Built-in PHP server
 
 ```bash
 composer start
 ```
+Open: `http://localhost:8000`
 
-Then open `http://localhost:8000`.
-
-### Option 2: Apache/XAMPP
+### Option 2: XAMPP / Apache
 
 - Place project in `htdocs`.
-- Set virtual host/document root to `public/`.
-- Open your configured local URL (for example `http://localhost/edutrack/public/` if no vhost is set).
+- Keep/enable project `.htaccess` (root rewrite to `public/index.php`).
+- Open: `http://localhost/edutrack/`
 
-## Frontend Assets
-
-- Development watcher:
+## Frontend Commands
 
 ```bash
 npm run dev
-```
-
-- Production build:
-
-```bash
 npm run build
-```
-
-## Testing and Quality
-
-- Run PHPUnit:
-
-```bash
-composer test
-```
-
-- Optional code style check/fix (if using dev dependencies):
-
-```bash
-vendor/bin/php-cs-fixer fix
 ```
 
 ## Routing Notes
 
-- Requests are handled by `public/index.php`.
-- Allowed root pages include: `about`, `help`, `contact`, `privacy-policy`, `terms-of-service`.
-- Allowed route prefixes include:
-  - `auth`
-  - `pages/admin`
-  - `pages/lecturer`
-  - `pages/student`
-  - `controllers/student`
+The front controller allowlists:
 
-## AI Agent
+- Root pages:
+  - `about`, `help`, `contact`, `privacy-policy`, `terms-of-service`
+  - `send_message`, `send_messages`, `logout`
+- Prefix routes:
+  - `auth/*`
+  - `pages/admin/*`
+  - `pages/lecturer/*`
+  - `pages/student/*`
+  - `controllers/student/*`
 
-- A floating Jotform AI agent is embedded in `index.php` for visitor assistance.
-- Embed source: `https://cdn.jotfor.ms/agent/embedjs/.../embed.js`.
-- CSP and permissions allowlist for this integration is configured in `includes/security_headers.php` (including `agent.jotform.com` and related endpoints).
+## Mobile QR Scanning (Phone Testing)
+
+Camera scanning requires a secure context (`https://` or localhost on same device).
+
+Recommended for phone testing:
+
+1. Start Apache locally (`http://localhost/edutrack/` works on laptop).
+2. Start ngrok tunnel to port 80:
+```bash
+ngrok http 80
+```
+3. Set:
+```env
+APP_URL=https://<your-ngrok-domain>/edutrack/
+```
+4. Restart Apache, open the same HTTPS URL on phone, allow camera permission.
+
+## Testing / Quality
+
+```bash
+composer test
+vendor/bin/php-cs-fixer fix
+```
+
+## AI Agent Integration
+
+- Jotform Agent script is embedded on landing page (`index.php`).
+- CSP and permissions are configured in `includes/security_headers.php` to allow required Jotform domains.
 
 ## Troubleshooting
 
-- If you see autoload errors, run `composer install`.
-- If DB connection fails, verify `.env` values and that MySQL is running.
-- If MySQL driver errors appear, enable `pdo_mysql` in PHP.
-- Use `APP_ENV=development` and `APP_DEBUG=1` during local debugging.
+- `composer` autoload errors: run `composer install`.
+- DB connection errors: verify `.env` DB values and MySQL service.
+- Camera `NotAllowedError` on phone:
+  - Use HTTPS URL.
+  - Confirm browser + OS camera permissions.
+  - Ensure `Permissions-Policy` allows `self` (already configured in this project).
+- Missing CSS on phone/LAN: verify `APP_URL` and open the exact `/edutrack/` path.
 
 ## Additional Docs
 
@@ -152,7 +168,7 @@ vendor/bin/php-cs-fixer fix
 
 ## License
 
-See [LICENCE.md](LICENCE.md) for the project license terms.
+See [LICENCE.md](LICENCE.md).
 
 ## Contact
 
