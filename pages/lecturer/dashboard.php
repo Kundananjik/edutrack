@@ -208,6 +208,7 @@ if ($hour < 12) {
         =============================================== -->
         <div class="mt-4 mb-4 text-center">
             <button id="update-profile-btn" class="btn btn-success">Update Profile</button>
+            <a href="../account/change_password.php" class="btn btn-outline-success ms-2">Change Password</a>
         </div>
 
         <!-- Hidden Profile Form -->
@@ -230,12 +231,6 @@ if ($hour < 12) {
                 <div class="mb-3">
                     <label class="form-label">Phone</label>
                     <input class="form-control" type="text" name="phone" value="<?= htmlspecialchars($lecturer['phone'] ?? '') ?>">
-                </div>
-
-                <!-- Password -->
-                <div class="mb-3">
-                    <label class="form-label">New Password</label>
-                    <input class="form-control" type="password" name="password" placeholder="Leave blank to keep current">
                 </div>
 
                 <button type="submit" class="btn btn-success">Save Changes</button>

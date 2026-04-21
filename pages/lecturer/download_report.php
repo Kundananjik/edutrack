@@ -2,6 +2,7 @@
 
 require_once '../../includes/auth_check.php';
 require_once '../../includes/db.php';
+require_once '../../includes/lecturer_report_helper.php';
 require_login();
 require_role(['lecturer']);
 
@@ -14,102 +15,88 @@ if (!isset($_GET['course_id']) || !is_numeric($_GET['course_id'])) {
 }
 
 $course_id = intval($_GET['course_id']);
-$lecturer_id = $_SESSION['user_id'];
-$month_filter = $_GET['month'] ?? '';
-
-// Validate that lecturer teaches this course
-$stmt_check = $pdo->prepare('
-    SELECT 1 
-    FROM lecturer_courses 
-    WHERE lecturer_id = ? 
-    AND course_id = ?
-');
-$stmt_check->execute([$lecturer_id, $course_id]);
-
-if ($stmt_check->rowCount() === 0) {
-    die('Access denied. You are not assigned to this course.');
-}
+$lecturer_id = (int) $_SESSION['user_id'];
+$month_filter = lecturer_normalize_report_month($_GET['month'] ?? '');
+$search_filter = lecturer_normalize_report_search($_GET['search'] ?? '');
+$attendance_filter = lecturer_normalize_report_attendance_filter($_GET['attendance_filter'] ?? 'all');
+$format = strtolower(trim((string) ($_GET['format'] ?? 'pdf')));
 
 $course = null;
 $students = [];
 $sessions = [];
 $attendance_data = [];
+$student_stats = [];
+$summary = [];
 
 try {
-    // Course info
-    $stmt_course = $pdo->prepare('SELECT name, course_code FROM courses WHERE id = ?');
-    $stmt_course->execute([$course_id]);
-    $course = $stmt_course->fetch(PDO::FETCH_ASSOC);
-    if (!$course) {
-        die('Course not found.');
-    }
-
-    // Students
-    $stmt_students = $pdo->prepare('
-        SELECT u.id AS user_id, u.name, s.student_number
-        FROM users u
-        JOIN students s ON u.id = s.user_id
-        JOIN enrollments e ON s.user_id = e.student_id
-        WHERE e.course_id = ?
-        ORDER BY u.name
-    ');
-    $stmt_students->execute([$course_id]);
-    $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
-
-    // Sessions
-    if ($month_filter) {
-        $start_date = $month_filter . '-01';
-        $end_date = date('Y-m-t', strtotime($start_date));
-
-        $stmt_sessions = $pdo->prepare('
-            SELECT id, created_at 
-            FROM attendance_sessions
-            WHERE course_id = ?
-            AND created_at BETWEEN ? AND ?
-            ORDER BY created_at ASC
-        ');
-        $stmt_sessions->execute([$course_id, $start_date, $end_date]);
-
-    } else {
-        $stmt_sessions = $pdo->prepare('
-            SELECT id, created_at 
-            FROM attendance_sessions
-            WHERE course_id = ?
-            ORDER BY created_at ASC
-        ');
-        $stmt_sessions->execute([$course_id]);
-    }
-
-    $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
-
-    // Attendance
-    if (!empty($sessions)) {
-        $session_ids = array_column($sessions, 'id');
-        $placeholders = implode(',', array_fill(0, count($session_ids), '?'));
-
-        $stmt_records = $pdo->prepare("
-            SELECT session_id, student_id 
-            FROM attendance_records 
-            WHERE session_id IN ($placeholders)
-        ");
-        $stmt_records->execute($session_ids);
-
-        while ($record = $stmt_records->fetch(PDO::FETCH_ASSOC)) {
-            $attendance_data[$record['student_id']][$record['session_id']] = 'Present';
-        }
-    }
-
+    $report = lecturer_fetch_attendance_report($pdo, $lecturer_id, $course_id, $month_filter, $search_filter, $attendance_filter);
+    $course = $report['course'];
+    $students = $report['students'];
+    $sessions = $report['sessions'];
+    $attendance_data = $report['attendance_map'];
+    $student_stats = $report['student_stats'];
+    $summary = $report['summary'];
 } catch (Exception $e) {
+    error_log('Error exporting lecturer report: ' . $e->getMessage());
     die('Error generating report.');
 }
 
-// Build PDF HTML
+if ($course === null) {
+    die('Access denied. You are not assigned to this course.');
+}
+
+if ($format === 'csv') {
+    $filename = 'Attendance_Report_' . $course['course_code'] . '_' . ($month_filter ?: 'All') . '.csv';
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+    $output = fopen('php://output', 'w');
+    fputcsv($output, ['Course', $course['name']]);
+    fputcsv($output, ['Course Code', $course['course_code']]);
+    fputcsv($output, ['Month Scope', $report['month_label']]);
+    fputcsv($output, ['Student Search', $search_filter !== '' ? $search_filter : 'None']);
+    fputcsv($output, ['Attendance Filter', str_replace('_', ' ', $attendance_filter)]);
+    fputcsv($output, []);
+
+    $header = ['Student Name', 'Student Number', 'Present', 'Absent', 'Attendance Rate'];
+    foreach ($sessions as $session) {
+        $header[] = (new DateTime($session['created_at']))->format('M d Y');
+    }
+    fputcsv($output, $header);
+
+    foreach ($students as $student) {
+        $studentId = (int) $student['user_id'];
+        $row = [
+            $student['name'],
+            $student['student_number'],
+            $student_stats[$studentId]['present_count'] ?? 0,
+            $student_stats[$studentId]['absent_count'] ?? 0,
+            ($student_stats[$studentId]['attendance_rate'] ?? 0) . '%',
+        ];
+
+        foreach ($sessions as $session) {
+            $row[] = !empty($attendance_data[$studentId][$session['id']]) ? 'Present' : 'Absent';
+        }
+
+        fputcsv($output, $row);
+    }
+
+    fclose($output);
+    exit;
+}
+
 $html = '<h2 style="text-align:center;">Attendance Report</h2>';
 $html .= '<p><strong>Course:</strong> ' . htmlspecialchars($course['name']) . '<br>';
-$html .= '<strong>Course Code:</strong> ' . htmlspecialchars($course['course_code']) . '</p>';
+$html .= '<strong>Course Code:</strong> ' . htmlspecialchars($course['course_code']) . '<br>';
+$html .= '<strong>Scope:</strong> ' . htmlspecialchars($report['month_label']) . '<br>';
+$html .= '<strong>Student Search:</strong> ' . htmlspecialchars($search_filter !== '' ? $search_filter : 'None') . '<br>';
+$html .= '<strong>Attendance Filter:</strong> ' . htmlspecialchars(str_replace('_', ' ', $attendance_filter)) . '<br>';
+$html .= '<strong>Students:</strong> ' . (int) $summary['student_count'] . ' | ';
+$html .= '<strong>Sessions:</strong> ' . (int) $summary['session_count'] . ' | ';
+$html .= '<strong>Attendance Rate:</strong> ' . number_format((float) $summary['attendance_rate'], 1) . '%</p>';
 
 $html .= '<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse; text-align:center;">';
-$html .= '<thead><tr><th>Student Name</th><th>Student Number</th>';
+$html .= '<thead><tr><th>Student Name</th><th>Student Number</th><th>Present</th><th>Absent</th><th>Rate</th>';
 
 foreach ($sessions as $session) {
     $html .= '<th>' . (new DateTime($session['created_at']))->format('M d') . '</th>';
@@ -118,12 +105,16 @@ foreach ($sessions as $session) {
 $html .= '</tr></thead><tbody>';
 
 foreach ($students as $student) {
+    $studentId = (int) $student['user_id'];
     $html .= '<tr>';
     $html .= '<td>' . htmlspecialchars($student['name']) . '</td>';
     $html .= '<td>' . htmlspecialchars($student['student_number']) . '</td>';
+    $html .= '<td>' . (int) ($student_stats[$studentId]['present_count'] ?? 0) . '</td>';
+    $html .= '<td>' . (int) ($student_stats[$studentId]['absent_count'] ?? 0) . '</td>';
+    $html .= '<td>' . number_format((float) ($student_stats[$studentId]['attendance_rate'] ?? 0), 1) . '%</td>';
 
     foreach ($sessions as $session) {
-        $html .= '<td>' . (isset($attendance_data[$student['user_id']][$session['id']]) ? 'Present' : 'Absent') . '</td>';
+        $html .= '<td>' . (!empty($attendance_data[$studentId][$session['id']]) ? 'Present' : 'Absent') . '</td>';
     }
 
     $html .= '</tr>';

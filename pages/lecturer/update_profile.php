@@ -26,7 +26,6 @@ $user_id = $_SESSION['user_id'];
 $name = $_POST['name'] ?? '';
 $email = $_POST['email'] ?? '';
 $phone = $_POST['phone'] ?? '';
-$password = $_POST['password'] ?? '';
 
 
 if (!$name || !$email) {
@@ -35,23 +34,12 @@ if (!$name || !$email) {
 }
 
 try {
-    // If password is provided, hash it; else keep current password
-    if (!empty($password)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = 'UPDATE users SET name = :name, email = :email, phone = :phone, password = :password WHERE id = :id';
-    } else {
-        $sql = 'UPDATE users SET name = :name, email = :email, phone = :phone WHERE id = :id';
-    }
-
+    $sql = 'UPDATE users SET name = :name, email = :email, phone = :phone WHERE id = :id';
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':phone', $phone);
     $stmt->bindParam(':id', $user_id);
-
-    if (!empty($password)) {
-        $stmt->bindParam(':password', $hashedPassword);
-    }
 
     $stmt->execute();
 

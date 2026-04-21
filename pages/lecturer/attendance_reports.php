@@ -14,6 +14,7 @@ unset($__et,$__i,$__p);
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
+require_once '../../includes/lecturer_report_helper.php';
 
 require_login();
 require_role(['lecturer']);
@@ -24,12 +25,19 @@ $courses = [];
 $error = null;
 
 try {
-    // Fetch all courses assigned to this lecturer
     $stmt = $pdo->prepare('
-        SELECT c.id, c.name
+        SELECT
+            c.id,
+            c.name,
+            c.course_code,
+            COUNT(DISTINCT e.student_id) AS student_count,
+            COUNT(DISTINCT s.id) AS session_count
         FROM courses c
         JOIN lecturer_courses lc ON c.id = lc.course_id
+        LEFT JOIN enrollments e ON e.course_id = c.id
+        LEFT JOIN attendance_sessions s ON s.course_id = c.id
         WHERE lc.lecturer_id = ?
+        GROUP BY c.id, c.name, c.course_code
         ORDER BY c.name
     ');
     $stmt->execute([$user_id]);
@@ -59,7 +67,7 @@ try {
 <body>
 <?php require_once '../../includes/lecturer_navbar.php'; ?>
 
-<div class="container py-5 dashboard-container">
+<div class="container py-5 dashboard-container report-hub">
 
     <!-- Back Button -->
     <div class="mb-4">
@@ -78,20 +86,45 @@ try {
         <div class="alert alert-info">You have no courses available to generate reports for.</div>
 
     <?php else: ?>
-        <p>Select a course below to view or generate an attendance report:</p>
+        <div class="report-hero mb-4">
+            <div>
+                <p class="text-uppercase small fw-semibold mb-2">Lecturer Reports</p>
+                <h2 class="mb-2">Attendance reporting hub</h2>
+                <p class="mb-0">Open a course report to review session-by-session attendance, inspect percentages, or export the report as PDF, CSV, or print-ready output.</p>
+            </div>
+            <div class="report-hero-chip">
+                <span><?= count($courses) ?></span>
+                <small>Courses ready</small>
+            </div>
+        </div>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
             <?php foreach ($courses as $course): ?>
                 <div class="col">
                     <a href="generate_report.php?course_id=<?= $course['id'] ?>"
-                       class="card h-100 text-decoration-none text-dark shadow-sm">
+                       class="card h-100 text-decoration-none text-dark shadow-sm report-course-card">
 
-                        <div class="card-body text-center">
-                            <i class="bi bi-file-earmark-text fs-1 mb-3 text-success"></i>
-                            <h5 class="card-title">
-                                <?= htmlspecialchars($course['name']) ?>
-                            </h5>
-                            <p class="card-text">View / Download Report</p>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                <div>
+                                    <p class="report-course-code mb-2"><?= htmlspecialchars($course['course_code']) ?></p>
+                                    <h5 class="card-title mb-1"><?= htmlspecialchars($course['name']) ?></h5>
+                                </div>
+                                <i class="bi bi-bar-chart-line-fill fs-3 text-success"></i>
+                            </div>
+
+                            <div class="report-course-metrics">
+                                <div>
+                                    <strong><?= (int) $course['student_count'] ?></strong>
+                                    <span>Students</span>
+                                </div>
+                                <div>
+                                    <strong><?= (int) $course['session_count'] ?></strong>
+                                    <span>Sessions</span>
+                                </div>
+                            </div>
+
+                            <p class="card-text mt-3 mb-0">Open the report workspace for summaries, filters, and exports.</p>
                         </div>
 
                     </a>

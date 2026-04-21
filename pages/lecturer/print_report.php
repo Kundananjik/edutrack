@@ -1,6 +1,7 @@
 <?php
 require_once '../../includes/auth_check.php';
 require_once '../../includes/db.php';
+require_once '../../includes/lecturer_report_helper.php';
 require_login();
 require_role(['lecturer']); // CHANGED from admin → lecturer
 
@@ -10,71 +11,39 @@ if (!isset($_GET['course_id']) || !is_numeric($_GET['course_id'])) {
 }
 
 $course_id = intval($_GET['course_id']);
-$month_filter = $_GET['month'] ?? '';
+$month_filter = lecturer_normalize_report_month($_GET['month'] ?? '');
+$month_filter = $month_filter !== '' ? $month_filter : lecturer_build_report_month($_GET['year'] ?? '', $_GET['month_number'] ?? '');
+$search_filter = lecturer_normalize_report_search($_GET['search'] ?? '');
+$attendance_filter = lecturer_normalize_report_attendance_filter($_GET['attendance_filter'] ?? 'all');
+$available_report_months = [];
 
 $course = null;
 $students = [];
 $sessions = [];
 $attendance_data = [];
+$student_stats = [];
+$summary = [
+    'student_count' => 0,
+    'session_count' => 0,
+    'attendance_marks' => 0,
+    'attendance_rate' => 0,
+];
+$month_label = 'All Sessions';
 $error = '';
 
 try {
-    // Fetch course details assigned to this lecturer
-    // Ensures lecturer cannot access other lecturers' courses
-    $stmt_course = $pdo->prepare('
-        SELECT c.name, c.course_code 
-        FROM courses c
-        JOIN lecturer_courses lc ON lc.course_id = c.id
-        WHERE c.id = ? AND lc.lecturer_id = ?
-    ');
-    $stmt_course->execute([$course_id, $_SESSION['user_id']]);
-    $course = $stmt_course->fetch(PDO::FETCH_ASSOC);
+    $report = lecturer_fetch_attendance_report($pdo, (int) $_SESSION['user_id'], $course_id, $month_filter, $search_filter, $attendance_filter);
+    $course = $report['course'];
+    $students = $report['students'];
+    $sessions = $report['sessions'];
+    $attendance_data = $report['attendance_map'];
+    $student_stats = $report['student_stats'];
+    $summary = $report['summary'];
+    $month_label = $report['month_label'];
+    $available_report_months = lecturer_fetch_report_month_options($pdo, (int) $_SESSION['user_id'], $course_id);
 
-    if (!$course) {
+    if ($course === null) {
         $error = 'Course not found or not assigned to you.';
-    } else {
-        // Fetch enrolled students
-        $stmt_students = $pdo->prepare('
-            SELECT u.id AS user_id, u.name, s.student_number
-            FROM users u
-            JOIN students s ON u.id = s.user_id
-            JOIN enrollments e ON s.user_id = e.student_id
-            WHERE e.course_id = ?
-            ORDER BY u.name
-        ');
-        $stmt_students->execute([$course_id]);
-        $students = $stmt_students->fetchAll(PDO::FETCH_ASSOC);
-
-        // Fetch attendance sessions with optional month filter
-        if ($month_filter) {
-            $start_date = $month_filter . '-01';
-            $end_date = date('Y-m-t', strtotime($start_date));
-
-            $stmt_sessions = $pdo->prepare('
-                SELECT id, created_at 
-                FROM attendance_sessions 
-                WHERE course_id = ? 
-                AND created_at BETWEEN ? AND ? 
-                ORDER BY created_at ASC
-            ');
-            $stmt_sessions->execute([$course_id, $start_date, $end_date]);
-        } else {
-            $stmt_sessions = $pdo->prepare('SELECT id, created_at FROM attendance_sessions WHERE course_id = ? ORDER BY created_at ASC');
-            $stmt_sessions->execute([$course_id]);
-        }
-        $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
-
-        // Fetch attendance records
-        if (!empty($sessions)) {
-            $session_ids = array_column($sessions, 'id');
-            $placeholders = implode(',', array_fill(0, count($session_ids), '?'));
-            $stmt_records = $pdo->prepare("SELECT session_id, student_id FROM attendance_records WHERE session_id IN ($placeholders)");
-            $stmt_records->execute($session_ids);
-
-            while ($record = $stmt_records->fetch(PDO::FETCH_ASSOC)) {
-                $attendance_data[$record['student_id']][$record['session_id']] = 'Present';
-            }
-        }
     }
 } catch (Exception $e) {
     error_log('Error generating print report: ' . $e->getMessage());
@@ -116,8 +85,17 @@ table th, table td { vertical-align: middle !important; text-align: center; }
     <!-- Month Filter -->
     <form method="GET" class="mb-3 no-print d-flex align-items-center gap-2">
         <input type="hidden" name="course_id" value="<?= $course_id ?>">
-        <label for="month">Select Month:</label>
-        <input type="month" id="month" name="month" value="<?= htmlspecialchars($month_filter) ?>" class="form-control w-auto">
+        <label for="month">Month:</label>
+        <select id="month" name="month" class="form-select w-auto">
+            <option value="">All Available Months</option>
+            <?php foreach ($available_report_months as $month_option): ?>
+                <option value="<?= htmlspecialchars($month_option['value']) ?>" <?= $month_filter === $month_option['value'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($month_option['label']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <input type="hidden" name="search" value="<?= htmlspecialchars($search_filter) ?>">
+        <input type="hidden" name="attendance_filter" value="<?= htmlspecialchars($attendance_filter) ?>">
         <button type="submit" class="btn btn-secondary">Filter</button>
     </form>
 
@@ -130,12 +108,16 @@ table th, table td { vertical-align: middle !important; text-align: center; }
     <?php else: ?>
 
         <p><strong>Course Code:</strong> <?= htmlspecialchars($course['course_code']) ?></p>
+        <p><strong>Scope:</strong> <?= htmlspecialchars($month_label) ?></p>
+        <p><strong>Student Search:</strong> <?= htmlspecialchars($search_filter !== '' ? $search_filter : 'None') ?></p>
+        <p><strong>Attendance Filter:</strong> <?= htmlspecialchars(str_replace('_', ' ', $attendance_filter)) ?></p>
+        <p><strong>Students:</strong> <?= (int) $summary['student_count'] ?> | <strong>Sessions:</strong> <?= (int) $summary['session_count'] ?> | <strong>Attendance Rate:</strong> <?= htmlspecialchars(number_format((float) $summary['attendance_rate'], 1)) ?>%</p>
 
         <?php if (empty($sessions)): ?>
             <div class="alert alert-warning">No attendance sessions for this month.</div>
 
         <?php elseif (empty($students)): ?>
-            <div class="alert alert-warning">No students are enrolled in this course.</div>
+            <div class="alert alert-warning">No students matched the active filters for this course.</div>
 
         <?php else: ?>
 
@@ -145,6 +127,9 @@ table th, table td { vertical-align: middle !important; text-align: center; }
                         <tr>
                             <th>Student Name</th>
                             <th>Student Number</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Rate</th>
                             <?php foreach ($sessions as $session): ?>
                                 <th>
                                     Session<br>
@@ -159,10 +144,13 @@ table th, table td { vertical-align: middle !important; text-align: center; }
                             <tr>
                                 <td><?= htmlspecialchars($student['name']) ?></td>
                                 <td><?= htmlspecialchars($student['student_number']) ?></td>
+                                <td><?= (int) ($student_stats[$student['user_id']]['present_count'] ?? 0) ?></td>
+                                <td><?= (int) ($student_stats[$student['user_id']]['absent_count'] ?? 0) ?></td>
+                                <td><?= htmlspecialchars(number_format((float) ($student_stats[$student['user_id']]['attendance_rate'] ?? 0), 1)) ?>%</td>
 
                                 <?php foreach ($sessions as $session): ?>
-                                    <td class="<?= isset($attendance_data[$student['user_id']][$session['id']]) ? 'present' : 'absent' ?>">
-                                        <?= isset($attendance_data[$student['user_id']][$session['id']]) ? 'Present' : 'Absent' ?>
+                                    <td class="<?= !empty($attendance_data[$student['user_id']][$session['id']]) ? 'present' : 'absent' ?>">
+                                        <?= !empty($attendance_data[$student['user_id']][$session['id']]) ? 'Present' : 'Absent' ?>
                                     </td>
                                 <?php endforeach; ?>
 
