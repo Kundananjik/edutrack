@@ -1,7 +1,7 @@
 <?php
 // Preload (auto-locate includes/preload.php)
 $__et = __DIR__;
-for ($__i = 0;$__i < 6;$__i++) {
+for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
     if (file_exists($__p)) {
         require_once $__p;
@@ -9,47 +9,24 @@ for ($__i = 0;$__i < 6;$__i++) {
     }
     $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
+unset($__et, $__i, $__p);
+
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 require_once '../../includes/functions.php';
 
 require_login();
+require_role(['admin']);
 
-// Determine user role and ID
-$user_id = $_SESSION['user_id'];
-$user_role = $_SESSION['role'] ?? 'admin';
-
-// Fetch announcements relevant to the user
 try {
-    if ($user_role === 'student') {
-        $stmt = $pdo->prepare("
-            SELECT a.title, a.message, a.audience, a.created_at, u.name AS sender
-            FROM announcements a
-            JOIN users u ON a.created_by = u.id
-            WHERE a.audience IN ('students','all')
-            ORDER BY a.created_at DESC
-        ");
-        $stmt->execute();
-    } elseif ($user_role === 'lecturer') {
-        $stmt = $pdo->prepare("
-            SELECT a.title, a.message, a.audience, a.created_at, u.name AS sender
-            FROM announcements a
-            JOIN users u ON a.created_by = u.id
-            WHERE a.audience IN ('lecturers','all')
-            ORDER BY a.created_at DESC
-        ");
-        $stmt->execute();
-    } else { // admin sees all
-        $stmt = $pdo->prepare('
-            SELECT a.title, a.message, a.audience, a.created_at, u.name AS sender
-            FROM announcements a
-            JOIN users u ON a.created_by = u.id
-            ORDER BY a.created_at DESC
-        ');
-        $stmt->execute();
-    }
+    $stmt = $pdo->prepare('
+        SELECT a.title, a.message, a.audience, a.created_at, u.name AS sender
+        FROM announcements a
+        JOIN users u ON a.created_by = u.id
+        ORDER BY a.created_at DESC
+    ');
+    $stmt->execute();
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log('Failed to fetch notifications: ' . $e->getMessage());
@@ -57,77 +34,65 @@ try {
     $notifications = [];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Notifications - EduTrack</title>
-
+    <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
+    <title>Notifications - EduTrack Admin</title>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-<!-- Custom CSS -->
-<link rel="stylesheet" href="css/dashboard.css">
-<style>
-    .notification-card {
-        margin-bottom: 15px;
-    }
-    .badge {
-        font-size: 0.8rem;
-    }
-</style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body>
+<body class="bg-light d-flex flex-column min-vh-100">
 
 <?php require_once '../../includes/admin_navbar.php'; ?>
 
-<main class="container my-5">
-    <h1 class="mb-4">Notifications</h1>
+<main class="container py-5 flex-grow-1">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Notifications</h1>
+            <p class="text-muted mb-0">Recent announcement traffic visible to administrators.</p>
+        </div>
+        <a href="dashboard.php" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
 
     <?php if (!empty($_SESSION['error_message'])): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error_message']) ?></div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['error_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <?php unset($_SESSION['error_message']); ?>
     <?php endif; ?>
 
-    <?php if (empty($notifications)): ?>
+    <?php if ($notifications === []): ?>
         <div class="alert alert-info">No notifications available.</div>
     <?php else: ?>
-        <div class="row">
-            <?php foreach ($notifications as $n): ?>
+        <div class="row g-4">
+            <?php foreach ($notifications as $notification): ?>
                 <div class="col-12">
-                    <div class="card notification-card shadow-sm">
+                    <div class="card shadow-sm rounded-4 h-100">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <?= htmlspecialchars($n['title']) ?> 
-                                <span class="badge bg-success"><?= ucfirst($n['audience']) ?></span>
-                            </h5>
-                            <p class="card-text"><?= htmlspecialchars($n['message']) ?></p>
-                            <small class="text-muted">Sent by <?= htmlspecialchars($n['sender']) ?> on <?= date('d-m-Y H:i', strtotime($n['created_at'])) ?></small>
+                            <h2 class="h5 card-title d-flex align-items-center gap-2">
+                                <span><?= htmlspecialchars($notification['title']) ?></span>
+                                <span class="badge bg-success"><?= htmlspecialchars(ucfirst($notification['audience'])) ?></span>
+                            </h2>
+                            <p class="card-text mb-3"><?= nl2br(htmlspecialchars($notification['message'])) ?></p>
+                            <small class="text-muted">
+                                Sent by <?= htmlspecialchars($notification['sender']) ?> on <?= htmlspecialchars(date('d-m-Y H:i', strtotime($notification['created_at']))) ?>
+                            </small>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-
-    <div class="mt-4">
-        <div class="d-flex justify-content-between mb-3">
-            <a href="dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
-        </div>
-    </div>
 </main>
 
 <?php require_once '../../includes/footer.php'; ?>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
-

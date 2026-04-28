@@ -51,6 +51,125 @@ function lecturer_student_matches_filter(array $stats, $attendanceFilter)
     }
 }
 
+function lecturer_fetch_dashboard_metrics(PDO $pdo, $lecturerId)
+{
+    $lecturerId = (int) $lecturerId;
+
+    $metrics = [
+        'courses' => 0,
+        'students' => 0,
+        'active_sessions' => 0,
+        'attendance_today' => 0,
+        'courses_with_sessions' => 0,
+        'at_risk_students' => [],
+        'at_risk_courses' => [],
+        'active_session_courses' => [],
+    ];
+
+    $stmt = $pdo->prepare('SELECT COUNT(DISTINCT course_id) FROM lecturer_courses WHERE lecturer_id = ?');
+    $stmt->execute([$lecturerId]);
+    $metrics['courses'] = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare('
+        SELECT COUNT(DISTINCT e.student_id)
+        FROM enrollments e
+        INNER JOIN lecturer_courses lc ON lc.course_id = e.course_id
+        WHERE lc.lecturer_id = ?
+    ');
+    $stmt->execute([$lecturerId]);
+    $metrics['students'] = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM attendance_sessions WHERE lecturer_id = ? AND is_active = 1');
+    $stmt->execute([$lecturerId]);
+    $metrics['active_sessions'] = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*)
+        FROM attendance_records ar
+        INNER JOIN attendance_sessions s ON s.id = ar.session_id
+        WHERE s.lecturer_id = ?
+          AND DATE(ar.signed_in_at) = CURDATE()
+    ');
+    $stmt->execute([$lecturerId]);
+    $metrics['attendance_today'] = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare('
+        SELECT COUNT(DISTINCT s.course_id)
+        FROM attendance_sessions s
+        WHERE s.lecturer_id = ?
+    ');
+    $stmt->execute([$lecturerId]);
+    $metrics['courses_with_sessions'] = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare("
+        SELECT
+            u.id,
+            u.name,
+            s.student_number,
+            ROUND((COUNT(ar.id) / NULLIF(COUNT(asess.id), 0)) * 100, 1) AS attendance_rate,
+            COUNT(asess.id) AS total_sessions
+        FROM students s
+        INNER JOIN users u ON u.id = s.user_id
+        INNER JOIN enrollments e ON e.student_id = s.user_id
+        INNER JOIN lecturer_courses lc ON lc.course_id = e.course_id
+        INNER JOIN attendance_sessions asess ON asess.course_id = e.course_id AND asess.lecturer_id = lc.lecturer_id
+        LEFT JOIN attendance_records ar
+            ON ar.session_id = asess.id
+           AND ar.student_id = s.user_id
+        WHERE lc.lecturer_id = ?
+        GROUP BY u.id, u.name, s.student_number
+        HAVING total_sessions > 0 AND attendance_rate < 75
+        ORDER BY attendance_rate ASC, u.name ASC
+        LIMIT 5
+    ");
+    $stmt->execute([$lecturerId]);
+    $metrics['at_risk_students'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->prepare("
+        SELECT
+            c.id,
+            c.name,
+            c.course_code,
+            ROUND(
+                (COUNT(ar.id) / NULLIF(COUNT(DISTINCT e.student_id) * COUNT(DISTINCT asess.id), 0)) * 100,
+                1
+            ) AS attendance_rate,
+            COUNT(DISTINCT e.student_id) AS student_count,
+            COUNT(DISTINCT asess.id) AS session_count
+        FROM courses c
+        INNER JOIN lecturer_courses lc ON lc.course_id = c.id
+        LEFT JOIN enrollments e ON e.course_id = c.id
+        LEFT JOIN attendance_sessions asess ON asess.course_id = c.id AND asess.lecturer_id = lc.lecturer_id
+        LEFT JOIN attendance_records ar ON ar.session_id = asess.id AND ar.student_id = e.student_id
+        WHERE lc.lecturer_id = ?
+        GROUP BY c.id, c.name, c.course_code
+        HAVING session_count > 0 AND student_count > 0
+        ORDER BY attendance_rate ASC, c.name ASC
+        LIMIT 5
+    ");
+    $stmt->execute([$lecturerId]);
+    $metrics['at_risk_courses'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->prepare("
+        SELECT
+            c.id,
+            c.name,
+            c.course_code,
+            s.session_code,
+            s.created_at
+        FROM attendance_sessions s
+        INNER JOIN courses c ON c.id = s.course_id
+        WHERE s.lecturer_id = ?
+          AND s.is_active = 1
+        ORDER BY s.created_at DESC
+        LIMIT 5
+    ");
+    $stmt->execute([$lecturerId]);
+    $metrics['active_session_courses'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $metrics;
+}
+
 function lecturer_fetch_attendance_report(PDO $pdo, $lecturerId, $courseId, $monthFilter = '', $search = '', $attendanceFilter = 'all')
 {
     $lecturerId = (int) $lecturerId;

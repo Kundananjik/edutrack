@@ -1,7 +1,7 @@
 <?php
 // Preload (auto-locate includes/preload.php)
 $__et = __DIR__;
-for ($__i = 0;$__i < 6;$__i++) {
+for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
     if (file_exists($__p)) {
         require_once $__p;
@@ -9,8 +9,10 @@ for ($__i = 0;$__i < 6;$__i++) {
     }
     $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
+unset($__et, $__i, $__p);
+
 require_once '../../includes/auth_check.php';
+require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 require_once '../../includes/functions.php';
 require_once '../../includes/csrf.php';
@@ -18,12 +20,11 @@ require_once '../../includes/csrf.php';
 require_login();
 require_role(['admin']);
 
-$id = intval($_GET['id'] ?? 0);
+$id = (int) ($_GET['id'] ?? 0);
 if ($id <= 0) {
     redirect('manage_students.php');
 }
 
-// Fetch student data
 $stmt = $pdo->prepare('
     SELECT u.id, u.name, u.email, u.status, s.student_number, s.programme_id
     FROM users u
@@ -38,14 +39,12 @@ if (!$student) {
     redirect('manage_students.php');
 }
 
-// Fetch programmes
 $programmes = $pdo->query('SELECT id, name FROM programmes ORDER BY name')->fetchAll(PDO::FETCH_ASSOC);
 
-// Initialize form variables (preserve submitted values)
 $name = $_POST['name'] ?? $student['name'];
-$student_number = $_POST['student_number'] ?? $student['student_number'];
+$studentNumber = $_POST['student_number'] ?? $student['student_number'];
 $email = $_POST['email'] ?? $student['email'];
-$programme_id = $_POST['programme_id'] ?? $student['programme_id'];
+$programmeId = $_POST['programme_id'] ?? $student['programme_id'];
 $status = $_POST['status'] ?? $student['status'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -54,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $password = trim($_POST['password'] ?? '');
 
-        if (empty($name) || empty($email) || empty($student_number) || $programme_id <= 0) {
+        if ($name === '' || $email === '' || $studentNumber === '' || (int) $programmeId <= 0) {
             $_SESSION['error_message'] = 'All fields are required.';
         } else {
             try {
@@ -62,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $updateUserQuery = 'UPDATE users SET name = ?, email = ?, status = ?';
                 $params = [$name, $email, $status];
-                if (!empty($password)) {
+                if ($password !== '') {
                     $updateUserQuery .= ', password = ?';
                     $params[] = password_hash($password, PASSWORD_DEFAULT);
                 }
@@ -73,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute($params);
 
                 $stmt = $pdo->prepare('UPDATE students SET student_number = ?, programme_id = ? WHERE user_id = ?');
-                $stmt->execute([$student_number, $programme_id, $id]);
+                $stmt->execute([$studentNumber, (int) $programmeId, $id]);
 
                 $pdo->commit();
                 $_SESSION['success_message'] = 'Student updated successfully!';
@@ -89,103 +88,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
+    <title>Edit Student - EduTrack Admin</title>
 
-</head>
-<body>
-<?php require_once '../../includes/admin_navbar.php'; ?>
-
-<div class="container py-4">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-<div class="container my-5">
-    <a href="manage_students.php" class="btn btn-outline-secondary mb-3">
-        <i class="bi bi-arrow-left"></i> Back to Students
-    </a>
+<?php require_once '../../includes/admin_navbar.php'; ?>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0"><i class="bi bi-person-edit"></i> Edit Student</h3>
+<main class="container py-5 flex-grow-1">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Edit Student</h1>
+            <p class="text-muted mb-0">Update student identity, programme, status, and optional password.</p>
         </div>
+        <div class="d-flex gap-2">
+            <a href="view_student.php?id=<?= urlencode((string) $student['id']) ?>" class="btn btn-outline-success">
+                <i class="bi bi-eye"></i> View Student
+            </a>
+            <a href="manage_students.php" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Students
+            </a>
+        </div>
+    </div>
+
+    <?php if (!empty($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['success_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['error_message'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['error_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+    <?php endif; ?>
+
+    <section class="card shadow-sm rounded-4">
         <div class="card-body">
-            <!-- Alerts -->
-            <?php if (!empty($_SESSION['success_message'])): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?= htmlspecialchars($_SESSION['success_message']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php unset($_SESSION['success_message']); ?>
-            <?php endif; ?>
-
-            <?php if (!empty($_SESSION['error_message'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?= htmlspecialchars($_SESSION['error_message']) ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php unset($_SESSION['error_message']); ?>
-            <?php endif; ?>
-
-            <!-- Form -->
-            <form method="POST">
+            <form method="POST" class="row g-3">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
 
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="name" class="form-label">Full Name</label>
                     <input type="text" name="name" id="name" class="form-control" required value="<?= htmlspecialchars($name) ?>">
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="student_number" class="form-label">Student Number</label>
-                    <input type="text" name="student_number" id="student_number" class="form-control" required value="<?= htmlspecialchars($student_number) ?>">
+                    <input type="text" name="student_number" id="student_number" class="form-control" required value="<?= htmlspecialchars($studentNumber) ?>">
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="programme_id" class="form-label">Programme</label>
                     <select name="programme_id" id="programme_id" class="form-select" required>
                         <option value="">Select a Programme</option>
                         <?php foreach ($programmes as $programme): ?>
-                            <option value="<?= htmlspecialchars($programme['id']) ?>" <?= ($programme_id == $programme['id']) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($programme['id']) ?>" <?= (int) $programmeId === (int) $programme['id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($programme['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" name="email" id="email" class="form-control" required value="<?= htmlspecialchars($email) ?>">
                 </div>
 
-                <div class="mb-3">
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="active" <?= $status === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="suspended" <?= $status === 'suspended' ? 'selected' : '' ?>>Suspended</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
                     <label for="password" class="form-label">Password <small class="text-muted">(Leave blank to keep current)</small></label>
                     <input type="password" name="password" id="password" class="form-control">
                 </div>
 
-                <div class="mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select name="status" id="status" class="form-select">
-                        <option value="active" <?= ($status === 'active') ? 'selected' : '' ?>>Active</option>
-                        <option value="suspended" <?= ($status === 'suspended') ? 'selected' : '' ?>>Suspended</option>
-                    </select>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-floppy"></i> Update Student
+                    </button>
                 </div>
-
-                <button type="submit" class="btn btn-success">
-                    <i class="bi bi-floppy"></i> Update Student
-                </button>
             </form>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
-<!-- Bootstrap JS Bundle (with Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <?php require_once '../../includes/footer.php'; ?>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

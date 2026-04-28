@@ -5,11 +5,17 @@ EduTrack is a web-based attendance and academic workflow system for universities
 ## Features
 
 - Authentication and role-based access control.
-- Admin modules for users, programmes, courses, enrollment, announcements, reports, and contact messages.
-- Lecturer modules for course management, starting/stopping attendance sessions, active session monitoring, and reports.
+- Admin modules for users, programmes, courses, enrollment, announcements, reports, contact messages, and audit monitoring.
+- Lecturer modules for course management, starting/stopping attendance sessions, active session monitoring, analytics, and reports.
 - Student modules for attendance marking (QR/manual), attendance history/summary, and announcements.
 - Shared public pages (`about`, `help`, `contact`, policies/terms).
 - Embedded Jotform AI assistant on the landing page.
+
+## Latest Improvement
+
+- Added an admin audit overview for operational checks such as active sessions, sessions without attendance, courses without lecturer assignments, and inactive students with enrollments.
+- Added dedicated admin profile views for students and lecturers with quick access to enrolments, assigned courses, and key account details.
+- Upgraded the lecturer dashboard with teaching metrics, attendance trend highlights, at-risk student/course visibility, and active session summaries.
 
 ## Attendance Security (Current)
 

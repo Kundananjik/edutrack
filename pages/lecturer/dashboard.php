@@ -1,11 +1,6 @@
 <?php
-// ============================================
-// AUTO-LOAD PRELOAD FILE
-// This block searches upward for /includes/preload.php
-// so your script works no matter where it's placed.
-// ============================================
 $__et = __DIR__;
-for ($__i = 0;$__i < 6;$__i++) {
+for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
     if (file_exists($__p)) {
         require_once $__p;
@@ -13,260 +8,283 @@ for ($__i = 0;$__i < 6;$__i++) {
     }
     $__et = dirname($__et);
 }
-unset($__et,$__i,$__p);
+unset($__et, $__i, $__p);
 
-// ============================================
-// SESSION + AUTH + CONFIG LOADING
-// ============================================
 require_once '../../includes/auth_check.php';
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
+require_once '../../includes/functions.php';
+require_once '../../includes/lecturer_report_helper.php';
 
-require_login();                  // Ensure lecturer is logged in
-require_role(['lecturer']);       // Restrict access to lecturers only
+require_login();
+require_role(['lecturer']);
 
-// ============================================
-// GET CURRENT LECTURER
-// ============================================
-$user_id = $_SESSION['user_id'] ?? null;
-if (!$user_id) {
-    header('Location: ../../auth/login.php');
-    exit();
+$lecturerId = (int) ($_SESSION['user_id'] ?? 0);
+if ($lecturerId <= 0) {
+    redirect('../../auth/login.php');
 }
 
-// Vars for dashboard display
-$lecturer = null;
-$name = 'Lecturer';
-$my_courses_count = 0;
-$my_students_count = 0;
-$active_sessions_count = 0;
-$error_message = null;
+$lecturerName = htmlspecialchars($_SESSION['name'] ?? 'Lecturer');
+$metrics = [
+    'courses' => 0,
+    'students' => 0,
+    'active_sessions' => 0,
+    'attendance_today' => 0,
+    'courses_with_sessions' => 0,
+    'at_risk_students' => [],
+    'at_risk_courses' => [],
+    'active_session_courses' => [],
+];
+$errorMessage = null;
 
 try {
-    // --------------------------------------------
-    // FETCH LECTURER PROFILE DETAILS
-    // --------------------------------------------
-    $stmt = $pdo->prepare('SELECT id, name, email, phone FROM users WHERE id = :id LIMIT 1');
-    $stmt->execute(['id' => $user_id]);
-    $lecturer = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($lecturer) {
-        $name = $lecturer['name'];
-    }
-
-    // --------------------------------------------
-    // COUNT COURSES ASSIGNED TO THIS LECTURER
-    // --------------------------------------------
-    $stmt = $pdo->prepare('SELECT COUNT(DISTINCT course_id) FROM lecturer_courses WHERE lecturer_id = :id');
-    $stmt->execute(['id' => $user_id]);
-    $my_courses_count = (int) $stmt->fetchColumn();
-
-    // --------------------------------------------
-    // COUNT UNIQUE STUDENTS ENROLLED UNDER THIS LECTURER
-    // --------------------------------------------
-    $stmt = $pdo->prepare('
-        SELECT COUNT(DISTINCT e.student_id)
-        FROM enrollments e
-        JOIN lecturer_courses lc ON e.course_id = lc.course_id
-        WHERE lc.lecturer_id = :id
-    ');
-    $stmt->execute(['id' => $user_id]);
-    $my_students_count = (int) $stmt->fetchColumn();
-
-    // --------------------------------------------
-    // COUNT CURRENTLY ACTIVE ATTENDANCE SESSIONS
-    // --------------------------------------------
-    $stmt = $pdo->prepare('SELECT COUNT(*) FROM attendance_sessions WHERE is_active = 1 AND lecturer_id = :id');
-    $stmt->execute(['id' => $user_id]);
-    $active_sessions_count = (int) $stmt->fetchColumn();
-
+    $metrics = lecturer_fetch_dashboard_metrics($pdo, $lecturerId);
 } catch (PDOException $e) {
-    // Log internal error and display user-friendly message
-    error_log('Dashboard error: ' . $e->getMessage());
-    $error_message = 'Failed to load dashboard data. Please try again later.';
+    error_log('Lecturer dashboard error: ' . $e->getMessage());
+    $errorMessage = 'Failed to load dashboard data. Please try again later.';
 }
 
-// ============================================
-// TIME-BASED GREETING FOR LECTURER
-// ============================================
-$hour = date('H');
-if ($hour < 12) {
-    $greeting = 'Good Morning';
-    $emoji = '☀️';
-} elseif ($hour < 18) {
-    $greeting = 'Good Afternoon';
-    $emoji = '🌤️';
-} else {
-    $greeting = 'Good Evening';
-    $emoji = '🌙';
-}
+$lastUpdated = date('F j, Y, g:i a');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <title>EduTrack - Lecturer Dashboard</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="css/dashboard.css">
-
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-
-<body>
+<body class="bg-light d-flex flex-column min-vh-100">
 
 <?php require_once '../../includes/lecturer_navbar.php'; ?>
 
-<!-- ============================================
-     MAIN DASHBOARD CONTENT
-=============================================== -->
-<div class="container mt-4">
+<main class="dashboard-container container mt-4 flex-grow-1">
+    <h1 class="text-success mb-4">Welcome, <?= $lecturerName ?>!</h1>
 
-    <!-- Lecturer Greeting -->
-    <h1 class="mb-4" style="color:#2fa360;">
-        <?= $greeting . ', ' . htmlspecialchars($name) . '! ' . $emoji ?>
-    </h1>
-
-    <?php if ($error_message): ?>
-        <!-- Error Alert -->
-        <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
-
+    <?php if ($errorMessage !== null): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></div>
     <?php else: ?>
-
-        <!-- ============================================
-             OVERVIEW CARDS
-        =============================================== -->
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
-            <?php
-            // Cards dynamically rendered from array
-            $cards = [
-                ['title' => 'My Courses', 'count' => $my_courses_count, 'icon' => 'bi-book', 'link' => 'my_courses.php'],
-                ['title' => 'My Students', 'count' => $my_students_count, 'icon' => 'bi-mortarboard', 'link' => 'my_students.php'],
-                ['title' => 'Active Sessions', 'count' => $active_sessions_count, 'icon' => 'bi-easel', 'link' => 'active_sessions.php']
-            ];
-
-        foreach ($cards as $c):
-            ?>
-            <div class="col">
-                <a href="<?= $c['link'] ?>" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
-                    <div class="card-body">
-                        <i class="bi <?= $c['icon'] ?> fs-2 mb-2"></i>
-                        <h5 class="card-title"><?= $c['title'] ?></h5>
-                        <p class="card-text display-6"><?= htmlspecialchars($c['count']) ?></p>
-                    </div>
-                </a>
+        <section class="mb-5">
+            <h2 class="mb-3">Teaching Overview</h2>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <a href="my_courses.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-journal-bookmark fs-2 mb-2"></i>
+                        <h3>My Courses</h3>
+                        <p><?= (int) $metrics['courses'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="my_students.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-mortarboard fs-2 mb-2"></i>
+                        <h3>My Students</h3>
+                        <p><?= (int) $metrics['students'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="active_sessions.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-broadcast-pin fs-2 mb-2"></i>
+                        <h3>Active Sessions</h3>
+                        <p><?= (int) $metrics['active_sessions'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="attendance_reports.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-calendar-check fs-2 mb-2"></i>
+                        <h3>Attendance Today</h3>
+                        <p><?= (int) $metrics['attendance_today'] ?></p>
+                    </a>
+                </div>
             </div>
-            <?php endforeach; ?>
-        </div>
+        </section>
 
-        <!-- ============================================
-             REPORTS SECTION
-        =============================================== -->
-        <h2 class="mt-4 mb-3" style="color:#2fa360;">Reports</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
-            <div class="col">
-                <a href="attendance_reports.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
-                    <div class="card-body">
+        <section class="mb-5">
+            <h2 class="mb-3">Attendance Oversight</h2>
+            <div class="row g-4">
+                <div class="col-md-4 col-sm-6">
+                    <a href="attendance_reports.php" class="dashboard-card text-center d-block">
                         <i class="bi bi-graph-up fs-2 mb-2"></i>
-                        <h5 class="card-title">Attendance Reports</h5>
-                    </div>
-                </a>
+                        <h3>Courses With Reports</h3>
+                        <p><?= (int) $metrics['courses_with_sessions'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="generate_report.php?attendance_filter=at_risk" class="dashboard-card text-center d-block">
+                        <i class="bi bi-exclamation-triangle fs-2 mb-2"></i>
+                        <h3>Low Attendance View</h3>
+                        <p><?= count($metrics['at_risk_courses']) ?></p>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="active_sessions.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-qr-code-scan fs-2 mb-2"></i>
+                        <h3>Open Session Tools</h3>
+                        <p><?= count($metrics['active_session_courses']) ?></p>
+                    </a>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ============================================
-             COMMUNICATION SECTION
-        =============================================== -->
-        <h2 class="mt-4 mb-3" style="color:#2fa360;">Communication</h2>
-
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
-            <div class="col">
-                <a href="send_announcement.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
-                    <div class="card-body">
-                        <i class="bi bi-send fs-2 mb-2"></i>
-                        <h5 class="card-title">Send Announcement</h5>
+        <section class="mb-5">
+            <h2 class="mb-3">Risk Monitoring</h2>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5">Students Below 75%</h3>
+                            <?php if ($metrics['at_risk_students'] === []): ?>
+                                <p class="text-muted mb-0">No at-risk students found.</p>
+                            <?php else: ?>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach ($metrics['at_risk_students'] as $student): ?>
+                                        <li class="mb-2">
+                                            <strong><?= htmlspecialchars($student['name']) ?></strong><br>
+                                            <small><?= htmlspecialchars($student['student_number']) ?> • <?= htmlspecialchars(number_format((float) $student['attendance_rate'], 1)) ?>%</small>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </a>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5">Courses With Weak Attendance</h3>
+                            <?php if ($metrics['at_risk_courses'] === []): ?>
+                                <p class="text-muted mb-0">No weak-attendance courses found.</p>
+                            <?php else: ?>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach ($metrics['at_risk_courses'] as $course): ?>
+                                        <li class="mb-2">
+                                            <strong><?= htmlspecialchars($course['course_code']) ?></strong><br>
+                                            <small><?= htmlspecialchars($course['name']) ?> • <?= htmlspecialchars(number_format((float) $course['attendance_rate'], 1)) ?>%</small>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5">Currently Active Sessions</h3>
+                            <?php if ($metrics['active_session_courses'] === []): ?>
+                                <p class="text-muted mb-0">No active sessions are running right now.</p>
+                            <?php else: ?>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach ($metrics['active_session_courses'] as $session): ?>
+                                        <li class="mb-2">
+                                            <strong><?= htmlspecialchars($session['course_code']) ?></strong><br>
+                                            <small><?= htmlspecialchars($session['name']) ?> • <?= htmlspecialchars($session['session_code']) ?></small>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="col">
-                <a href="view_announcements.php" class="card h-100 text-center text-decoration-none" style="color:#2fa360; border-left:5px solid #2fa360;">
-                    <div class="card-body">
+        <section class="mb-5">
+            <h2 class="mb-3">Teaching Management</h2>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <a href="my_courses.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-book fs-2 mb-2"></i>
+                        <h3>Manage Courses</h3>
+                        <p><?= (int) $metrics['courses'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="my_students.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-people fs-2 mb-2"></i>
+                        <h3>Review Students</h3>
+                        <p><?= (int) $metrics['students'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="active_sessions.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-play-circle fs-2 mb-2"></i>
+                        <h3>Session Control</h3>
+                        <p><?= (int) $metrics['active_sessions'] ?></p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="profile.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-person-gear fs-2 mb-2"></i>
+                        <h3>Update Profile</h3>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="mb-3">Reporting</h2>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <a href="attendance_reports.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-bar-chart-line fs-2 mb-2"></i>
+                        <h3>Attendance Reports</h3>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="mb-3">Communication</h2>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <a href="send_announcement.php" class="dashboard-card text-center d-block">
                         <i class="bi bi-megaphone fs-2 mb-2"></i>
-                        <h5 class="card-title">View Announcements</h5>
-                    </div>
-                </a>
+                        <h3>Send Announcement</h3>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="view_announcements.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-eye fs-2 mb-2"></i>
+                        <h3>View Announcements</h3>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="contact.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-envelope fs-2 mb-2"></i>
+                        <h3>Contact Support</h3>
+                    </a>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ============================================
-             UPDATE PROFILE SECTION
-        =============================================== -->
-        <div class="mt-4 mb-4 text-center">
-            <button id="update-profile-btn" class="btn btn-success">Update Profile</button>
-            <a href="../account/change_password.php" class="btn btn-outline-success ms-2">Change Password</a>
-        </div>
-
-        <!-- Hidden Profile Form -->
-        <div id="profile-page" class="card p-4 mb-4" style="display:none;">
-            <form id="profile-form" method="post" action="update_profile.php">
-
-                <!-- Name -->
-                <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input class="form-control" type="text" name="name" value="<?= htmlspecialchars($lecturer['name'] ?? '') ?>" required>
+        <section class="mb-4">
+            <h2 class="mb-3">Account</h2>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6">
+                    <a href="profile.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-person-circle fs-2 mb-2"></i>
+                        <h3>My Profile</h3>
+                    </a>
                 </div>
-
-                <!-- Email -->
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" type="email" name="email" value="<?= htmlspecialchars($lecturer['email'] ?? '') ?>" required>
+                <div class="col-md-3 col-sm-6">
+                    <a href="../account/change_password.php" class="dashboard-card text-center d-block">
+                        <i class="bi bi-shield-lock fs-2 mb-2"></i>
+                        <h3>Change Password</h3>
+                    </a>
                 </div>
+            </div>
+        </section>
 
-                <!-- Phone -->
-                <div class="mb-3">
-                    <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" name="phone" value="<?= htmlspecialchars($lecturer['phone'] ?? '') ?>">
-                </div>
-
-                <button type="submit" class="btn btn-success">Save Changes</button>
-            </form>
+        <div class="last-updated text-muted mt-4">
+            Last updated: <?= htmlspecialchars($lastUpdated) ?>
         </div>
-
     <?php endif; ?>
+</main>
 
-</div>
-
-<?php require_once(__DIR__ . '/../../includes/footer.php'); ?>
-
-<!-- ============================================
-     JS: PROFILE FORM TOGGLE
-=============================================== -->
+<?php require_once '../../includes/footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script <?= et_csp_attr('script') ?>>
-document.addEventListener('DOMContentLoaded', function() {
-    const updateBtn = document.getElementById('update-profile-btn');
-    const profileForm = document.getElementById('profile-page');
-
-    // Defensive check in case elements are not present
-    if (updateBtn && profileForm) {
-        updateBtn.addEventListener('click', function() {
-            const isHidden = profileForm.style.display === 'none' || profileForm.style.display === '';
-            if (isHidden) {
-                profileForm.style.display = 'block';
-                updateBtn.textContent = 'Hide Profile';
-            } else {
-                profileForm.style.display = 'none';
-                updateBtn.textContent = 'Update Profile';
-            }
-        });
-    }
-});
-</script>
 </body>
 </html>
-

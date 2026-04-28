@@ -3,7 +3,6 @@
 // ADMIN - MANAGE PROGRAMMES
 // ============================================
 
-// Preload (auto-locate includes/preload.php)
 $__et = __DIR__;
 for ($__i = 0; $__i < 6; $__i++) {
     $__p = $__et . '/includes/preload.php';
@@ -24,7 +23,6 @@ require_once '../../includes/functions.php';
 require_login();
 require_role(['admin']);
 
-// Fetch distinct departments for filter
 try {
     $stmt = $pdo->query('SELECT DISTINCT department FROM programmes ORDER BY department');
     $departments = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -33,14 +31,13 @@ try {
     $departments = [];
 }
 
-// Handle filtering
 $departmentFilter = trim($_GET['department'] ?? '');
 
 try {
     $query = 'SELECT * FROM programmes';
     $params = [];
 
-    if (!empty($departmentFilter)) {
+    if ($departmentFilter !== '') {
         $query .= ' WHERE department = ?';
         $params[] = $departmentFilter;
     }
@@ -60,133 +57,133 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    
     <link rel="icon" type="image/png" href="<?= asset_url('assets/favicon.png') ?>">
     <title>Manage Programmes - EduTrack Admin</title>
-    
-    <!-- Bootstrap 5 -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
 
 <?php require_once '../../includes/admin_navbar.php'; ?>
 
-<main class="container py-5">
-    <div class="card shadow-sm rounded-4 p-4">
-        <h2 class="mb-4">Manage Programmes</h2>
-
-        <div class="d-flex justify-content-between mb-3">
+<main class="container py-5 flex-grow-1">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-2">Manage Programmes</h1>
+            <p class="text-muted mb-0">Review, filter, and maintain academic programme records.</p>
+        </div>
+        <div class="d-flex gap-2">
             <a href="dashboard.php" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
-            <!-- Add Programme -->
             <a href="add_programme.php" class="btn btn-success">
                 <i class="bi bi-plus-lg"></i> Add Programme
             </a>
         </div>
-
-        <!-- Filter Form -->
-        <form method="GET" class="row g-3 mb-3">
-            <div class="col-md-4">
-                <label for="department" class="form-label">Filter by Department:</label>
-                <select name="department" id="department" class="form-select" onchange="this.form.submit()">
-                    <option value="">All Departments</option>
-                    <?php foreach ($departments as $dept): ?>
-                        <option value="<?= htmlspecialchars($dept) ?>" <?= $departmentFilter === $dept ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($dept) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </form>
-
-        <!-- Alerts -->
-        <?php if (!empty($_SESSION['success_message'])): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?= htmlspecialchars($_SESSION['success_message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php unset($_SESSION['success_message']); ?>
-        <?php endif; ?>
-
-        <?php if (!empty($_SESSION['error_message'])): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <?= htmlspecialchars($_SESSION['error_message']) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <?php unset($_SESSION['error_message']); ?>
-        <?php endif; ?>
-
-        <!-- Programmes Table -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Duration (Years)</th>
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($programmes)): ?>
-                        <?php foreach ($programmes as $programme): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($programme['id']) ?></td>
-                                <td><?= htmlspecialchars($programme['name']) ?></td>
-                                <td><?= htmlspecialchars($programme['code']) ?></td>
-                                <td><?= htmlspecialchars($programme['department']) ?></td>
-                                <td><?= htmlspecialchars($programme['duration']) ?></td>
-                                <td class="text-center">
-                                    <a href="view_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-info btn-sm me-1" title="View">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="edit_programme.php?id=<?= urlencode($programme['id']) ?>" class="btn btn-secondary btn-sm me-1" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form action="delete_programme.php" method="POST" class="d-inline delete-programme-form">
-                                        <input type="hidden" name="id" value="<?= htmlspecialchars($programme['id']) ?>">
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No programmes found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
     </div>
+
+    <?php if (!empty($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['success_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['error_message'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['error_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+    <?php endif; ?>
+
+    <section class="card shadow-sm rounded-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3 align-items-end mb-4">
+                <div class="col-md-4">
+                    <label for="department" class="form-label">Filter by Department</label>
+                    <select name="department" id="department" class="form-select">
+                        <option value="">All Departments</option>
+                        <?php foreach ($departments as $department): ?>
+                            <option value="<?= htmlspecialchars($department) ?>" <?= $departmentFilter === $department ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($department) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success">Apply Filter</button>
+                </div>
+                <?php if ($departmentFilter !== ''): ?>
+                    <div class="col-auto">
+                        <a href="manage_programmes.php" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                <?php endif; ?>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-success">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Code</th>
+                            <th scope="col">Department</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($programmes !== []): ?>
+                            <?php foreach ($programmes as $programme): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($programme['id']) ?></td>
+                                    <td><?= htmlspecialchars($programme['name']) ?></td>
+                                    <td><?= htmlspecialchars($programme['code']) ?></td>
+                                    <td><?= htmlspecialchars($programme['department']) ?></td>
+                                    <td><?= htmlspecialchars($programme['duration']) ?> Years</td>
+                                    <td class="text-center">
+                                        <a href="view_programme.php?id=<?= urlencode((string) $programme['id']) ?>" class="btn btn-sm btn-outline-success me-1" title="View Programme">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="edit_programme.php?id=<?= urlencode((string) $programme['id']) ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit Programme">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form action="delete_programme.php" method="POST" class="d-inline delete-programme-form">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars($programme['id']) ?>">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Programme">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No programmes found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 </main>
 
 <?php require_once '../../includes/footer.php'; ?>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script <?= et_csp_attr('script') ?>>
 document.querySelectorAll('.delete-programme-form').forEach(form => {
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
         if (!confirm('Are you sure you want to delete this programme?')) {
             e.preventDefault();
         }
     });
 });
 </script>
-
 </body>
 </html>
-
